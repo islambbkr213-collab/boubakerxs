@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your Name — Video Editor & Motion Designer</title>
+<meta name="description" content="Video editing and SaaS product animation portfolio.">
+<style>
+:root{
+  --bg:#ffffff; --card:#ffffff; --soft:#f5f5f7; --ink:#1d1d1f; --mute:#6e6e73;
+  --line:rgba(0,0,0,.08); --blue:#0071e3; --nav:rgba(251,251,253,.72);
+  --r-lg:32px; --r-md:24px; --r-sm:14px;
+  color-scheme:light;--font:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:3px solid var(--blue);outline-offset:3px;border-radius:12px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 22px}
+
+/* nav */
+nav{position:sticky;top:0;z-index:50;background:var(--nav);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:52px}
+nav b{font-weight:600;font-size:17px;letter-spacing:-.01em}
+nav ul{display:flex;gap:28px;list-style:none;padding:0;font-size:13px;color:var(--mute)}
+nav ul a:hover{color:var(--ink)}
+.pill{display:inline-block;background:var(--blue);color:#fff;padding:9px 20px;border-radius:999px;font-size:14px;font-weight:500;transition:transform .2s}
+.pill:hover{transform:scale(1.04)}
+.pill.ghost{background:transparent;color:var(--blue);border:1px solid var(--blue)}
+@media(max-width:700px){nav ul{display:none}}
+
+/* hero */
+.hero{text-align:center;padding:96px 0 40px}
+h1{font-size:clamp(44px,8vw,92px);line-height:1.03;letter-spacing:-.035em;font-weight:700}
+.hero p{font-size:clamp(19px,2.4vw,26px);color:var(--mute);max-width:640px;margin:22px auto 32px;letter-spacing:-.01em}
+.hero .row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+/* hero motion stage: the memorable piece */
+.stage{margin:64px auto 0;max-width:980px;aspect-ratio:16/9;border-radius:var(--r-lg);background:var(--soft);position:relative;overflow:hidden}
+.win{position:absolute;left:50%;top:50%;width:62%;transform:translate(-50%,-50%);background:#fff;border:1px solid var(--line);box-shadow:0 20px 50px -20px rgba(0,0,0,.18);border-radius:22px;padding:18px;animation:float 6s ease-in-out infinite}
+.dots{display:flex;gap:6px;margin-bottom:14px}.dots i{width:10px;height:10px;border-radius:50%;background:rgba(0,0,0,.15)}
+.bars{display:flex;align-items:flex-end;gap:10px;height:120px}
+.bars i{flex:1;border-radius:8px 8px 4px 4px;background:var(--blue);transform-origin:bottom;animation:grow 4s cubic-bezier(.3,.9,.3,1) infinite}
+.bars i:nth-child(1){height:40%}.bars i:nth-child(2){height:62%;animation-delay:.12s}.bars i:nth-child(3){height:50%;animation-delay:.24s}.bars i:nth-child(4){height:82%;animation-delay:.36s}.bars i:nth-child(5){height:68%;animation-delay:.48s}.bars i:nth-child(6){height:96%;animation-delay:.6s}
+.chip{position:absolute;background:#fff;color:#111;border-radius:16px;padding:10px 16px;font-size:14px;font-weight:600;box-shadow:0 12px 30px rgba(0,0,0,.12);border:1px solid var(--line)}
+.c1{left:7%;top:16%;animation:drift 5s ease-in-out infinite}
+.c2{right:6%;bottom:18%;animation:drift 5.6s ease-in-out -2s infinite}
+.timeline{position:absolute;left:6%;right:6%;bottom:6%;height:14px;border-radius:99px;background:rgba(0,0,0,.08);overflow:hidden}
+.timeline i{position:absolute;inset:0 auto 0 0;width:100%;background:var(--blue);transform-origin:left;animation:scrub 6s linear infinite}
+@keyframes float{50%{transform:translate(-50%,-54%)}}
+@keyframes grow{0%{transform:scaleY(0)}30%,85%{transform:scaleY(1)}100%{transform:scaleY(0)}}
+@keyframes drift{50%{transform:translateY(-14px)}}
+@keyframes scrub{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+
+/* sections */
+section{padding:110px 0 0}
+.head{text-align:center;margin-bottom:48px}
+h2{font-size:clamp(34px,5vw,56px);letter-spacing:-.03em;line-height:1.08;font-weight:700}
+.head p{color:var(--mute);font-size:21px;margin-top:12px}
+
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:20px;align-items:stretch}
+.grid>.card{display:flex;flex-direction:column}
+.meta{flex:1}
+.card{background:var(--card);border-radius:var(--r-lg);overflow:hidden;position:relative;border:1px solid var(--line);transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.card:hover{transform:scale(1.015)}
+.s7{grid-column:span 7}.s5{grid-column:span 5}.s4{grid-column:span 4}.s6{grid-column:span 6}.s12{grid-column:span 12}
+@media(max-width:1000px){.s4{grid-column:span 6}}
+@media(max-width:640px){.s4{grid-column:span 12}}
+.stat.s4{grid-column:span 4}
+@media(max-width:640px){.stat.s4{grid-column:span 12}}
+
+/* video tile */
+.vid{aspect-ratio:16/10;border-radius:0;background:var(--soft);position:relative;display:grid;place-items:center}
+.vid video,.vid img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 52%}
+.play{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.28);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:grid;place-items:center;position:relative}
+.play::after{content:"";border-left:18px solid #fff;border-top:11px solid transparent;border-bottom:11px solid transparent;margin-left:5px}
+.meta{padding:24px 28px 28px}
+.meta small{color:var(--mute);font-size:14px}
+.meta h3{font-size:24px;letter-spacing:-.02em;margin:4px 0 6px}
+.meta p{color:var(--mute);font-size:16px}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.tags span{background:var(--soft);padding:5px 12px;border-radius:99px;font-size:13px;color:var(--mute)}
+
+/* stats / tools */
+.stat{padding:36px 30px;text-align:center}
+.stat b{display:block;font-size:56px;letter-spacing:-.04em;line-height:1}
+.stat span{color:var(--mute);font-size:17px}
+.tools{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;padding:36px}
+.tools span{background:var(--soft);padding:12px 22px;border-radius:99px;font-size:17px;font-weight:500}
+
+/* about + contact */
+.about{display:grid;grid-template-columns:1fr 1.3fr;gap:40px;align-items:center;padding:44px}
+.avatar{aspect-ratio:1;border-radius:var(--r-md);background:var(--blue);display:grid;place-items:center;font-size:72px;font-weight:700;color:#fff;overflow:hidden}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.about p{font-size:20px;color:var(--mute);margin-top:14px;letter-spacing:-.01em}
+@media(max-width:760px){.about{grid-template-columns:1fr;padding:28px}}
+.contact{text-align:center;padding:80px 28px}
+.contact h2{margin-bottom:14px}
+.contact p{color:var(--mute);font-size:21px;margin-bottom:28px}
+footer{padding:60px 0 40px;color:var(--mute);font-size:13px;text-align:center}
+
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <b>Your Name</b>
+  <ul>
+    <li><a href="#reel">Showreel</a></li>
+    <li><a href="#saas">SaaS motion</a></li>
+    <li><a href="#edits">Video edits</a></li>
+    <li><a href="#design">Design</a></li>
+    <li><a href="#about">About</a></li>
+  </ul>
+  <a class="pill" href="#contact">Hire me</a>
+</div></nav>
+
+<header class="hero"><div class="wrap">
+  <h1>Video that sells.<br>Motion that explains.</h1>
+  <p>I edit videos and animate SaaS products so people understand them in seconds.</p>
+  <div class="row">
+    <a class="pill" href="#reel">Watch the reel</a>
+    <a class="pill ghost" href="#contact">Start a project</a>
+  </div>
+
+  <div class="stage" aria-hidden="true">
+    <div class="chip c1">+248% signups</div>
+    <div class="win"><div class="dots"><i></i><i></i><i></i></div>
+      <div class="bars"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    </div>
+    <div class="chip c2">Exported · 4K</div>
+    <div class="timeline"><i></i></div>
+  </div>
+</div></header>
+
+<main class="wrap">
+
+  <!-- SHOWREEL: replace src with your file in /assets -->
+  <section id="reel">
+    <div class="head"><h2>Showreel 2026</h2><p>Ninety seconds of my best work.</p></div>
+    <div class="card">
+      <div class="vid" style="aspect-ratio:16/9"><img src="assets/cs.jpg" alt="Showreel thumbnail" loading="lazy">
+        <!-- <video src="assets/reel.mp4" poster="assets/reel.jpg" controls playsinline preload="none"></video> -->
+        <span class="play"></span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="grid">
+      <div class="card stat s4"><b>120+</b><span>Videos delivered</span></div>
+      <div class="card stat s4"><b>35</b><span>SaaS products animated</span></div>
+      <div class="card stat s4"><b>48h</b><span>Typical first draft</span></div>
+    </div>
+  </section>
+
+  <!-- SAAS MOTION -->
+  <section id="saas">
+    <div class="head"><h2>SaaS motion</h2><p>Product explainers, UI animations and launch videos.</p></div>
+    <div class="grid">
+      <article class="card s4">
+        <div class="vid"><img src="assets/cs.jpg" alt="Project thumbnail" loading="lazy"><span class="play"></span></div>
+        <div class="meta"><small>Product launch · 45s</small><h3>Project name</h3><p>Launch video for a SaaS release.</p><div class="tags"><span>After Effects</span><span>Figma</span></div></div>
+      </article>
+      <article class="card s4">
+        <div class="vid"><img src="assets/cs.jpg" alt="Project thumbnail" loading="lazy"><span class="play"></span></div>
+        <div class="meta"><small>UI animation · 20s</small><h3>Project name</h3><p>Feature walkthrough for a dashboard.</p><div class="tags"><span>After Effects</span><span>Rive</span></div></div>
+      </article>
+      <article class="card s4">
+        <div class="vid"><img src="assets/cs.jpg" alt="Project thumbnail" loading="lazy"><span class="play"></span></div>
+        <div class="meta"><small>Explainer · 60s</small><h3>Project name</h3><p>Animated explainer for a B2B tool.</p><div class="tags"><span>Illustrator</span><span>After Effects</span></div></div>
+      </article>
+      <article class="card s4">
+        <div class="vid"><img src="assets/cs.jpg" alt="Project thumbnail" loading="lazy"><span class="play"></span></div>
+        <div class="meta"><small>Ad creative · 15s</small><h3>Project name</h3><p>Short motion ads for paid social.</p><div class="tags"><span>After Effects</span><span>Premiere Pro</span></div></div>
+      </article>
+      <article class="card s4">
+        <div class="vid"><img src="assets/cs.jpg" alt="Project thumbnail" loading="lazy"><span class="play"></span></div>
+        <div class="meta"><small>Onboarding · 30s</small><h3>Project name</h3><p>Animated product tour for new users.</p><div class="tags"><span>Lottie</span><span>Figma</span></div></div>
+      </article>
+      <article class="card s4">
+        <div class="vid"><img src="assets/cs.jpg" alt="Project thumbnail" loading="lazy"><span class="play"></span></div>
+        <div class="meta"><small>Feature reveal · 25s</small><h3>Project name</h3><p>Teaser for a new feature drop.</p><div class="tags"><span>After Effects</span><span>Blender</span></div></div>
+      </article>
+    </div>
+  </section>
+
+  <!-- VIDEO EDITING -->
+  <section id="edits">
+    <div class="head"><h2>Video editing</h2><p>Story-first cuts for creators and brands.</p></div>
+    <div class="grid">
+      <article class="card s4">
+        <div class="vid"><img src="assets/cs.jpg" alt="Project thumbnail" loading="lazy"><span class="play"></span></div>
+        <div class="meta"><small>Short-form · Reels</small><h3>Project name</h3><p>Fast cuts, captions, sound design.</p><div class="tags"><span>Premiere Pro</span></div></div>
+      </article>
+      <article class="card s4">
+        <div class="vid"><img src="assets/cs.jpg" alt="Project thumbnail" loading="lazy"><span class="play"></span></div>
+        <div class="meta"><small>YouTube · 12 min</small><h3>Project name</h3><p>Pacing, b-roll and color grade.</p><div class="tags"><span>DaVinci Resolve</span></div></div>
+      </article>
+      <article class="card s4">
+        <div class="vid"><img src="assets/cs.jpg" alt="Project thumbnail" loading="lazy"><span class="play"></span></div>
+        <div class="meta"><small>Brand film · 90s</small><h3>Project name</h3><p>Interview-led story with motion titles.</p><div class="tags"><span>Premiere Pro</span><span>After Effects</span></div></div>
+      </article>
+    </div>
+  </section>
+
+  <!-- DESIGN -->
+  <section id="design">
+    <div class="head"><h2>Design</h2><p>Thumbnails, brand kits and UI work that support the motion.</p></div>
+    <div class="grid">
+      <article class="card s4">
+        <div class="vid"><img src="assets/cs.jpg" alt="Project thumbnail" loading="lazy"><span class="play"></span></div>
+        <div class="meta"><small>Thumbnails</small><h3>Thumbnails</h3><p>Click-worthy covers for video channels.</p></div>
+      </article>
+      <article class="card s4">
+        <div class="vid"><img src="assets/cs.jpg" alt="Project thumbnail" loading="lazy"><span class="play"></span></div>
+        <div class="meta"><small>Brand kits</small><h3>Brand kits</h3><p>Logos, colors and motion rules in one system.</p></div>
+      </article>
+      <article class="card s4">
+        <div class="vid"><img src="assets/cs.jpg" alt="Project thumbnail" loading="lazy"><span class="play"></span></div>
+        <div class="meta"><small>UI design</small><h3>UI design</h3><p>Clean app and landing page screens.</p></div>
+      </article>
+    </div>
+  </section>
+
+  <!-- TOOLS -->
+  <section>
+    <div class="card">
+      <div class="head" style="padding-top:44px;margin-bottom:0"><h2 style="font-size:36px">Tools I work in</h2></div>
+      <div class="tools"><span>After Effects</span><span>Premiere Pro</span><span>DaVinci Resolve</span><span>Figma</span><span>Blender</span><span>Rive</span><span>Lottie</span><span>Photoshop</span></div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="card about">
+      <div class="avatar"><!-- <img src="assets/me.jpg" alt="Your Name"> -->YN</div>
+      <div>
+        <h2 style="font-size:40px">Hi, I'm Your Name.</h2>
+        <p>I'm a video editor and motion designer based in Algeria, working with SaaS teams and creators worldwide. I turn complex products into clear, watchable stories.</p>
+        <p>Available for freelance and long-term collaborations.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="card contact">
+      <h2>Let's make something move.</h2>
+      <p>Tell me about your project and I'll reply within a day.</p>
+      <a class="pill" href="mailto:you@example.com">Email me</a>
+    </div>
+  </section>
+</main>
+
+<footer>© 2026 Your Name. All rights reserved.</footer>
+</body>
+</html>
