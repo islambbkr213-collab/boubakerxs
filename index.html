@@ -107,6 +107,28 @@ h2{font-size:clamp(34px,5vw,56px);letter-spacing:-.03em;line-height:1.08;font-we
 footer{padding:60px 0 40px;color:var(--mute);font-size:13px;text-align:center}
 
 
+/* design carousel */
+body{overflow-x:clip}
+.car{--pad:max(22px,calc((100vw - 1180px)/2 + 22px));width:100vw;margin-left:calc(50% - 50vw)}
+.track{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding:8px var(--pad) 24px;scroll-padding-inline:var(--pad)}
+.track::-webkit-scrollbar{display:none}
+.track.one{justify-content:center}
+.track.drag{scroll-snap-type:none;cursor:grabbing;user-select:none}
+.track:focus-visible{outline:3px solid var(--blue);outline-offset:-3px;border-radius:24px}
+.slide{flex:0 0 min(80vw,720px);scroll-snap-align:start;opacity:.5;transform:scale(.94);transition:transform .6s cubic-bezier(.2,.8,.2,1),opacity .6s}
+.slide.on{opacity:1;transform:none}
+.slide-in{position:relative;aspect-ratio:16/11;border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--line);background:var(--soft);cursor:zoom-in;box-shadow:0 30px 60px -30px rgba(0,10,25,.7)}
+.slide-in img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;-webkit-user-drag:none}
+.cap{position:absolute;left:16px;right:16px;bottom:16px;padding:14px 20px;border-radius:22px;background:rgba(6,38,60,.5);border:1px solid rgba(255,255,255,.25);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);color:#fff}
+.cap small{font-size:13px;opacity:.75}.cap h3{font-size:clamp(18px,2.4vw,24px);letter-spacing:-.02em;line-height:1.2}.cap p{font-size:14px;opacity:.8;margin-top:2px}
+.car-ui{max-width:1180px;margin:0 auto;padding:0 22px;display:flex;align-items:center;justify-content:space-between}
+.dots{display:flex;gap:8px;padding:14px 18px;border-radius:99px;background:var(--soft);border:1px solid var(--line);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.dots button{width:8px;height:8px;border-radius:99px;border:0;padding:0;background:rgba(255,255,255,.4);cursor:pointer;transition:width .4s cubic-bezier(.2,.8,.2,1),background .3s}
+.dots button.on{width:28px;background:#fff}
+.arrows{display:flex;gap:10px}
+.arrows button{width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:var(--soft);color:var(--ink);display:grid;place-items:center;cursor:pointer;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);transition:opacity .25s,transform .25s}
+.arrows button:disabled{opacity:.3;cursor:default}
+.arrows button:not(:disabled):hover{transform:scale(1.1)}
 .lb{position:fixed;inset:0;z-index:100;background:rgba(2,16,28,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:grid;place-items:center;padding:24px;cursor:zoom-out}
 .lb img{max-width:100%;max-height:100%;border-radius:20px;box-shadow:0 30px 80px rgba(0,0,0,.5)}
 .feature{grid-column:2 / span 10}
@@ -184,7 +206,14 @@ footer{padding:60px 0 40px;color:var(--mute);font-size:13px;text-align:center}
   <!-- DESIGN -->
   <section id="design" hidden>
     <div class="head"><h2>Design</h2><p>Banners, thumbnails and brand work.</p></div>
-    <div class="grid" id="designs"></div>
+    <div class="car"><div class="track" id="designs" tabindex="0" aria-label="Design gallery"></div></div>
+    <div class="car-ui">
+      <div class="dots" id="dots"></div>
+      <div class="arrows">
+        <button id="prev" type="button" aria-label="Previous design"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+        <button id="next" type="button" aria-label="Next design"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+      </div>
+    </div>
   </section>
 
   <section id="about">
@@ -286,12 +315,32 @@ document.addEventListener('keydown',e=>{const t=e.target.closest?e.target:null,e
     const card=(p,one)=>{const yt=p.youtube_id,img=p.thumb_url;
       const attr=yt?` data-yt="${e(yt)}" role="button" tabindex="0" aria-label="Play ${e(p.title)}"`:img?` data-full="${e(img)}" role="button" tabindex="0" aria-label="View ${e(p.title)}"`:'';
       return `<article class="card ${one?'feature':'s4'}"><div class="vid"${attr} style="aspect-ratio:${one?'16/9':'16/10'};cursor:${yt?'pointer':img?'zoom-in':'default'}">${img?`<img src="${e(img)}" alt="${e(p.title)}" loading="lazy">`:''}${yt?'<span class="play"></span>':''}</div><div class="meta"><small>${e(p.category)}</small><h3>${e(p.title)}</h3><p>${e(p.description)}</p></div></article>`};
-    const work=data.filter(p=>p.category!=='Design'),des=data.filter(p=>p.category==='Design');
+    const slide=p=>`<article class="slide"><div class="slide-in" data-full="${e(p.thumb_url)}" role="button" tabindex="0" aria-label="View ${e(p.title)}"><img src="${e(p.thumb_url)}" alt="${e(p.title)}" loading="lazy" draggable="false"><div class="cap"><small>${e(p.category)}</small><h3>${e(p.title)}</h3>${p.description?`<p>${e(p.description)}</p>`:''}</div></div></article>`;
+    const initCar=()=>{
+      const tr=document.getElementById('designs'),sl=[...tr.children],n=sl.length,ui=document.querySelector('.car-ui');
+      if(n<2){tr.classList.add('one');ui.hidden=true;sl.forEach(x=>x.classList.add('on'));return}
+      const dots=document.getElementById('dots'),pv=document.getElementById('prev'),nx=document.getElementById('next');
+      dots.innerHTML=sl.map((_,i)=>`<button type="button" aria-label="Go to design ${i+1}"></button>`).join('');
+      const db=[...dots.children],step=()=>sl[1].offsetLeft-sl[0].offsetLeft;
+      const idx=()=>tr.scrollLeft>=tr.scrollWidth-tr.clientWidth-3?n-1:Math.min(n-1,Math.max(0,Math.round(tr.scrollLeft/step())));
+      const go=i=>tr.scrollTo({left:Math.max(0,Math.min(n-1,i))*step(),behavior:'smooth'});
+      const upd=()=>{const i=idx();sl.forEach((x,k)=>x.classList.toggle('on',k===i));db.forEach((d,k)=>d.classList.toggle('on',k===i));pv.disabled=i===0;nx.disabled=i===n-1};
+      tr.addEventListener('scroll',()=>requestAnimationFrame(upd),{passive:true});
+      pv.onclick=()=>go(idx()-1);nx.onclick=()=>go(idx()+1);db.forEach((d,k)=>d.onclick=()=>go(k));
+      tr.addEventListener('keydown',ev=>{if(ev.key==='ArrowRight'){ev.preventDefault();go(idx()+1)}if(ev.key==='ArrowLeft'){ev.preventDefault();go(idx()-1)}});
+      let down=false,moved=false,sx=0,s0=0;
+      tr.addEventListener('pointerdown',ev=>{if(ev.pointerType!=='mouse')return;down=true;moved=false;sx=ev.clientX;s0=tr.scrollLeft});
+      addEventListener('pointermove',ev=>{if(!down)return;const dx=ev.clientX-sx;if(!moved&&Math.abs(dx)>5){moved=true;tr.classList.add('drag')}if(moved)tr.scrollLeft=s0-dx});
+      addEventListener('pointerup',()=>{if(!down)return;down=false;if(moved){tr.classList.remove('drag');go(idx())}});
+      tr.addEventListener('click',ev=>{if(moved){ev.stopPropagation();ev.preventDefault();moved=false}},true);
+      upd();
+    };
+    const work=data.filter(p=>p.category!=='Design'),des=data.filter(p=>p.category==='Design'&&p.thumb_url);
     const nav=h=>document.querySelector('nav a[href="'+h+'"]');
     if(work.length)document.getElementById('projects').innerHTML=work.map(p=>card(p,work.length===1)).join('');
     else{document.getElementById('edits').hidden=true;nav('#edits').parentElement.hidden=true}
-    if(des.length){document.getElementById('designs').innerHTML=des.map(p=>card(p,des.length===1)).join('');
-      document.getElementById('design').hidden=false;document.getElementById('navdesign').hidden=false}
+    if(des.length){document.getElementById('design').hidden=false;document.getElementById('navdesign').hidden=false;
+      document.getElementById('designs').innerHTML=des.map(slide).join('');initCar()}
     if(!work.length&&des.length)document.querySelector('.hero a.light').href='#design';
   }catch(err){}
 })();
