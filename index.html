@@ -76,6 +76,7 @@ h2{font-size:clamp(34px,5vw,56px);letter-spacing:-.03em;line-height:1.08;font-we
 /* video tile */
 .vid{aspect-ratio:16/10;border-radius:0;background:var(--soft);position:relative;display:grid;place-items:center}
 .vid video,.vid img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 52%}
+.vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .play{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.28);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:grid;place-items:center;position:relative}
 .play::after{content:"";border-left:18px solid #fff;border-top:11px solid transparent;border-bottom:11px solid transparent;margin-left:5px}
 .meta{padding:24px 28px 28px}
@@ -122,7 +123,6 @@ footer{padding:60px 0 40px;color:var(--mute);font-size:13px;text-align:center}
 <nav><div class="wrap">
   <b>Boubaker<span style="color:var(--blue)">.</span></b>
   <ul>
-    <li><a href="#reel">Showreel</a></li>
     <li><a href="#saas">SaaS motion</a></li>
     <li><a href="#edits">Video edits</a></li>
     <li><a href="#design">Design</a></li>
@@ -141,24 +141,13 @@ footer{padding:60px 0 40px;color:var(--mute);font-size:13px;text-align:center}
     <h1>Video Editing <span class="sep">|</span> Motion <span class="sep">|</span> Design<br>for <em>Brands &amp; Creators</em></h1>
     <p>I edit videos and animate SaaS products so people understand them in seconds.</p>
     <div class="row">
-      <a class="pill light" href="#reel">Watch the reel</a>
+      <a class="pill light" href="#saas">See my work</a>
       <a class="pill glassbtn" href="#contact">Start a project</a>
     </div>
   </div>
 </div></header>
 
 <main class="wrap">
-
-  <!-- SHOWREEL: replace src with your file in /assets -->
-  <section id="reel">
-    <div class="head"><h2>Showreel 2026</h2><p>Ninety seconds of my best work.</p></div>
-    <div class="card">
-      <div class="vid" style="aspect-ratio:16/9"><img src="assets/cs.jpg" alt="Showreel thumbnail" loading="lazy">
-        <!-- <video src="assets/reel.mp4" poster="assets/reel.jpg" controls playsinline preload="none"></video> -->
-        <span class="play"></span>
-      </div>
-    </div>
-  </section>
 
   <section>
     <div class="grid">
@@ -173,27 +162,27 @@ footer{padding:60px 0 40px;color:var(--mute);font-size:13px;text-align:center}
     <div class="head"><h2>SaaS motion</h2><p>Product explainers, UI animations and launch videos.</p></div>
     <div class="grid">
       <article class="card s4">
-        <div class="vid"><img src="assets/cs.jpg" alt="Project thumbnail" loading="lazy"><span class="play"></span></div>
+        <div class="vid" data-yt="SgmuplXU2iY" role="button" tabindex="0" aria-label="Play video" style="cursor:pointer"><img src="assets/cs.jpg" alt="Project thumbnail" loading="lazy"><span class="play"></span></div>
         <div class="meta"><small>Product launch · 45s</small><h3>Project name</h3><p>Launch video for a SaaS release.</p><div class="tags"><span>After Effects</span><span>Figma</span></div></div>
       </article>
       <article class="card s4">
-        <div class="vid"><img src="assets/cs.jpg" alt="Project thumbnail" loading="lazy"><span class="play"></span></div>
+        <div class="vid"><img src="assets/cs.jpg" alt="Project thumbnail" loading="lazy"></div>
         <div class="meta"><small>UI animation · 20s</small><h3>Project name</h3><p>Feature walkthrough for a dashboard.</p><div class="tags"><span>After Effects</span><span>Rive</span></div></div>
       </article>
       <article class="card s4">
-        <div class="vid"><img src="assets/cs.jpg" alt="Project thumbnail" loading="lazy"><span class="play"></span></div>
+        <div class="vid"><img src="assets/cs.jpg" alt="Project thumbnail" loading="lazy"></div>
         <div class="meta"><small>Explainer · 60s</small><h3>Project name</h3><p>Animated explainer for a B2B tool.</p><div class="tags"><span>Illustrator</span><span>After Effects</span></div></div>
       </article>
       <article class="card s4">
-        <div class="vid"><img src="assets/cs.jpg" alt="Project thumbnail" loading="lazy"><span class="play"></span></div>
+        <div class="vid"><img src="assets/cs.jpg" alt="Project thumbnail" loading="lazy"></div>
         <div class="meta"><small>Ad creative · 15s</small><h3>Project name</h3><p>Short motion ads for paid social.</p><div class="tags"><span>After Effects</span><span>Premiere Pro</span></div></div>
       </article>
       <article class="card s4">
-        <div class="vid"><img src="assets/cs.jpg" alt="Project thumbnail" loading="lazy"><span class="play"></span></div>
+        <div class="vid"><img src="assets/cs.jpg" alt="Project thumbnail" loading="lazy"></div>
         <div class="meta"><small>Onboarding · 30s</small><h3>Project name</h3><p>Animated product tour for new users.</p><div class="tags"><span>Lottie</span><span>Figma</span></div></div>
       </article>
       <article class="card s4">
-        <div class="vid"><img src="assets/cs.jpg" alt="Project thumbnail" loading="lazy"><span class="play"></span></div>
+        <div class="vid"><img src="assets/cs.jpg" alt="Project thumbnail" loading="lazy"></div>
         <div class="meta"><small>Feature reveal · 25s</small><h3>Project name</h3><p>Teaser for a new feature drop.</p><div class="tags"><span>After Effects</span><span>Blender</span></div></div>
       </article>
     </div>
@@ -204,15 +193,15 @@ footer{padding:60px 0 40px;color:var(--mute);font-size:13px;text-align:center}
     <div class="head"><h2>Video editing</h2><p>Story-first cuts for creators and brands.</p></div>
     <div class="grid">
       <article class="card s4">
-        <div class="vid"><img src="assets/cs.jpg" alt="Project thumbnail" loading="lazy"><span class="play"></span></div>
+        <div class="vid"><img src="assets/cs.jpg" alt="Project thumbnail" loading="lazy"></div>
         <div class="meta"><small>Short-form · Reels</small><h3>Project name</h3><p>Fast cuts, captions, sound design.</p><div class="tags"><span>Premiere Pro</span></div></div>
       </article>
       <article class="card s4">
-        <div class="vid"><img src="assets/cs.jpg" alt="Project thumbnail" loading="lazy"><span class="play"></span></div>
+        <div class="vid"><img src="assets/cs.jpg" alt="Project thumbnail" loading="lazy"></div>
         <div class="meta"><small>YouTube · 12 min</small><h3>Project name</h3><p>Pacing, b-roll and color grade.</p><div class="tags"><span>DaVinci Resolve</span></div></div>
       </article>
       <article class="card s4">
-        <div class="vid"><img src="assets/cs.jpg" alt="Project thumbnail" loading="lazy"><span class="play"></span></div>
+        <div class="vid"><img src="assets/cs.jpg" alt="Project thumbnail" loading="lazy"></div>
         <div class="meta"><small>Brand film · 90s</small><h3>Project name</h3><p>Interview-led story with motion titles.</p><div class="tags"><span>Premiere Pro</span><span>After Effects</span></div></div>
       </article>
     </div>
@@ -223,15 +212,15 @@ footer{padding:60px 0 40px;color:var(--mute);font-size:13px;text-align:center}
     <div class="head"><h2>Design</h2><p>Thumbnails, brand kits and UI work that support the motion.</p></div>
     <div class="grid">
       <article class="card s4">
-        <div class="vid"><img src="assets/cs.jpg" alt="Project thumbnail" loading="lazy"><span class="play"></span></div>
+        <div class="vid"><img src="assets/cs.jpg" alt="Project thumbnail" loading="lazy"></div>
         <div class="meta"><small>Thumbnails</small><h3>Thumbnails</h3><p>Click-worthy covers for video channels.</p></div>
       </article>
       <article class="card s4">
-        <div class="vid"><img src="assets/cs.jpg" alt="Project thumbnail" loading="lazy"><span class="play"></span></div>
+        <div class="vid"><img src="assets/cs.jpg" alt="Project thumbnail" loading="lazy"></div>
         <div class="meta"><small>Brand kits</small><h3>Brand kits</h3><p>Logos, colors and motion rules in one system.</p></div>
       </article>
       <article class="card s4">
-        <div class="vid"><img src="assets/cs.jpg" alt="Project thumbnail" loading="lazy"><span class="play"></span></div>
+        <div class="vid"><img src="assets/cs.jpg" alt="Project thumbnail" loading="lazy"></div>
         <div class="meta"><small>UI design</small><h3>UI design</h3><p>Clean app and landing page screens.</p></div>
       </article>
     </div>
@@ -323,6 +312,18 @@ footer{padding:60px 0 40px;color:var(--mute);font-size:13px;text-align:center}
   const onScroll=()=>{if(!ticking){ticking=true;requestAnimationFrame(frame)}};
   addEventListener('scroll',onScroll,{passive:true}); addEventListener('resize',onScroll); frame();
 })();
+</script>
+<script>
+/* click a tile with data-yt="VIDEO_ID" to play that YouTube video inside it */
+document.querySelectorAll('[data-yt]').forEach(el=>{
+  const go=()=>{
+    if(el.querySelector('iframe'))return;
+    el.innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/'+el.dataset.yt+'?autoplay=1&rel=0&modestbranding=1" title="Video player" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';
+    el.style.cursor='default';
+  };
+  el.addEventListener('click',go);
+  el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}});
+});
 </script>
 </body>
 </html>
