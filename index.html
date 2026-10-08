@@ -165,14 +165,18 @@ body{overflow-x:clip}
 
 .pending .stage{opacity:0}
 .still,.still *{transition:none!important}
+.still .grid>.card::after{animation:none!important}
+.grid>.card::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:2;background:linear-gradient(105deg,transparent 38%,rgba(255,255,255,.16) 50%,transparent 62%);transform:translateX(-120%)}
+.grid>.card.in::after{animation:sheen 1.4s cubic-bezier(.16,1,.3,1) .2s both}
+@keyframes sheen{from{transform:translateX(-120%)}to{transform:translateX(120%)}}
 .socials{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px}
 .socials:empty{display:none}
 .socials .pill{margin:0}
 /* scroll animations (only active when JS adds .js) */
-.js .reveal{opacity:0;transform:translateY(34px) scale(.97);filter:blur(10px);transition:opacity calc(.8s*var(--spd,1)) cubic-bezier(.32,.72,0,1) calc(var(--d,0s)*var(--spd,1)),transform calc(1.1s*var(--spd,1)) cubic-bezier(.32,.72,0,1) calc(var(--d,0s)*var(--spd,1)),filter calc(.8s*var(--spd,1)) ease calc(var(--d,0s)*var(--spd,1)),scale .35s cubic-bezier(.2,.8,.2,1)}
+.js .reveal{opacity:0;transform:translate3d(0,60px,0) scale(.92);filter:blur(16px);transition:opacity calc(.8s*var(--spd,1)) cubic-bezier(.3,.6,.3,1) calc(var(--d,0s)*var(--spd,1)),transform calc(1.25s*var(--spd,1)) cubic-bezier(.2,.95,.3,1.07) calc(var(--d,0s)*var(--spd,1)),filter calc(.95s*var(--spd,1)) cubic-bezier(.3,.6,.3,1) calc(var(--d,0s)*var(--spd,1)),scale .35s cubic-bezier(.2,.8,.2,1)}
 .js .reveal.in{opacity:1;transform:none;filter:none}
 /* words pop in one by one */
-.js .split .w{display:inline-block;opacity:0;transform:translateY(.45em) scale(.96);filter:blur(12px);transition:opacity calc(.9s*var(--spd,1)) cubic-bezier(.32,.72,0,1) calc((var(--i)*75ms + .2s)*var(--spd,1)),transform calc(1.1s*var(--spd,1)) cubic-bezier(.32,.72,0,1) calc((var(--i)*75ms + .2s)*var(--spd,1)),filter calc(.9s*var(--spd,1)) ease calc((var(--i)*75ms + .2s)*var(--spd,1))}
+.js .split .w{display:inline-block;opacity:0;transform:translate3d(0,.55em,0) scale(.94);filter:blur(14px);transition:opacity calc(.85s*var(--spd,1)) cubic-bezier(.3,.6,.3,1) calc((var(--i)*80ms + .2s)*var(--spd,1)),transform calc(1.3s*var(--spd,1)) cubic-bezier(.2,.95,.3,1.07) calc((var(--i)*80ms + .2s)*var(--spd,1)),filter calc(.95s*var(--spd,1)) cubic-bezier(.3,.6,.3,1) calc((var(--i)*80ms + .2s)*var(--spd,1))}
 .js .split.in .w{opacity:1;transform:none;filter:none}
 /* press feedback on buttons, iOS style */
 .pill:active,.arrows button:active,.pj-x:active{transform:scale(.95)!important;transition-duration:.12s!important}
