@@ -473,32 +473,40 @@ const openProject=from=>{
   cap.animate([{opacity:1},{opacity:0}],{duration:DUR*.45,easing:'ease-out',fill:'forwards'});
   xb.animate([{opacity:0,transform:'scale(.6)'},{opacity:1,transform:'none'}],{duration:400,delay:DUR*.45,easing:EASE,fill:'backwards'});
   sheet.querySelectorAll('.pj-blur,.pj-fade').forEach(el=>el.animate([{opacity:0},{opacity:1}],{duration:DUR*.9,delay:DUR*.15,easing:'ease-out',fill:'backwards'}));
-  sheet.querySelector('.pj-title').animate([{opacity:0,transform:'translateY(26px)'},{opacity:1,transform:'none'}],{duration:760,delay:DUR*.3,easing:EASE,fill:'backwards'});
+  // title pops in word by word: rise + soft blur resolve
+  const tTitle=sheet.querySelector('.pj-title');
+  const words=[];let wi=0;
+  tTitle.querySelectorAll('h2').forEach(h=>{const tw=document.createTreeWalker(h,NodeFilter.SHOW_TEXT),ns=[];while(tw.nextNode())ns.push(tw.currentNode);
+    ns.forEach(n=>{if(!n.nodeValue.trim())return;const f=document.createDocumentFragment();
+      n.nodeValue.split(/(\s+)/).forEach(part=>{if(!part)return;if(/^\s+$/.test(part)){f.append(part);return}
+        const sp=document.createElement('span');sp.style.cssText='display:inline-block';sp.textContent=part;f.append(sp);words.push(sp)});
+      n.replaceWith(f)})});
+  words.forEach((sp,i)=>sp.animate([{opacity:0,transform:'translateY(.5em) scale(.96)',filter:'blur(12px)'},{opacity:1,transform:'none',filter:'blur(0px)'}],{duration:900,delay:DUR*.3+i*70,easing:EASE,fill:'backwards'}));
+  tTitle.querySelectorAll(':scope>small,:scope>p').forEach((el,i)=>el.animate([{opacity:0,transform:'translateY(16px)',filter:'blur(8px)'},{opacity:1,transform:'none',filter:'blur(0px)'}],{duration:900,delay:DUR*.3+i*90,easing:EASE,fill:'backwards'}));
   [...sheet.querySelectorAll('.pj-imgs,.pj-end')].forEach((el,i)=>
     el.animate([{opacity:0,transform:'translateY(30px)'},{opacity:1,transform:'none'}],{duration:700,delay:DUR*.35+i*70,easing:EASE,fill:'backwards'}));
 
   let closing=false;
   const close=()=>{
     if(closing)return;closing=true;removeEventListener('keydown',k);
-    const finish=()=>{o.remove();document.documentElement.style.overflow='';from.classList.remove('hide')};
+    const finish=()=>{o.remove();document.documentElement.style.overflow='';from.classList.remove('hide');
+      from.animate([{opacity:0,transform:'scale(.97)'},{opacity:1,transform:'none'}],{duration:500,easing:EASE})};
     if(reduce||!from.isConnected)return finish();
-    const shrink=()=>{
-      o.scrollTop=0;
-      o.getAnimations({subtree:true}).forEach(a=>a.cancel());
+    o.getAnimations({subtree:true}).forEach(a=>a.cancel());
+    if(o.scrollTop<=2){
+      // at the top: the sheet folds back into its card
       const gg=geom();
       const a=sheet.animate([full_kf,from_kf(gg)],{duration:DUR*.85,easing:EASE,fill:'forwards'});
       bg.animate([{opacity:1},{opacity:0}],{duration:DUR*.7,easing:'ease-in',fill:'forwards'});
       xb.animate([{opacity:1},{opacity:0}],{duration:180,fill:'forwards'});
       a.onfinish=finish;
-    };
-    if(o.scrollTop>2){ // glide back to the top first, then shrink into the cover
-      const y0=o.scrollTop,dur=Math.min(520,220+y0*.12),t0=performance.now();
-      o.style.overflow='hidden';
-      const step=t=>{const p=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-p,3);
-        o.scrollTop=y0*(1-e);
-        if(p<1)requestAnimationFrame(step);else shrink()};
-      requestAnimationFrame(step);
-    }else shrink();
+    }else{
+      // scrolled down: no scrolling back up, the sheet softly settles away in place
+      const a=sheet.animate([{transform:'scale(1) translateY(0)',opacity:1},{transform:'scale(.94) translateY(28px)',opacity:0}],{duration:DUR*.75,easing:EASE,fill:'forwards'});
+      bg.animate([{opacity:1},{opacity:0}],{duration:DUR*.75,easing:'ease-in',fill:'forwards'});
+      xb.animate([{opacity:1},{opacity:0}],{duration:180,fill:'forwards'});
+      a.onfinish=finish;
+    }
   };
   const k=ev=>{if(ev.key==='Escape')close()};
   addEventListener('keydown',k);
