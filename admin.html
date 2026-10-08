@@ -7,6 +7,7 @@ body{font-family:Inter,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;backgrou
 .box{max-width:640px;margin:0 auto 20px;background:rgba(255,255,255,.07);border:1px solid var(--line);border-radius:28px;padding:28px}
 h1{font-size:28px;letter-spacing:-.03em;margin-bottom:6px}h2{font-size:20px;margin-bottom:6px}
 label{display:block;font-size:14px;color:var(--mute);margin:14px 0 6px}
+label small{display:block;font-size:12px;opacity:.8;margin-top:2px}
 input,select,textarea{width:100%;padding:13px 16px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.08);color:var(--ink);font:inherit}
 select option{color:#000}
 button{margin-top:18px;padding:12px 22px;border:0;border-radius:99px;background:var(--blue);color:#05263c;font:inherit;font-weight:600;cursor:pointer}
@@ -16,6 +17,13 @@ button.ghost{background:transparent;color:var(--blue);border:1px solid var(--blu
 .row div{flex:1;min-width:0}.row b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .row button{padding:8px 14px;font-size:14px}
 .m{margin-top:14px;font-size:14px;color:var(--blue)}.hide{display:none}.top{display:flex;justify-content:space-between;align-items:center}
+.cover{display:flex;gap:12px;align-items:center;margin-top:10px}
+.cover img{width:120px;height:80px;object-fit:cover;border-radius:12px;border:1px solid var(--line)}
+.gal{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.g{display:flex;gap:10px;align-items:center;padding:8px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.05)}
+.g img{width:72px;height:48px;object-fit:cover;border-radius:8px}
+.g span{flex:1;font-size:13px;color:var(--mute)}
+.g button{margin:0;padding:6px 11px;font-size:14px}
 </style></head><body>
 <div class="box" id="login"><h1>Admin login</h1><p style="color:var(--mute)">Only you can sign in here.</p>
 <label>Email</label><input id="em" type="email" autocomplete="username"><label>Password</label><input id="pw" type="password" autocomplete="current-password">
@@ -23,13 +31,19 @@ button.ghost{background:transparent;color:var(--blue);border:1px solid var(--blu
 
 <div id="app" class="hide">
 <div class="box"><div class="top"><h1>Your projects</h1><button class="ghost" id="out" type="button">Sign out</button></div>
-<h2 style="margin-top:18px">Add or edit a project</h2>
-<form id="form"><label>Title</label><input id="t">
+<h2 style="margin-top:18px" id="ft">Add or edit a project</h2>
+<form id="form" onsubmit="return false"><label>Title</label><input id="t">
 <label>Type</label><select id="c"><option>Video editing</option><option>SaaS motion</option><option>Design</option></select>
 <label>Short description</label><textarea id="d" rows="2"></textarea>
-<label>YouTube link (leave empty for design work)</label><input id="y" placeholder="https://youtu.be/...">
-<label>Thumbnail image</label><input id="f" type="file" accept="image/*">
-<button id="save" type="button">Add project</button></form><p class="m" id="msg"></p></div>
+<div id="ywrap"><label>YouTube link (for videos)</label><input id="y" placeholder="https://youtu.be/..."></div>
+<label>Cover thumbnail<small>Only this image shows on your website grid.</small></label>
+<div class="cover hide" id="curcover"><img alt=""><span style="font-size:13px;color:var(--mute)">Current cover (choose a file to replace it)</span></div>
+<input id="f" type="file" accept="image/*">
+<div id="gwrap" class="hide">
+<label>Project images (inside the project)<small>Opened when someone clicks the cover, like a Behance project. Pick several at once, then set the order.</small></label>
+<input id="g" type="file" accept="image/*" multiple>
+<div class="gal" id="gal"></div></div>
+<button id="save" type="button">Add project</button> <button class="ghost hide" id="cancel" type="button" style="margin-left:6px">Cancel edit</button></form><p class="m" id="msg"></p></div>
 <div class="box"><h2>Published on your site</h2><div id="list"></div></div></div>
 
 <script src="config.js"></script>
@@ -38,31 +52,72 @@ button.ghost{background:transparent;color:var(--blue);border:1px solid var(--blu
 const C=window.SITE_CONFIG,$=id=>document.getElementById(id),msg=t=>$('msg').textContent=t;
 if(!C||/PASTE/.test(C.SUPABASE_URL)){$('login').innerHTML='<h1>Setup needed</h1><p>Open config.js and paste your Supabase URL and key.</p>'}
 else{
-const sb=supabase.createClient(C.SUPABASE_URL,C.SUPABASE_ANON_KEY);let editId=null;
+const sb=supabase.createClient(C.SUPABASE_URL,C.SUPABASE_ANON_KEY);
+let editId=null,editCover=null,items=[],removed=[];
 const ytId=u=>{const m=String(u||'').match(/(?:v=|youtu\.be\/|shorts\/|embed\/)([\w-]{11})/);return m?m[1]:/^[\w-]{11}$/.test(u||'')?u:''};
+const pathOf=u=>(u||'').includes('/thumbs/')?u.split('/thumbs/')[1]:null;
+const rmFiles=async urls=>{const ps=urls.map(pathOf).filter(Boolean);if(ps.length)await sb.storage.from('thumbs').remove(ps)};
 const show=async()=>{const{data:{session}}=await sb.auth.getSession();$('login').classList.toggle('hide',!!session);$('app').classList.toggle('hide',!session);if(session)load()};
 $('go').onclick=async()=>{const{error}=await sb.auth.signInWithPassword({email:$('em').value.trim(),password:$('pw').value});$('lmsg').textContent=error?error.message:'';show()};
 $('out').onclick=async()=>{await sb.auth.signOut();show()};
+
+/* form helpers */
+const isDesign=()=>$('c').value==='Design';
+const syncType=()=>{$('gwrap').classList.toggle('hide',!isDesign());$('ywrap').classList.toggle('hide',isDesign())};
+$('c').onchange=syncType;
+const renderGal=()=>{const g=$('gal');g.innerHTML='';
+ items.forEach((it,i)=>{const d=document.createElement('div');d.className='g';
+  d.innerHTML='<img alt=""><span></span><button type="button" class="ghost" title="Move up">↑</button><button type="button" class="ghost" title="Move down">↓</button><button type="button" class="ghost" title="Remove">✕</button>';
+  d.querySelector('img').src=it.url;d.querySelector('span').textContent=(i+1)+'. '+(it.file?it.file.name:'Saved image');
+  const[up,dn,rm]=d.querySelectorAll('button');
+  up.onclick=()=>{if(i>0){[items[i-1],items[i]]=[items[i],items[i-1]];renderGal()}};
+  dn.onclick=()=>{if(i<items.length-1){[items[i+1],items[i]]=[items[i],items[i+1]];renderGal()}};
+  rm.onclick=()=>{const[x]=items.splice(i,1);if(x.file)URL.revokeObjectURL(x.url);else removed.push(x.url);renderGal()};
+  g.append(d)})};
+$('g').onchange=()=>{[...$('g').files].forEach(f=>items.push({file:f,url:URL.createObjectURL(f)}));$('g').value='';renderGal()};
+const resetForm=()=>{editId=null;editCover=null;items.forEach(x=>x.file&&URL.revokeObjectURL(x.url));items=[];removed=[];
+ $('form').reset();$('curcover').classList.add('hide');$('save').textContent='Add project';$('cancel').classList.add('hide');renderGal();syncType()};
+$('cancel').onclick=()=>{resetForm();msg('')};
+
 const load=async()=>{const{data}=await sb.from('projects').select('*').order('created_at',{ascending:false});const rows=data||[];
  $('list').innerHTML=rows.length?'':'<p style="color:var(--mute)">Nothing yet.</p>';
  rows.forEach(p=>{const d=document.createElement('div');d.className='row';d.innerHTML='<img alt=""><div><b></b><small style="color:var(--mute)"></small></div><button class="ghost">Edit</button><button class="ghost">Delete</button>';
-  d.querySelector('img').src=p.thumb_url||'';d.querySelector('b').textContent=p.title;d.querySelector('small').textContent=p.category||'';
+  d.querySelector('img').src=p.thumb_url||'';d.querySelector('b').textContent=p.title;
+  const n=(p.images||[]).length;d.querySelector('small').textContent=(p.category||'')+(n?' · '+n+' images inside':'');
   const[ed,del]=d.querySelectorAll('button');
-  ed.onclick=()=>{editId=p.id;$('t').value=p.title;$('c').value=p.category||'Video editing';$('d').value=p.description||'';$('y').value=p.youtube_id?'https://youtu.be/'+p.youtube_id:'';$('save').textContent='Save changes';scrollTo(0,0)};
+  ed.onclick=()=>{resetForm();editId=p.id;editCover=p.thumb_url||null;$('t').value=p.title;$('c').value=p.category||'Video editing';$('d').value=p.description||'';$('y').value=p.youtube_id?'https://youtu.be/'+p.youtube_id:'';
+   items=(p.images||[]).map(u=>({url:u}));renderGal();syncType();
+   if(p.thumb_url){$('curcover').classList.remove('hide');$('curcover').querySelector('img').src=p.thumb_url}
+   $('save').textContent='Save changes';$('cancel').classList.remove('hide');scrollTo(0,0)};
   del.onclick=async()=>{if(!confirm('Delete "'+p.title+'"?'))return;
-   if((p.thumb_url||'').includes('/thumbs/'))await sb.storage.from('thumbs').remove([p.thumb_url.split('/thumbs/')[1]]);
+   await rmFiles([p.thumb_url,...(p.images||[])]);
    await sb.from('projects').delete().eq('id',p.id);load()};
   $('list').append(d)})};
-const shrink=f=>new Promise(r=>{const i=new Image();i.onload=()=>{const k=Math.min(1,1600/i.width),c=document.createElement('canvas');c.width=i.width*k;c.height=i.height*k;c.getContext('2d').drawImage(i,0,0,c.width,c.height);c.toBlob(r,'image/jpeg',.86)};i.src=URL.createObjectURL(f)});
+
+const shrink=(f,max)=>new Promise(r=>{const i=new Image();i.onload=()=>{const k=Math.min(1,max/i.width),c=document.createElement('canvas');c.width=i.width*k;c.height=i.height*k;c.getContext('2d').drawImage(i,0,0,c.width,c.height);c.toBlob(r,'image/jpeg',.88)};i.src=URL.createObjectURL(f)});
+const upload=async(f,max)=>{const path=Date.now()+'-'+Math.random().toString(36).slice(2,7)+'.jpg';
+ const up=await sb.storage.from('thumbs').upload(path,await shrink(f,max),{contentType:'image/jpeg'});if(up.error)throw up.error;
+ return sb.storage.from('thumbs').getPublicUrl(path).data.publicUrl};
+
 $('save').onclick=async()=>{
  const title=$('t').value.trim();if(!title)return msg('Please write a title.');
- if($('c').value==='Design'&&!$('f').files[0]&&!editId)return msg('Please choose an image for your design.');
- const y=$('y').value.trim(),yid=ytId(y);if(y&&!yid)return msg('That YouTube link does not look right.');
- msg('Saving...');const rec={title,category:$('c').value,description:$('d').value.trim(),youtube_id:yid||null};
- const f=$('f').files[0];
- if(f){const path=Date.now()+'.jpg',up=await sb.storage.from('thumbs').upload(path,await shrink(f),{contentType:'image/jpeg'});if(up.error)return msg(up.error.message);rec.thumb_url=sb.storage.from('thumbs').getPublicUrl(path).data.publicUrl}
- const{error}=await(editId?sb.from('projects').update(rec).eq('id',editId):sb.from('projects').insert(rec));
- if(error)return msg(error.message);
- editId=null;$('form').reset();$('save').textContent='Add project';msg('Saved! It is now live on your website.');load()};
-show();}
+ const design=isDesign(),cover=$('f').files[0];
+ if(design&&!cover&&!editCover)return msg('Please choose a cover thumbnail for your design.');
+ const y=$('y').value.trim(),yid=design?'':ytId(y);if(!design&&y&&!yid)return msg('That YouTube link does not look right.');
+ $('save').disabled=true;
+ try{
+  msg('Uploading...');
+  const rec={title,category:$('c').value,description:$('d').value.trim(),youtube_id:yid||null};
+  const oldCover=editCover;
+  if(cover)rec.thumb_url=await upload(cover,1600);
+  if(design){const urls=[];for(const it of items)urls.push(it.file?await upload(it.file,2200):it.url);rec.images=urls}
+  msg('Saving...');
+  const{error}=await(editId?sb.from('projects').update(rec).eq('id',editId):sb.from('projects').insert(rec));
+  if(error)throw error;
+  const gone=[...removed];if(cover&&oldCover)gone.push(oldCover);
+  rmFiles(gone).catch(()=>{});
+  resetForm();msg('Saved! It is now live on your website.');load();
+ }catch(err){msg(err.message||String(err))}
+ $('save').disabled=false};
+syncType();show();}
 </script></body></html>

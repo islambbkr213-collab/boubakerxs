@@ -137,6 +137,24 @@ body{overflow-x:clip}
 .slide-in{transition:transform .35s cubic-bezier(.2,.8,.2,1)}
 .slide-in:active{transform:scale(.97)}
 .slide-in.hide{visibility:hidden}
+
+/* project sheet (Behance-style case study that expands from the cover) */
+.pj{position:fixed;inset:0;z-index:110;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;cursor:zoom-out}
+.pj-bg{position:fixed;inset:0;background:rgba(2,16,28,.8);backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%)}
+.pj-sheet{position:relative;width:min(1040px,calc(100% - 24px));margin:clamp(12px,4vh,40px) auto;border-radius:32px;overflow:hidden;background:#0b3350;border:1px solid var(--line);box-shadow:0 40px 100px rgba(0,0,0,.55);transform-origin:0 0;will-change:transform,clip-path;cursor:auto}
+.pj-hero{position:relative;aspect-ratio:16/11;background:var(--soft)}
+.pj-hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.pj-body{padding:34px clamp(20px,4vw,52px) 6px}
+.pj-body small{color:var(--blue);font-size:14px;font-weight:500;letter-spacing:.02em}
+.pj-body h2{font-size:clamp(28px,4.4vw,48px);margin:6px 0 10px;letter-spacing:-.035em}
+.pj-body p{color:var(--mute);font-size:18px;max-width:640px}
+.pj-imgs{display:flex;flex-direction:column;gap:12px;padding-top:30px}
+.pj-imgs img{display:block;width:100%;height:auto;min-height:180px;background:var(--soft);opacity:0;transition:opacity .7s ease}
+.pj-imgs img.ok{opacity:1;min-height:0}
+.pj-end{padding:40px 20px 44px;text-align:center}
+.pj-back{font:inherit;font-size:14px;font-weight:500;cursor:pointer}
+.pj-x{position:fixed;top:max(14px,env(safe-area-inset-top));right:max(14px,env(safe-area-inset-right));z-index:3;width:44px;height:44px;margin:0;padding:0;border-radius:50%;border:1px solid rgba(255,255,255,.32);background:rgba(255,255,255,.18);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);color:#fff;display:grid;place-items:center;cursor:pointer;transition:transform .25s}
+.pj-x:hover{transform:scale(1.1)}
 .feature{grid-column:2 / span 10}
 @media(max-width:860px){.feature{grid-column:span 12}}
 
@@ -358,8 +376,68 @@ const openLB=(src,from)=>{
   img.src=src;
   if(img.complete&&img.naturalWidth)start();else{img.onload=start;img.onerror=start}
 };
-document.addEventListener('click',e=>{const el=e.target.closest('[data-yt]');if(el)return playYT(el);const f=e.target.closest('[data-full]');if(f)openLB(f.dataset.full,f)});
-document.addEventListener('keydown',e=>{const t=e.target.closest?e.target:null,el=t&&t.closest('[data-yt],[data-full]');if(el&&(e.key==='Enter'||e.key===' ')){e.preventDefault();el.dataset.yt?playYT(el):openLB(el.dataset.full,el)}});
+/* Behance-style project: the cover expands (iOS-style) into a scrollable sheet with the project's images */
+const openProject=from=>{
+  const p=(window.__designs||[])[+from.dataset.proj];
+  if(!p||document.querySelector('.pj'))return;
+  const esc=v=>String(v==null?'':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  const EASE='cubic-bezier(.32,.72,0,1)',DUR=reduce?1:680;
+  const imgs=Array.isArray(p.images)?p.images:[];
+  const o=document.createElement('div');o.className='pj';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('aria-label',p.title||'Project');
+  o.innerHTML='<div class="pj-bg"></div>'
+    +'<button class="pj-x" type="button" aria-label="Close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>'
+    +'<div class="pj-sheet">'
+      +'<div class="pj-hero"><img src="'+esc(p.thumb_url)+'" alt="'+esc(p.title)+'"><div class="cap"><small>'+esc(p.category)+'</small><h3>'+esc(p.title)+'</h3>'+(p.description?'<p>'+esc(p.description)+'</p>':'')+'</div></div>'
+      +'<div class="pj-body"><small>'+esc(p.category)+'</small><h2>'+esc(p.title)+'</h2>'+(p.description?'<p>'+esc(p.description)+'</p>':'')+'</div>'
+      +(imgs.length?'<div class="pj-imgs">'+imgs.map((u,i)=>'<img src="'+esc(u)+'" alt="'+esc(p.title)+' — '+(i+1)+'" loading="lazy" decoding="async">').join('')+'</div>':'')
+      +'<div class="pj-end"><button class="pill ghost pj-back" type="button">Back to portfolio</button></div>'
+    +'</div>';
+  const sheet=o.querySelector('.pj-sheet'),bg=o.querySelector('.pj-bg'),cap=o.querySelector('.cap'),xb=o.querySelector('.pj-x');
+  o.querySelectorAll('.pj-imgs img').forEach(im=>{im.complete?im.classList.add('ok'):(im.onload=im.onerror=()=>im.classList.add('ok'))});
+  document.body.append(o);
+  document.documentElement.style.overflow='hidden';
+  from.classList.add('hide');
+
+  // where the card sits, expressed as a uniform scale + clip of the full-size sheet
+  const geom=()=>{const c=from.getBoundingClientRect(),r=sheet.getBoundingClientRect(),s=c.width/r.width;
+    return{tx:c.left-r.left,ty:c.top-r.top,s,bottom:Math.max(0,r.height-c.height/s),rad:32/s}};
+  const from_kf=g=>({transform:'translate('+g.tx+'px,'+g.ty+'px) scale('+g.s+')',clipPath:'inset(0px 0px '+g.bottom+'px 0px round '+g.rad+'px)'});
+  const full_kf={transform:'none',clipPath:'inset(0px 0px 0px 0px round 32px)'};
+
+  const g=geom();
+  sheet.animate([from_kf(g),full_kf],{duration:DUR,easing:EASE});
+  bg.animate([{opacity:0},{opacity:1}],{duration:DUR*.7,easing:'ease-out'});
+  cap.animate([{opacity:1},{opacity:0}],{duration:DUR*.45,easing:'ease-out',fill:'forwards'});
+  xb.animate([{opacity:0,transform:'scale(.6)'},{opacity:1,transform:'none'}],{duration:400,delay:DUR*.45,easing:EASE,fill:'backwards'});
+  [...sheet.querySelectorAll('.pj-body,.pj-imgs,.pj-end')].forEach((el,i)=>
+    el.animate([{opacity:0,transform:'translateY(30px)'},{opacity:1,transform:'none'}],{duration:700,delay:DUR*.35+i*70,easing:EASE,fill:'backwards'}));
+
+  let closing=false;
+  const close=()=>{
+    if(closing)return;closing=true;removeEventListener('keydown',k);
+    const finish=()=>{o.remove();document.documentElement.style.overflow='';from.classList.remove('hide')};
+    if(reduce||!from.isConnected)return finish();
+    if(o.scrollTop>30){ // scrolled down: settle away instead of shrinking back to the card
+      o.animate([{opacity:1},{opacity:0}],{duration:320,easing:'ease-in',fill:'forwards'}).onfinish=finish;
+      sheet.animate([{transform:'none'},{transform:'translateY(48px) scale(.95)'}],{duration:320,easing:EASE,fill:'forwards'});
+      return}
+    o.scrollTop=0;
+    o.getAnimations({subtree:true}).forEach(a=>a.cancel());
+    const gg=geom();
+    const a=sheet.animate([full_kf,from_kf(gg)],{duration:DUR*.85,easing:EASE,fill:'forwards'});
+    bg.animate([{opacity:1},{opacity:0}],{duration:DUR*.7,easing:'ease-in',fill:'forwards'});
+    xb.animate([{opacity:1},{opacity:0}],{duration:180,fill:'forwards'});
+    a.onfinish=finish;
+  };
+  const k=ev=>{if(ev.key==='Escape')close()};
+  addEventListener('keydown',k);
+  xb.onclick=close;o.querySelector('.pj-back').onclick=close;
+  o.addEventListener('click',ev=>{if(!sheet.contains(ev.target)&&!xb.contains(ev.target))close()});
+  xb.focus({preventScroll:true});
+};
+document.addEventListener('click',e=>{const el=e.target.closest('[data-yt]');if(el)return playYT(el);const pj=e.target.closest('[data-proj]');if(pj)return openProject(pj);const f=e.target.closest('[data-full]');if(f)openLB(f.dataset.full,f)});
+document.addEventListener('keydown',e=>{const t=e.target.closest?e.target:null,el=t&&t.closest('[data-yt],[data-full],[data-proj]');if(el&&(e.key==='Enter'||e.key===' ')){e.preventDefault();el.dataset.yt?playYT(el):el.dataset.proj!==undefined?openProject(el):openLB(el.dataset.full,el)}});
 </script>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -375,7 +453,7 @@ document.addEventListener('keydown',e=>{const t=e.target.closest?e.target:null,e
     const card=(p,one)=>{const yt=p.youtube_id,img=p.thumb_url;
       const attr=yt?` data-yt="${e(yt)}" role="button" tabindex="0" aria-label="Play ${e(p.title)}"`:img?` data-full="${e(img)}" role="button" tabindex="0" aria-label="View ${e(p.title)}"`:'';
       return `<article class="card ${one?'feature':'s4'}"><div class="vid"${attr} style="aspect-ratio:${one?'16/9':'16/10'};cursor:${yt?'pointer':img?'zoom-in':'default'}">${img?`<img src="${e(img)}" alt="${e(p.title)}" loading="lazy">`:''}${yt?'<span class="play"></span>':''}</div><div class="meta"><small>${e(p.category)}</small><h3>${e(p.title)}</h3><p>${e(p.description)}</p></div></article>`};
-    const slide=p=>`<article class="slide"><div class="slide-in" data-full="${e(p.thumb_url)}" role="button" tabindex="0" aria-label="View ${e(p.title)}"><img src="${e(p.thumb_url)}" alt="${e(p.title)}" loading="lazy" draggable="false"><div class="cap"><small>${e(p.category)}</small><h3>${e(p.title)}</h3>${p.description?`<p>${e(p.description)}</p>`:''}</div></div></article>`;
+    const slide=(p,i)=>`<article class="slide"><div class="slide-in" data-proj="${i}" role="button" tabindex="0" aria-label="View ${e(p.title)}"><img src="${e(p.thumb_url)}" alt="${e(p.title)}" loading="lazy" draggable="false"><div class="cap"><small>${e(p.category)}</small><h3>${e(p.title)}</h3>${p.description?`<p>${e(p.description)}</p>`:''}</div></div></article>`;
     const initCar=()=>{
       const tr=document.getElementById('designs'),sl=[...tr.children],n=sl.length,ui=document.querySelector('.car-ui');
       if(n<2){tr.classList.add('one');ui.hidden=true;sl.forEach(x=>x.classList.add('on'));return}
@@ -396,11 +474,12 @@ document.addEventListener('keydown',e=>{const t=e.target.closest?e.target:null,e
       upd();
     };
     const work=data.filter(p=>p.category!=='Design'),des=data.filter(p=>p.category==='Design'&&p.thumb_url);
+    window.__designs=des;
     const nav=h=>document.querySelector('nav a[href="'+h+'"]');
     if(work.length)document.getElementById('projects').innerHTML=work.map(p=>card(p,work.length===1)).join('');
     else{document.getElementById('edits').hidden=true;nav('#edits').parentElement.hidden=true}
     if(des.length){document.getElementById('design').hidden=false;document.getElementById('navdesign').hidden=false;
-      document.getElementById('designs').innerHTML=des.map(slide).join('');initCar()}
+      document.getElementById('designs').innerHTML=des.map((p,i)=>slide(p,i)).join('');initCar()}
     if(!work.length&&des.length)document.querySelector('.hero a.light').href='#design';
   }catch(err){}
 })();
