@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="pending">
 <head>
 <meta charset="utf-8">
 <meta name="theme-color" content="#06263c">
@@ -8,6 +8,7 @@
 <meta name="description" content="Video editing and SaaS product animation portfolio.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
+<script src="config.js"></script>
 <style>
 :root{
   --bg:#06263c; --card:rgba(255,255,255,.07); --soft:rgba(255,255,255,.09); --ink:#eef6fb; --mute:rgba(238,246,251,.68);
@@ -161,11 +162,15 @@ body{overflow-x:clip}
 .feature{grid-column:2 / span 10}
 @media(max-width:860px){.feature{grid-column:span 12}}
 
+.pending .stage{opacity:0}
+.socials{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+.socials:empty{display:none}
+.socials .pill{margin:0}
 /* scroll animations (only active when JS adds .js) */
-.js .reveal{opacity:0;transform:translateY(34px) scale(.97);filter:blur(10px);transition:opacity .8s cubic-bezier(.32,.72,0,1) var(--d,0s),transform 1.1s cubic-bezier(.32,.72,0,1) var(--d,0s),filter .8s ease var(--d,0s),scale .35s cubic-bezier(.2,.8,.2,1)}
+.js .reveal{opacity:0;transform:translateY(34px) scale(.97);filter:blur(10px);transition:opacity calc(.8s*var(--spd,1)) cubic-bezier(.32,.72,0,1) calc(var(--d,0s)*var(--spd,1)),transform calc(1.1s*var(--spd,1)) cubic-bezier(.32,.72,0,1) calc(var(--d,0s)*var(--spd,1)),filter calc(.8s*var(--spd,1)) ease calc(var(--d,0s)*var(--spd,1)),scale .35s cubic-bezier(.2,.8,.2,1)}
 .js .reveal.in{opacity:1;transform:none;filter:none}
 /* words pop in one by one */
-.js .split .w{display:inline-block;opacity:0;transform:translateY(.45em) scale(.96);filter:blur(12px);transition:opacity .9s cubic-bezier(.32,.72,0,1) calc(var(--i)*75ms + .2s),transform 1.1s cubic-bezier(.32,.72,0,1) calc(var(--i)*75ms + .2s),filter .9s ease calc(var(--i)*75ms + .2s)}
+.js .split .w{display:inline-block;opacity:0;transform:translateY(.45em) scale(.96);filter:blur(12px);transition:opacity calc(.9s*var(--spd,1)) cubic-bezier(.32,.72,0,1) calc((var(--i)*75ms + .2s)*var(--spd,1)),transform calc(1.1s*var(--spd,1)) cubic-bezier(.32,.72,0,1) calc((var(--i)*75ms + .2s)*var(--spd,1)),filter calc(.9s*var(--spd,1)) ease calc((var(--i)*75ms + .2s)*var(--spd,1))}
 .js .split.in .w{opacity:1;transform:none;filter:none}
 /* press feedback on buttons, iOS style */
 .pill:active,.arrows button:active,.pj-x:active{transform:scale(.95)!important;transition-duration:.12s!important}
@@ -199,12 +204,12 @@ body{overflow-x:clip}
     <span class="glass g2" style="--r:3deg">Short-form videos</span>
     <span class="glass g3" style="--r:-2deg">Long-form videos</span>
     <span class="glass g4" style="--r:2deg">SaaS motion</span>
-    <span class="status"><i></i>Open for projects</span>
-    <h1>Video Editing <span class="sep">|</span> Motion <span class="sep">|</span> Design<br>for <em>Brands &amp; Creators</em></h1>
-    <p>I edit videos and animate SaaS products so people understand them in seconds.</p>
+    <span class="status"><i></i><span id="hStatus">Open for projects</span></span>
+    <h1 id="hH1">Video Editing <span class="sep">|</span> Motion <span class="sep">|</span> Design<br>for <em>Brands &amp; Creators</em></h1>
+    <p id="hLead">I edit videos and animate SaaS products so people understand them in seconds.</p>
     <div class="row">
-      <a class="pill light" href="#edits">See my work</a>
-      <a class="pill glassbtn" href="#contact">Start a project</a>
+      <a class="pill light" id="hBtn1" href="#edits">See my work</a>
+      <a class="pill glassbtn" id="hBtn2" href="#contact">Start a project</a>
     </div>
   </div>
 </div></header>
@@ -213,9 +218,9 @@ body{overflow-x:clip}
 
   <section>
     <div class="grid">
-      <div class="card stat s4"><b>120+</b><span>Videos delivered</span></div>
-      <div class="card stat s4"><b>35</b><span>SaaS products animated</span></div>
-      <div class="card stat s4"><b>48h</b><span>Typical first draft</span></div>
+      <div class="card stat s4"><b id="sn1">120+</b><span id="sl1">Videos delivered</span></div>
+      <div class="card stat s4"><b id="sn2">35</b><span id="sl2">SaaS products animated</span></div>
+      <div class="card stat s4"><b id="sn3">48h</b><span id="sl3">Typical first draft</span></div>
     </div>
   </section>
 
@@ -256,9 +261,9 @@ body{overflow-x:clip}
     <div class="card about">
       <div class="avatar"><!-- <img src="assets/me.jpg" alt="Boubaker"> -->B</div>
       <div>
-        <h2 style="font-size:40px">Hi, I'm Boubaker.</h2>
-        <p>I'm a video editor and motion designer based in Algeria, working with SaaS teams and creators worldwide. I turn complex products into clear, watchable stories.</p>
-        <p>Available for freelance and long-term collaborations.</p>
+        <h2 id="aTitle" style="font-size:40px">Hi, I'm Boubaker.</h2>
+        <p id="aP1">I'm a video editor and motion designer based in Algeria, working with SaaS teams and creators worldwide. I turn complex products into clear, watchable stories.</p>
+        <p id="aP2">Available for freelance and long-term collaborations.</p>
       </div>
     </div>
   </section>
@@ -266,16 +271,47 @@ body{overflow-x:clip}
   <!-- CONTACT -->
   <section id="contact">
     <div class="card contact">
-      <h2>Let's make something <em>move.</em></h2>
-      <p>Tell me about your project and I'll reply within a day.</p>
-      <a class="pill light" href="mailto:you@example.com">Email me</a>
+      <h2 id="cTitle">Let's make something <em>move.</em></h2>
+      <p id="cSub">Tell me about your project and I'll reply within a day.</p>
+      <a class="pill light" id="cMail" href="mailto:you@example.com">Email me</a>
+      <div class="socials" id="socials"></div>
     </div>
   </section>
 </main>
 
-<footer>© 2026 Boubaker. All rights reserved.</footer>
+<footer id="fText">© 2026 Boubaker. All rights reserved.</footer>
 <script>
-(()=>{
+/* ---- live site settings (edited in admin.html, no upload needed) ---- */
+const applySettings=S=>{
+  if(!S||!Object.keys(S).length)return;
+  const esc=v=>String(v==null?'':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const v=k=>(S[k]!=null&&String(S[k]).trim()!=='')?S[k]:null;
+  const T=(id,k)=>{const el=document.getElementById(id);if(el&&v(k)!=null)el.textContent=v(k)};
+  T('hStatus','status');T('hLead','lead');T('hBtn1','btn1');T('hBtn2','btn2');
+  T('sn1','s1n');T('sl1','s1l');T('sn2','s2n');T('sl2','s2l');T('sn3','s3n');T('sl3','s3l');
+  T('aTitle','aTitle');T('aP1','aP1');T('aP2','aP2');T('cSub','cSub');T('cMail','cBtn');T('fText','footer');
+  const h1=document.getElementById('hH1');
+  if(h1&&v('h1')){
+    const main=v('h1').split('|').map(x=>esc(x.trim())).join(' <span class="sep">|</span> ');
+    h1.innerHTML=main+'<br>'+esc(v('h1Prefix')||'')+' <em>'+esc(v('h1Accent')||'')+'</em>';
+  }
+  const ct=document.getElementById('cTitle');
+  if(ct&&v('cTitle')){const w=v('cTitle').trim().split(/\s+/),last=w.pop();ct.innerHTML=esc(w.join(' '))+(w.length?' ':'')+'<em>'+esc(last)+'</em>'}
+  const mail=document.getElementById('cMail');if(mail&&v('email'))mail.href='mailto:'+S.email;
+  const box=document.getElementById('socials');
+  if(box)box.innerHTML=[['Instagram',S.ig],['Behance',S.be],['LinkedIn',S.li],['WhatsApp',S.wa]]
+    .filter(x=>x[1]&&/^https?:\/\//.test(x[1].trim()))
+    .map(x=>'<a class="pill glassbtn" href="'+esc(x[1].trim())+'" target="_blank" rel="noopener">'+x[0]+'</a>').join('');
+  if(v('speed')!=null)document.documentElement.style.setProperty('--spd',parseFloat(S.speed)||1);
+};
+</script>
+<script>
+(async()=>{
+  // fetch your saved settings first, so animations start on the final text
+  try{const C=window.SITE_CONFIG;if(C&&!/PASTE/.test(C.SUPABASE_URL)){
+    const r=await fetch(C.SUPABASE_URL+'/rest/v1/site_settings?key=eq.main&select=value',{headers:{apikey:C.SUPABASE_ANON_KEY}});
+    const j=await r.json();applySettings(j&&j[0]&&j[0].value)}}catch(e){}
+  document.documentElement.classList.remove('pending');
   if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;
   const root=document.documentElement; root.classList.add('js');
   const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
@@ -522,7 +558,6 @@ const openProject=from=>{
 document.addEventListener('click',e=>{const el=e.target.closest('[data-yt]');if(el)return openVideo(el);const pj=e.target.closest('[data-proj]');if(pj)return openProject(pj);const f=e.target.closest('[data-full]');if(f)openLB(f.dataset.full,f)});
 document.addEventListener('keydown',e=>{const t=e.target.closest?e.target:null,el=t&&t.closest('[data-yt],[data-full],[data-proj]');if(el&&(e.key==='Enter'||e.key===' ')){e.preventDefault();el.dataset.yt?openVideo(el):el.dataset.proj!==undefined?openProject(el):openLB(el.dataset.full,el)}});
 </script>
-<script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 /* load the projects you add in /admin.html (the card above is shown until then) */
