@@ -56,6 +56,7 @@ const load=async()=>{const{data}=await sb.from('projects').select('*').order('cr
 const shrink=f=>new Promise(r=>{const i=new Image();i.onload=()=>{const k=Math.min(1,1600/i.width),c=document.createElement('canvas');c.width=i.width*k;c.height=i.height*k;c.getContext('2d').drawImage(i,0,0,c.width,c.height);c.toBlob(r,'image/jpeg',.86)};i.src=URL.createObjectURL(f)});
 $('save').onclick=async()=>{
  const title=$('t').value.trim();if(!title)return msg('Please write a title.');
+ if($('c').value==='Design'&&!$('f').files[0]&&!editId)return msg('Please choose an image for your design.');
  const y=$('y').value.trim(),yid=ytId(y);if(y&&!yid)return msg('That YouTube link does not look right.');
  msg('Saving...');const rec={title,category:$('c').value,description:$('d').value.trim(),youtube_id:yid||null};
  const f=$('f').files[0];

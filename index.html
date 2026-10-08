@@ -107,6 +107,8 @@ h2{font-size:clamp(34px,5vw,56px);letter-spacing:-.03em;line-height:1.08;font-we
 footer{padding:60px 0 40px;color:var(--mute);font-size:13px;text-align:center}
 
 
+.lb{position:fixed;inset:0;z-index:100;background:rgba(2,16,28,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:grid;place-items:center;padding:24px;cursor:zoom-out}
+.lb img{max-width:100%;max-height:100%;border-radius:20px;box-shadow:0 30px 80px rgba(0,0,0,.5)}
 .feature{grid-column:2 / span 10}
 @media(max-width:860px){.feature{grid-column:span 12}}
 
@@ -127,6 +129,7 @@ footer{padding:60px 0 40px;color:var(--mute);font-size:13px;text-align:center}
   <b>Boubaker<span style="color:var(--blue)">.</span></b>
   <ul>
     <li><a href="#edits">Work</a></li>
+    <li id="navdesign" hidden><a href="#design">Design</a></li>
     <li><a href="#about">About</a></li>
   </ul>
   <a class="pill" href="#contact">Hire me</a>
@@ -178,6 +181,12 @@ footer{padding:60px 0 40px;color:var(--mute);font-size:13px;text-align:center}
   </section>
 
   <!-- ABOUT -->
+  <!-- DESIGN -->
+  <section id="design" hidden>
+    <div class="head"><h2>Design</h2><p>Banners, thumbnails and brand work.</p></div>
+    <div class="grid" id="designs"></div>
+  </section>
+
   <section id="about">
     <div class="card about">
       <div class="avatar"><!-- <img src="assets/me.jpg" alt="Boubaker"> -->B</div>
@@ -259,8 +268,9 @@ footer{padding:60px 0 40px;color:var(--mute);font-size:13px;text-align:center}
 <script>
 /* click a tile with data-yt="VIDEO_ID" to play that YouTube video inside it */
 const playYT=el=>{if(el.querySelector('iframe'))return;el.innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/'+el.dataset.yt+'?autoplay=1&rel=0&modestbranding=1" title="Video player" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';el.style.cursor='default'};
-document.addEventListener('click',e=>{const el=e.target.closest('[data-yt]');if(el)playYT(el)});
-document.addEventListener('keydown',e=>{const el=e.target.closest&&e.target.closest('[data-yt]');if(el&&(e.key==='Enter'||e.key===' ')){e.preventDefault();playYT(el)}});
+const openLB=src=>{const o=document.createElement('div');o.className='lb';o.innerHTML='<img alt="">';o.firstChild.src=src;const close=()=>{o.remove();removeEventListener('keydown',k)};const k=ev=>{if(ev.key==='Escape')close()};o.onclick=close;addEventListener('keydown',k);document.body.append(o)};
+document.addEventListener('click',e=>{const el=e.target.closest('[data-yt]');if(el)return playYT(el);const f=e.target.closest('[data-full]');if(f)openLB(f.dataset.full)});
+document.addEventListener('keydown',e=>{const t=e.target.closest?e.target:null,el=t&&t.closest('[data-yt],[data-full]');if(el&&(e.key==='Enter'||e.key===' ')){e.preventDefault();el.dataset.yt?playYT(el):openLB(el.dataset.full)}});
 </script>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -273,10 +283,16 @@ document.addEventListener('keydown',e=>{const el=e.target.closest&&e.target.clos
     const{data}=await sb.from('projects').select('*').order('created_at',{ascending:false});
     if(!data||!data.length)return;
     const e=v=>String(v||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-    const one=data.length===1;
-    document.getElementById('projects').innerHTML=data.map(p=>`<article class="card ${one?'feature':'s4'}">
-      <div class="vid"${p.youtube_id?` data-yt="${e(p.youtube_id)}" role="button" tabindex="0" aria-label="Play ${e(p.title)}"`:''} style="aspect-ratio:${one?'16/9':'16/10'}${p.youtube_id?';cursor:pointer':''}">${p.thumb_url?`<img src="${e(p.thumb_url)}" alt="${e(p.title)}" loading="lazy">`:''}${p.youtube_id?'<span class="play"></span>':''}</div>
-      <div class="meta"><small>${e(p.category)}</small><h3>${e(p.title)}</h3><p>${e(p.description)}</p></div></article>`).join('');
+    const card=(p,one)=>{const yt=p.youtube_id,img=p.thumb_url;
+      const attr=yt?` data-yt="${e(yt)}" role="button" tabindex="0" aria-label="Play ${e(p.title)}"`:img?` data-full="${e(img)}" role="button" tabindex="0" aria-label="View ${e(p.title)}"`:'';
+      return `<article class="card ${one?'feature':'s4'}"><div class="vid"${attr} style="aspect-ratio:${one?'16/9':'16/10'};cursor:${yt?'pointer':img?'zoom-in':'default'}">${img?`<img src="${e(img)}" alt="${e(p.title)}" loading="lazy">`:''}${yt?'<span class="play"></span>':''}</div><div class="meta"><small>${e(p.category)}</small><h3>${e(p.title)}</h3><p>${e(p.description)}</p></div></article>`};
+    const work=data.filter(p=>p.category!=='Design'),des=data.filter(p=>p.category==='Design');
+    const nav=h=>document.querySelector('nav a[href="'+h+'"]');
+    if(work.length)document.getElementById('projects').innerHTML=work.map(p=>card(p,work.length===1)).join('');
+    else{document.getElementById('edits').hidden=true;nav('#edits').parentElement.hidden=true}
+    if(des.length){document.getElementById('designs').innerHTML=des.map(p=>card(p,des.length===1)).join('');
+      document.getElementById('design').hidden=false;document.getElementById('navdesign').hidden=false}
+    if(!work.length&&des.length)document.querySelector('.hero a.light').href='#design';
   }catch(err){}
 })();
 </script>
