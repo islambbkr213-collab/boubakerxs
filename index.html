@@ -148,7 +148,7 @@ body{overflow-x:clip}
 .pj-body small{color:var(--blue);font-size:14px;font-weight:500;letter-spacing:.02em}
 .pj-body h2{font-size:clamp(28px,4.4vw,48px);margin:6px 0 10px;letter-spacing:-.035em}
 .pj-body p{color:var(--mute);font-size:18px;max-width:640px}
-.pj-imgs{display:flex;flex-direction:column;gap:12px;padding-top:30px}
+.pj-imgs{display:flex;flex-direction:column;gap:0;padding-top:30px;line-height:0}
 .pj-imgs img{display:block;width:100%;height:auto;min-height:180px;background:var(--soft);opacity:0;transition:opacity .7s ease}
 .pj-imgs img.ok{opacity:1;min-height:0}
 .pj-end{padding:40px 20px 44px;text-align:center}
@@ -418,17 +418,23 @@ const openProject=from=>{
     if(closing)return;closing=true;removeEventListener('keydown',k);
     const finish=()=>{o.remove();document.documentElement.style.overflow='';from.classList.remove('hide')};
     if(reduce||!from.isConnected)return finish();
-    if(o.scrollTop>30){ // scrolled down: settle away instead of shrinking back to the card
-      o.animate([{opacity:1},{opacity:0}],{duration:320,easing:'ease-in',fill:'forwards'}).onfinish=finish;
-      sheet.animate([{transform:'none'},{transform:'translateY(48px) scale(.95)'}],{duration:320,easing:EASE,fill:'forwards'});
-      return}
-    o.scrollTop=0;
-    o.getAnimations({subtree:true}).forEach(a=>a.cancel());
-    const gg=geom();
-    const a=sheet.animate([full_kf,from_kf(gg)],{duration:DUR*.85,easing:EASE,fill:'forwards'});
-    bg.animate([{opacity:1},{opacity:0}],{duration:DUR*.7,easing:'ease-in',fill:'forwards'});
-    xb.animate([{opacity:1},{opacity:0}],{duration:180,fill:'forwards'});
-    a.onfinish=finish;
+    const shrink=()=>{
+      o.scrollTop=0;
+      o.getAnimations({subtree:true}).forEach(a=>a.cancel());
+      const gg=geom();
+      const a=sheet.animate([full_kf,from_kf(gg)],{duration:DUR*.85,easing:EASE,fill:'forwards'});
+      bg.animate([{opacity:1},{opacity:0}],{duration:DUR*.7,easing:'ease-in',fill:'forwards'});
+      xb.animate([{opacity:1},{opacity:0}],{duration:180,fill:'forwards'});
+      a.onfinish=finish;
+    };
+    if(o.scrollTop>2){ // glide back to the top first, then shrink into the cover
+      const y0=o.scrollTop,dur=Math.min(520,220+y0*.12),t0=performance.now();
+      o.style.overflow='hidden';
+      const step=t=>{const p=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-p,3);
+        o.scrollTop=y0*(1-e);
+        if(p<1)requestAnimationFrame(step);else shrink()};
+      requestAnimationFrame(step);
+    }else shrink();
   };
   const k=ev=>{if(ev.key==='Escape')close()};
   addEventListener('keydown',k);
