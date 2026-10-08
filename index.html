@@ -131,8 +131,12 @@ body{overflow-x:clip}
 .arrows button{width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:var(--soft);color:var(--ink);display:grid;place-items:center;cursor:pointer;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);transition:opacity .25s,transform .25s}
 .arrows button:disabled{opacity:.3;cursor:default}
 .arrows button:not(:disabled):hover{transform:scale(1.1)}
-.lb{position:fixed;inset:0;z-index:100;background:rgba(2,16,28,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:grid;place-items:center;padding:24px;cursor:zoom-out}
-.lb img{max-width:100%;max-height:100%;border-radius:20px;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+.lb{position:fixed;inset:0;z-index:100;cursor:zoom-out;overflow:hidden}
+.lb-bg{position:absolute;inset:0;background:rgba(2,16,28,.82);backdrop-filter:blur(22px) saturate(160%);-webkit-backdrop-filter:blur(22px) saturate(160%);opacity:0}
+.lb img{position:fixed;margin:0;object-fit:cover;box-shadow:0 40px 100px rgba(0,0,0,.55);transform-origin:0 0;will-change:transform,border-radius;-webkit-user-drag:none;touch-action:none}
+.slide-in{transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.slide-in:active{transform:scale(.97)}
+.slide-in.hide{visibility:hidden}
 .feature{grid-column:2 / span 10}
 @media(max-width:860px){.feature{grid-column:span 12}}
 
@@ -299,9 +303,63 @@ body{overflow-x:clip}
 <script>
 /* click a tile with data-yt="VIDEO_ID" to play that YouTube video inside it */
 const playYT=el=>{if(el.querySelector('iframe'))return;el.innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/'+el.dataset.yt+'?autoplay=1&rel=0&modestbranding=1" title="Video player" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';el.style.cursor='default'};
-const openLB=src=>{const o=document.createElement('div');o.className='lb';o.innerHTML='<img alt="">';o.firstChild.src=src;const close=()=>{o.remove();removeEventListener('keydown',k)};const k=ev=>{if(ev.key==='Escape')close()};o.onclick=close;addEventListener('keydown',k);document.body.append(o)};
-document.addEventListener('click',e=>{const el=e.target.closest('[data-yt]');if(el)return playYT(el);const f=e.target.closest('[data-full]');if(f)openLB(f.dataset.full)});
-document.addEventListener('keydown',e=>{const t=e.target.closest?e.target:null,el=t&&t.closest('[data-yt],[data-full]');if(el&&(e.key==='Enter'||e.key===' ')){e.preventDefault();el.dataset.yt?playYT(el):openLB(el.dataset.full)}});
+/* iOS-style "pop" open: the image grows out of the tapped card with a spring-like curve, and shrinks back on close */
+const openLB=(src,from)=>{
+  if(document.querySelector('.lb'))return;
+  const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  const EASE='cubic-bezier(.32,.72,0,1)',DUR=reduce?1:620;
+  const o=document.createElement('div');o.className='lb';
+  o.innerHTML='<div class="lb-bg"></div><img alt="">';
+  const bg=o.firstChild,img=o.lastChild;
+  const srcEl=from&&from.querySelector('img');
+  img.alt=srcEl?srcEl.alt:'';
+  const fromEl=from||null;
+  const target=()=>{
+    const vw=innerWidth,vh=innerHeight,pad=vw<700?12:36;
+    const nw=img.naturalWidth||16,nh=img.naturalHeight||11,s=Math.min((vw-pad*2)/nw,(vh-pad*2)/nh,1.6);
+    const w=nw*s,h=nh*s;return{l:(vw-w)/2,t:(vh-h)/2,w,h};
+  };
+  const originRect=()=>fromEl&&fromEl.isConnected?fromEl.getBoundingClientRect():{left:innerWidth/2-40,top:innerHeight/2-30,width:80,height:60};
+  const place=(r)=>{img.style.left=r.l+'px';img.style.top=r.t+'px';img.style.width=r.w+'px';img.style.height=r.h+'px'};
+  const xf=(t)=>{const r=originRect();
+    return 'translate('+(r.left-t.l)+'px,'+(r.top-t.t)+'px) scale('+(r.width/t.w)+','+(r.height/t.h)+')'};
+  let closing=false,t,radiusFrom=32;
+  const start=()=>{
+    t=target();place(t);img.style.borderRadius='20px';
+    document.body.append(o);
+    if(fromEl)fromEl.classList.add('hide');
+    document.documentElement.style.overflow='hidden';
+    if(reduce){bg.style.opacity=1;return}
+    // counter-scale the radius so corners look right during the non-uniform scale
+    img.animate([{transform:xf(t),borderRadius:radiusFrom+'px'},{transform:'none',borderRadius:'20px'}],{duration:DUR,easing:EASE,fill:'both'});
+    bg.animate([{opacity:0},{opacity:1}],{duration:DUR*.7,easing:'ease-out',fill:'both'});
+  };
+  const close=()=>{
+    if(closing)return;closing=true;
+    removeEventListener('keydown',k);removeEventListener('resize',onResize);
+    const done=()=>{o.remove();document.documentElement.style.overflow='';if(fromEl)fromEl.classList.remove('hide')};
+    if(reduce)return done();
+    const a=img.animate([{transform:'none',borderRadius:'20px'},{transform:xf(t),borderRadius:radiusFrom+'px'}],{duration:DUR*.8,easing:EASE,fill:'both'});
+    bg.animate([{opacity:1},{opacity:0}],{duration:DUR*.7,easing:'ease-in',fill:'both'});
+    a.onfinish=done;
+  };
+  const k=ev=>{if(ev.key==='Escape')close()};
+  const onResize=()=>{if(closing)return;t=target();place(t)};
+  o.onclick=close;addEventListener('keydown',k);addEventListener('resize',onResize);
+  // swipe/drag down to dismiss, like iOS
+  let sy=null,dy=0;
+  o.addEventListener('pointerdown',ev=>{sy=ev.clientY;dy=0});
+  o.addEventListener('pointermove',ev=>{if(sy===null||closing)return;dy=ev.clientY-sy;if(Math.abs(dy)>6){img.getAnimations().forEach(a=>a.cancel());const p=Math.min(1,Math.abs(dy)/400);img.style.transform='translateY('+dy+'px) scale('+(1-p*.25)+')';bg.style.opacity=1-p}});
+  o.addEventListener('pointerup',()=>{if(sy===null)return;const moved=Math.abs(dy);sy=null;
+    if(moved>110){img.style.transform='';bg.style.opacity='';close()}
+    else if(moved>6){img.animate([{transform:img.style.transform},{transform:'none'}],{duration:450,easing:EASE});img.style.transform='';bg.style.opacity=1;o._drag=true;setTimeout(()=>o._drag=false,50)}});
+  o.addEventListener('click',ev=>{if(o._drag){ev.stopImmediatePropagation()}},true);
+  img.onload=null;
+  img.src=src;
+  if(img.complete&&img.naturalWidth)start();else{img.onload=start;img.onerror=start}
+};
+document.addEventListener('click',e=>{const el=e.target.closest('[data-yt]');if(el)return playYT(el);const f=e.target.closest('[data-full]');if(f)openLB(f.dataset.full,f)});
+document.addEventListener('keydown',e=>{const t=e.target.closest?e.target:null,el=t&&t.closest('[data-yt],[data-full]');if(el&&(e.key==='Enter'||e.key===' ')){e.preventDefault();el.dataset.yt?playYT(el):openLB(el.dataset.full,el)}});
 </script>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
