@@ -91,8 +91,22 @@ h2{font-size:clamp(34px,5vw,56px);letter-spacing:-.03em;line-height:1.08;font-we
 .stat{padding:36px 30px;text-align:center}
 .stat b{display:block;font-size:56px;letter-spacing:-.04em;line-height:1}
 .stat span{color:var(--mute);font-size:17px}
-.tools{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;padding:36px}
-.tools span{background:var(--soft);padding:12px 22px;border-radius:99px;font-size:17px;font-weight:500}
+.tools{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:center;gap:6px;width:fit-content;max-width:calc(100% - 24px);margin:40px auto 46px;padding:12px 16px 12px;border-radius:30px;background:var(--soft);border:1px solid var(--line);backdrop-filter:blur(18px) saturate(150%);-webkit-backdrop-filter:blur(18px) saturate(150%);box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 20px 40px -20px rgba(0,10,25,.6)}
+.app{display:flex;flex-direction:column;align-items:center;gap:10px;width:96px;color:var(--ink);text-decoration:none}
+.tools .app{width:66px;gap:0;position:relative}
+.tools .ico{width:62px;height:62px;border-radius:18px;font-size:21px;transform-origin:50% 100%;transition:transform .2s cubic-bezier(.2,.8,.2,1)}
+.tools .app:hover .ico{transform:none}
+.tools .lbl{position:absolute;left:50%;bottom:calc(100% + 14px);transform:translate(-50%,6px);white-space:nowrap;font-size:12px;color:#fff;padding:6px 11px;border-radius:10px;background:rgba(6,38,60,.85);border:1px solid var(--line);opacity:0;pointer-events:none;transition:opacity .2s ease,transform .35s cubic-bezier(.2,.95,.3,1.2)}
+.tools .app:hover .lbl{opacity:1;transform:translate(-50%,0)}
+@media(max-width:640px){.tools{gap:2px;padding:10px 8px}.tools .app{width:52px}.tools .ico{width:50px;height:50px;border-radius:15px;font-size:17px}}
+.ico{width:76px;height:76px;border-radius:22px;display:grid;place-items:center;color:#fff;font:700 24px/1 var(--font);letter-spacing:-.03em;box-shadow:inset 0 1px 0 rgba(255,255,255,.28),inset 0 -1px 0 rgba(0,0,0,.25),0 14px 28px -12px rgba(0,0,0,.6);transition:transform .6s cubic-bezier(.2,.95,.3,1.25)}
+.ico svg{display:block}
+.app:hover .ico{transform:translateY(-4px) scale(1.06)}
+.app:active .ico{transform:scale(.9);transition-duration:.15s}
+.lbl{font-size:13px;color:var(--mute);text-align:center;line-height:1.2}
+/* icons pop in one after another when their card lands */
+.js .card .app{opacity:0;transform:scale(.5) translateY(18px);filter:blur(6px);transition:opacity .6s cubic-bezier(.3,.6,.3,1) calc(var(--i,0)*70ms + .15s),transform .9s cubic-bezier(.2,.95,.3,1.25) calc(var(--i,0)*70ms + .15s),filter .6s ease calc(var(--i,0)*70ms + .15s)}
+.js .card.in .app{opacity:1;transform:none;filter:none}
 
 /* about + contact */
 .about{display:grid;grid-template-columns:1fr 1.3fr;gap:40px;align-items:center;padding:44px}
@@ -169,9 +183,8 @@ body{overflow-x:clip}
 .grid>.card::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:2;background:linear-gradient(105deg,transparent 38%,rgba(255,255,255,.16) 50%,transparent 62%);transform:translateX(-120%)}
 .grid>.card.in::after{animation:sheen 1.4s cubic-bezier(.16,1,.3,1) .2s both}
 @keyframes sheen{from{transform:translateX(-120%)}to{transform:translateX(120%)}}
-.socials{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+.socials{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;margin-top:22px}
 .socials:empty{display:none}
-.socials .pill{margin:0}
 /* scroll animations (only active when JS adds .js) */
 .js .reveal{opacity:0;transform:translate3d(0,60px,0) scale(.92);filter:blur(16px);transition:opacity calc(.8s*var(--spd,1)) cubic-bezier(.3,.6,.3,1) calc(var(--d,0s)*var(--spd,1)),transform calc(1.25s*var(--spd,1)) cubic-bezier(.2,.95,.3,1.07) calc(var(--d,0s)*var(--spd,1)),filter calc(.95s*var(--spd,1)) cubic-bezier(.3,.6,.3,1) calc(var(--d,0s)*var(--spd,1)),scale .35s cubic-bezier(.2,.8,.2,1)}
 .js .reveal.in{opacity:1;transform:none;filter:none}
@@ -245,7 +258,7 @@ body{overflow-x:clip}
   <section>
     <div class="card">
       <div class="head" style="padding-top:44px;margin-bottom:0"><h2 style="font-size:36px">Tools I work in</h2></div>
-      <div class="tools"><span>After Effects</span><span>Premiere Pro</span><span>DaVinci Resolve</span><span>Figma</span><span>Blender</span><span>Rive</span><span>Lottie</span><span>Photoshop</span></div>
+      <div class="tools"><div class="app" style="--i:0"><div class="ico" style="background:#00005b;color:#9999ff">Ae</div><span class="lbl">After Effects</span></div><div class="app" style="--i:1"><div class="ico" style="background:#2a0a3e;color:#ea77ff">Pr</div><span class="lbl">Premiere Pro</span></div><div class="app" style="--i:2"><div class="ico" style="background:#2b2b2b;color:#e8e8e8">DR</div><span class="lbl">DaVinci Resolve</span></div><div class="app" style="--i:3"><div class="ico" style="background:#1e1e1e;color:#a259ff">Fg</div><span class="lbl">Figma</span></div><div class="app" style="--i:4"><div class="ico" style="background:#e87d0d;color:#ffffff">Bl</div><span class="lbl">Blender</span></div><div class="app" style="--i:5"><div class="ico" style="background:#1a1a1a;color:#ff5a4d">Rv</div><span class="lbl">Rive</span></div><div class="app" style="--i:6"><div class="ico" style="background:#0f2b2a;color:#00dcc8">Lo</div><span class="lbl">Lottie</span></div><div class="app" style="--i:7"><div class="ico" style="background:#001e36;color:#31a8ff">Ps</div><span class="lbl">Photoshop</span></div></div>
     </div>
   </section>
 
@@ -305,9 +318,15 @@ const applySettings=S=>{
   if(ct&&v('cTitle')){const w=v('cTitle').trim().split(/\s+/),last=w.pop();ct.innerHTML=esc(w.join(' '))+(w.length?' ':'')+'<em>'+esc(last)+'</em>'}
   const mail=document.getElementById('cMail');if(mail&&v('email'))mail.href='mailto:'+S.email;
   const box=document.getElementById('socials');
-  if(box)box.innerHTML=[['Instagram',S.ig],['Behance',S.be],['LinkedIn',S.li],['WhatsApp',S.wa]]
-    .filter(x=>x[1]&&/^https?:\/\//.test(x[1].trim()))
-    .map(x=>'<a class="pill glassbtn" href="'+esc(x[1].trim())+'" target="_blank" rel="noopener">'+x[0]+'</a>').join('');
+  const ICO={
+    instagram:['#c13584','<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.4" cy="6.6" r="1" fill="#fff" stroke="none"/></svg>'],
+    behance:['#1769ff','Bē'],
+    linkedin:['#0a66c2','in'],
+    whatsapp:['#25b35a','<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linejoin="round"><path d="M4 20l1.2-3.6A8 8 0 1 1 8.4 19z"/><path d="M9 9.5c0 2.8 2.7 5.5 5.5 5.5l1-1.2-1.8-1-.9.7c-.9-.4-2-1.5-2.4-2.4l.7-.9-1-1.8z" fill="#fff" stroke="none"/></svg>']
+  };
+  if(box)box.innerHTML=[['instagram','Instagram',S.ig],['behance','Behance',S.be],['linkedin','LinkedIn',S.li],['whatsapp','WhatsApp',S.wa]]
+    .filter(x=>x[2]&&/^https?:\/\//.test(x[2].trim()))
+    .map((x,i)=>'<a class="app" href="'+esc(x[2].trim())+'" target="_blank" rel="noopener" aria-label="'+x[1]+'" style="--i:'+i+'"><span class="ico" style="background:'+ICO[x[0]][0]+';font-size:26px">'+ICO[x[0]][1]+'</span><span class="lbl">'+x[1]+'</span></a>').join('');
   if(v('speed')!=null)document.documentElement.style.setProperty('--spd',parseFloat(S.speed)||1);
 };
 </script>
@@ -339,6 +358,17 @@ const applySettings=S=>{
       n.replaceWith(f)})};
   const tio=new IntersectionObserver(es=>es.forEach(e=>{const fn=()=>e.target.classList.toggle('in',e.isIntersecting);down?fn():instant(fn)}),{threshold:.2});
   document.querySelectorAll('.hero h1,section .head h2').forEach(h=>{splitWords(h);h.classList.add('split');tio.observe(h)});
+  // dock: icons grow around the cursor like the Mac dock
+  const dock=document.querySelector('.tools');
+  if(dock&&!matchMedia('(prefers-reduced-motion:reduce)').matches){
+    const items=[...dock.querySelectorAll('.app')];
+    dock.addEventListener('pointermove',e=>items.forEach(a=>{
+      const r=a.getBoundingClientRect(),d=Math.abs(e.clientX-(r.left+r.width/2)),
+            k=1+.62*Math.exp(-(d*d)/(2*64*64)),lift=(k-1)*34;
+      a.querySelector('.ico').style.transform='translateY('+(-lift)+'px) scale('+k.toFixed(3)+')';
+    }));
+    dock.addEventListener('pointerleave',()=>items.forEach(a=>{a.querySelector('.ico').style.transform=''}));
+  }
   const stage=document.querySelector('.stage'); stage.classList.add('fadeonly');
 
   const countUp=el=>{
