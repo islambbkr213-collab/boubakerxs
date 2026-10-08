@@ -162,8 +162,17 @@ body{overflow-x:clip}
 @media(max-width:860px){.feature{grid-column:span 12}}
 
 /* scroll animations (only active when JS adds .js) */
-.js .reveal{opacity:0;transform:translateY(56px) scale(.95);transition:opacity .9s cubic-bezier(.2,.8,.2,1) var(--d,0s),transform 1s cubic-bezier(.2,.8,.2,1) var(--d,0s)}
-.js .reveal.in{opacity:1;transform:none}
+.js .reveal{opacity:0;transform:translateY(34px) scale(.97);filter:blur(10px);transition:opacity 1s cubic-bezier(.32,.72,0,1) var(--d,0s),transform 1.2s cubic-bezier(.32,.72,0,1) var(--d,0s),filter .9s ease var(--d,0s)}
+.js .reveal.in{opacity:1;transform:none;filter:none}
+/* words pop in one by one */
+.js .split .w{display:inline-block;opacity:0;transform:translateY(.45em) scale(.96);filter:blur(12px);transition:opacity .9s cubic-bezier(.32,.72,0,1) calc(var(--i)*75ms + .2s),transform 1.1s cubic-bezier(.32,.72,0,1) calc(var(--i)*75ms + .2s),filter .9s ease calc(var(--i)*75ms + .2s)}
+.js .split.in .w{opacity:1;transform:none;filter:none}
+/* press feedback on buttons, iOS style */
+.pill:active,.arrows button:active,.pj-x:active{transform:scale(.95)!important;transition-duration:.12s!important}
+/* video pop-in */
+.vp{position:fixed;inset:0;z-index:120;cursor:zoom-out;overflow:hidden}
+.vp-box iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vp .pj-x{z-index:3}
 .js .fadeonly{opacity:0;transition:opacity 1.3s ease .45s}
 .js .fadeonly.in{opacity:1}
 .stage,.grow{will-change:transform}
@@ -273,13 +282,21 @@ body{overflow-x:clip}
 
   // reveal-on-scroll, staggered per row
   const grow=document.querySelector('#reel .card'); grow&&grow.classList.add('grow');
-  const targets=[...document.querySelectorAll('.hero .status,.hero h1,.hero p,.hero .row,.head,.grid>.card,.card.about,.card.contact,section>.card:not(.grow)')];
+  const targets=[...document.querySelectorAll('.hero .status,.hero p,.hero .row,.head p,.grid>.card,.card.about,.card.contact,section>.card:not(.grow)')];
   targets.forEach((el,i)=>{
     el.classList.add('reveal');
     const sib=el.parentElement.classList.contains('grid')?[...el.parentElement.children].indexOf(el)%3:0;
     const hero=el.closest('.hero')?[...el.parentElement.children].indexOf(el)*.12:0;
     el.style.setProperty('--d',(sib*.1+hero)+'s');
   });
+  // split titles into words so they pop in one after another
+  const splitWords=root=>{let i=0;const tw=document.createTreeWalker(root,NodeFilter.SHOW_TEXT),ns=[];while(tw.nextNode())ns.push(tw.currentNode);
+    ns.forEach(n=>{if(!n.nodeValue.trim())return;const f=document.createDocumentFragment();
+      n.nodeValue.split(/(\s+)/).forEach(part=>{if(!part)return;if(/^\s+$/.test(part)){f.append(part);return}
+        const sp=document.createElement('span');sp.className='w';sp.style.setProperty('--i',i++);sp.textContent=part;f.append(sp)});
+      n.replaceWith(f)})};
+  const tio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');tio.unobserve(e.target)}}),{threshold:.2});
+  document.querySelectorAll('.hero h1,section .head h2').forEach(h=>{splitWords(h);h.classList.add('split');tio.observe(h)});
   const stage=document.querySelector('.stage'); stage.classList.add('fadeonly');
 
   const countUp=el=>{
@@ -323,7 +340,49 @@ body{overflow-x:clip}
 </script>
 <script>
 /* click a tile with data-yt="VIDEO_ID" to play that YouTube video inside it */
-const playYT=el=>{if(el.querySelector('iframe'))return;el.innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/'+el.dataset.yt+'?autoplay=1&rel=0&modestbranding=1" title="Video player" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';el.style.cursor='default'};
+/* videos pop open big in the centre, growing out of the tapped card, and shrink back on close */
+const openVideo=from=>{
+  if(document.querySelector('.vp')||!from||!from.dataset.yt)return;
+  const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  const EASE='cubic-bezier(.32,.72,0,1)',DUR=reduce?1:620;
+  const vw=innerWidth,vh=innerHeight,pad=vw<700?12:40;
+  const w=Math.min(vw-pad*2,(vh-pad*2)*16/9,1200),h=w*9/16;
+  const t={l:(vw-w)/2,t:(vh-h)/2,w,h};
+  const o=document.createElement('div');o.className='vp';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');
+  o.innerHTML='<div class="lb-bg"></div><div class="vp-box"></div>'
+    +'<button class="pj-x" type="button" aria-label="Close video"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>';
+  const bg=o.querySelector('.lb-bg'),box=o.querySelector('.vp-box'),xb=o.querySelector('.pj-x');
+  box.style.cssText='position:fixed;left:'+t.l+'px;top:'+t.t+'px;width:'+w+'px;height:'+h+'px;border-radius:24px;overflow:hidden;background:#000;box-shadow:0 40px 100px rgba(0,0,0,.6);transform-origin:0 0;will-change:transform';
+  const r0=from.getBoundingClientRect();
+  const xf=r=>'translate('+(r.left-t.l)+'px,'+(r.top-t.t)+'px) scale('+(r.width/t.w)+','+(r.height/t.h)+')';
+  document.body.append(o);
+  from.style.visibility='hidden';
+  box.innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/'+from.dataset.yt+'?autoplay=1&rel=0&modestbranding=1" title="Video player" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';
+  document.documentElement.style.overflow='hidden';
+  if(!reduce){
+    box.animate([{transform:xf(r0)},{transform:'none'}],{duration:DUR,easing:EASE,fill:'both'});
+    bg.animate([{opacity:0},{opacity:1}],{duration:DUR*.7,easing:'ease-out',fill:'both'});
+    xb.animate([{opacity:0,transform:'scale(.6)'},{opacity:1,transform:'none'}],{duration:DUR,delay:DUR*.35,easing:EASE,fill:'backwards'});
+  }
+  let closing=false;
+  const close=()=>{
+    if(closing)return;closing=true;
+    removeEventListener('keydown',k);
+    box.innerHTML='';                 // stop playback first
+    const r=from.isConnected?from.getBoundingClientRect():r0;
+    const done=()=>{o.remove();from.style.visibility='';document.documentElement.style.overflow=''};
+    if(reduce){done();return}
+    const a=box.animate([{transform:'none'},{transform:xf(r)}],{duration:DUR*.85,easing:EASE,fill:'both'});
+    bg.animate([{opacity:1},{opacity:0}],{duration:DUR*.85,easing:'ease-in',fill:'both'});
+    xb.animate([{opacity:1},{opacity:0}],{duration:DUR*.3,fill:'both'});
+    a.onfinish=done;
+  };
+  const k=ev=>{if(ev.key==='Escape')close()};
+  addEventListener('keydown',k);
+  xb.onclick=close;
+  o.addEventListener('click',ev=>{if(!box.contains(ev.target)&&!xb.contains(ev.target))close()});
+  xb.focus({preventScroll:true});
+};
 /* iOS-style "pop" open: the image grows out of the tapped card with a spring-like curve, and shrinks back on close */
 const openLB=(src,from)=>{
   if(document.querySelector('.lb'))return;
@@ -447,8 +506,8 @@ const openProject=from=>{
   o.addEventListener('click',ev=>{if(!sheet.contains(ev.target)&&!xb.contains(ev.target))close()});
   xb.focus({preventScroll:true});
 };
-document.addEventListener('click',e=>{const el=e.target.closest('[data-yt]');if(el)return playYT(el);const pj=e.target.closest('[data-proj]');if(pj)return openProject(pj);const f=e.target.closest('[data-full]');if(f)openLB(f.dataset.full,f)});
-document.addEventListener('keydown',e=>{const t=e.target.closest?e.target:null,el=t&&t.closest('[data-yt],[data-full],[data-proj]');if(el&&(e.key==='Enter'||e.key===' ')){e.preventDefault();el.dataset.yt?playYT(el):el.dataset.proj!==undefined?openProject(el):openLB(el.dataset.full,el)}});
+document.addEventListener('click',e=>{const el=e.target.closest('[data-yt]');if(el)return openVideo(el);const pj=e.target.closest('[data-proj]');if(pj)return openProject(pj);const f=e.target.closest('[data-full]');if(f)openLB(f.dataset.full,f)});
+document.addEventListener('keydown',e=>{const t=e.target.closest?e.target:null,el=t&&t.closest('[data-yt],[data-full],[data-proj]');if(el&&(e.key==='Enter'||e.key===' ')){e.preventDefault();el.dataset.yt?openVideo(el):el.dataset.proj!==undefined?openProject(el):openLB(el.dataset.full,el)}});
 </script>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
