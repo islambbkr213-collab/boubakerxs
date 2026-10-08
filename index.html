@@ -119,8 +119,10 @@ body{overflow-x:clip}
 .slide.on{opacity:1;transform:none}
 .slide-in{position:relative;aspect-ratio:16/11;border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--line);background:var(--soft);cursor:zoom-in;box-shadow:0 30px 60px -30px rgba(0,10,25,.7)}
 .slide-in img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;-webkit-user-drag:none}
-.cap{position:absolute;left:16px;right:16px;bottom:16px;padding:14px 20px;border-radius:22px;background:rgba(6,38,60,.5);border:1px solid rgba(255,255,255,.25);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);color:#fff}
-.cap small{font-size:13px;opacity:.75}.cap h3{font-size:clamp(18px,2.4vw,24px);letter-spacing:-.02em;line-height:1.2}.cap p{font-size:14px;opacity:.8;margin-top:2px}
+.cap{position:absolute;left:0;right:0;bottom:0;padding:110px 28px 26px;color:#fff;background:linear-gradient(to top,rgba(3,14,26,.9),rgba(3,14,26,.55) 45%,rgba(3,14,26,0))}
+.cap::before{content:"";position:absolute;inset:0;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);-webkit-mask-image:linear-gradient(to top,#000 35%,transparent);mask-image:linear-gradient(to top,#000 35%,transparent)}
+.cap>*{position:relative}
+.cap small{font-size:13px;opacity:.75;letter-spacing:.02em}.cap h3{font-size:clamp(18px,2.4vw,24px);letter-spacing:-.02em;line-height:1.2}.cap p{font-size:14px;opacity:.8;margin-top:2px}
 .car-ui{max-width:1180px;margin:0 auto;padding:0 22px;display:flex;align-items:center;justify-content:space-between}
 .dots{display:flex;gap:8px;padding:14px 18px;border-radius:99px;background:var(--soft);border:1px solid var(--line);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
 .dots button{width:8px;height:8px;border-radius:99px;border:0;padding:0;background:rgba(255,255,255,.4);cursor:pointer;transition:width .4s cubic-bezier(.2,.8,.2,1),background .3s}
