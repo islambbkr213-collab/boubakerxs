@@ -160,8 +160,8 @@ footer{padding:60px 0 40px;color:var(--mute);font-size:13px;text-align:center}
 
   <!-- VIDEO EDITING -->
   <section id="edits">
-    <div class="head"><h2>Featured project</h2><p>A recent brand film.</p></div>
-    <div class="grid">
+    <div class="head"><h2>My work</h2><p>Recent projects.</p></div>
+    <div class="grid" id="projects">
       <article class="card feature">
         <div class="vid" data-yt="SgmuplXU2iY" role="button" tabindex="0" aria-label="Play Ordo Aure - Aure Ventus" style="aspect-ratio:16/9;cursor:pointer"><img src="assets/ordo-aure.jpg" alt="Ordo Aure Aure Ventus perfume bottle on a silver tray beside an embroidered lace doily" loading="lazy"><span class="play"></span></div>
         <div class="meta"><small>Brand film · Video editing</small><h3>Ordo Aure — Aure Ventus</h3><p>Video edit for a perfume brand.</p></div>
@@ -258,15 +258,27 @@ footer{padding:60px 0 40px;color:var(--mute);font-size:13px;text-align:center}
 </script>
 <script>
 /* click a tile with data-yt="VIDEO_ID" to play that YouTube video inside it */
-document.querySelectorAll('[data-yt]').forEach(el=>{
-  const go=()=>{
-    if(el.querySelector('iframe'))return;
-    el.innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/'+el.dataset.yt+'?autoplay=1&rel=0&modestbranding=1" title="Video player" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';
-    el.style.cursor='default';
-  };
-  el.addEventListener('click',go);
-  el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}});
-});
+const playYT=el=>{if(el.querySelector('iframe'))return;el.innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/'+el.dataset.yt+'?autoplay=1&rel=0&modestbranding=1" title="Video player" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';el.style.cursor='default'};
+document.addEventListener('click',e=>{const el=e.target.closest('[data-yt]');if(el)playYT(el)});
+document.addEventListener('keydown',e=>{const el=e.target.closest&&e.target.closest('[data-yt]');if(el&&(e.key==='Enter'||e.key===' ')){e.preventDefault();playYT(el)}});
+</script>
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* load the projects you add in /admin.html (the card above is shown until then) */
+(async()=>{
+  const C=window.SITE_CONFIG;if(!C||/PASTE/.test(C.SUPABASE_URL)||!window.supabase)return;
+  try{
+    const sb=supabase.createClient(C.SUPABASE_URL,C.SUPABASE_ANON_KEY);
+    const{data}=await sb.from('projects').select('*').order('created_at',{ascending:false});
+    if(!data||!data.length)return;
+    const e=v=>String(v||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const one=data.length===1;
+    document.getElementById('projects').innerHTML=data.map(p=>`<article class="card ${one?'feature':'s4'}">
+      <div class="vid"${p.youtube_id?` data-yt="${e(p.youtube_id)}" role="button" tabindex="0" aria-label="Play ${e(p.title)}"`:''} style="aspect-ratio:${one?'16/9':'16/10'}${p.youtube_id?';cursor:pointer':''}">${p.thumb_url?`<img src="${e(p.thumb_url)}" alt="${e(p.title)}" loading="lazy">`:''}${p.youtube_id?'<span class="play"></span>':''}</div>
+      <div class="meta"><small>${e(p.category)}</small><h3>${e(p.title)}</h3><p>${e(p.description)}</p></div></article>`).join('');
+  }catch(err){}
+})();
 </script>
 </body>
 </html>
