@@ -204,6 +204,24 @@ body{overflow-x:clip}
 .grow:hover{transform:scale(var(--s,1))}
 
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto}}
+
+/* ===== hero: iOS 27 style liquid glass, blue glow, lens cursor ===== */
+.stage{background:rgba(255,255,255,.07)!important;backdrop-filter:blur(30px) saturate(180%);-webkit-backdrop-filter:blur(30px) saturate(180%);border:1px solid rgba(255,255,255,.24)!important;border-radius:44px;box-shadow:inset 0 1px 0 rgba(255,255,255,.42),inset 0 -1px 0 rgba(255,255,255,.07),0 50px 90px -40px rgba(0,30,70,.75)!important}
+.stage::before{background:rgba(0,20,44,.10)!important}
+.stage::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;background:radial-gradient(380px circle at var(--mx,72%) var(--my,22%),rgba(150,215,255,.30),transparent 70%);mix-blend-mode:screen;transition:opacity .6s ease;opacity:var(--spot,0)}
+.hero h1{text-shadow:0 0 34px rgba(110,190,255,.55),0 0 2px rgba(190,230,255,.35)}
+.hero h1 em{color:#b4e2ff;text-shadow:0 0 22px rgba(110,190,255,.95),0 0 56px rgba(60,160,255,.65)}
+.hero h1 .sep{color:#9fd6ff;opacity:.9;text-shadow:0 0 16px rgba(110,190,255,.9)}
+.hero p{text-shadow:0 0 16px rgba(110,190,255,.4)}
+.status{background:rgba(255,255,255,.14)!important;border:1px solid rgba(255,255,255,.34)!important;backdrop-filter:blur(22px) saturate(180%);-webkit-backdrop-filter:blur(22px) saturate(180%);box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 0 24px rgba(110,190,255,.4)}
+.glass{background:rgba(130,200,250,.16)!important;border:1px solid rgba(255,255,255,.34)!important;backdrop-filter:blur(24px) saturate(190%);-webkit-backdrop-filter:blur(24px) saturate(190%);color:#fff;text-shadow:0 0 14px rgba(150,215,255,.75);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 0 30px rgba(110,190,255,.4),0 20px 44px -18px rgba(0,20,50,.65)!important}
+.hero .pill.light{background:rgba(255,255,255,.94);color:#06263c;box-shadow:inset 0 1px 0 #fff,0 0 36px rgba(110,190,255,.6)}
+.hero .pill.glassbtn{background:rgba(255,255,255,.12);backdrop-filter:blur(22px) saturate(180%);-webkit-backdrop-filter:blur(22px) saturate(180%);border:1px solid rgba(255,255,255,.4);box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 0 26px rgba(110,190,255,.35)}
+.fx,.fx *{cursor:none!important}
+.cur{position:fixed;left:0;top:0;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;pointer-events:none;z-index:300;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.7);backdrop-filter:blur(8px) saturate(170%);-webkit-backdrop-filter:blur(8px) saturate(170%);box-shadow:0 0 22px rgba(110,190,255,.55),inset 0 1px 0 rgba(255,255,255,.6);transition:width .4s cubic-bezier(.2,.95,.3,1.2),height .4s cubic-bezier(.2,.95,.3,1.2),margin .4s cubic-bezier(.2,.95,.3,1.2),background .3s,opacity .3s}
+.cur::after{content:"";position:absolute;left:50%;top:50%;width:5px;height:5px;margin:-2.5px 0 0 -2.5px;border-radius:50%;background:#fff;box-shadow:0 0 12px #7cc4f4}
+.cur.big{width:70px;height:70px;margin:-35px 0 0 -35px;background:rgba(130,200,250,.2)}
+.cur.down{width:24px;height:24px;margin:-12px 0 0 -12px}
 </style>
 </head>
 <body>
@@ -651,6 +669,26 @@ document.addEventListener('keydown',e=>{const t=e.target.closest?e.target:null,e
       document.getElementById('designs').innerHTML=des.map((p,i)=>slide(p,i)).join('');initCar()}
     if(!work.length&&des.length)document.querySelector('.hero a.light').href='#design';
   }catch(err){}
+})();
+</script>
+<script>
+/* hero: a glass lens cursor and a soft light that follows the mouse (desktop only) */
+(()=>{
+  if(!matchMedia('(hover:hover) and (pointer:fine)').matches||matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+  const cur=document.createElement('div');cur.className='cur';document.body.append(cur);
+  document.documentElement.classList.add('fx');
+  let x=innerWidth/2,y=innerHeight/2,cx=x,cy=y;
+  addEventListener('pointermove',e=>{
+    x=e.clientX;y=e.clientY;cur.style.opacity=1;
+    const st=document.querySelector('.stage');
+    if(st){const r=st.getBoundingClientRect();st.style.setProperty('--mx',(x-r.left)+'px');st.style.setProperty('--my',(y-r.top)+'px');st.style.setProperty('--spot',(x>r.left&&x<r.right&&y>r.top&&y<r.bottom)?1:0)}
+  },{passive:true});
+  const loop=()=>{cx+=(x-cx)*.2;cy+=(y-cy)*.2;cur.style.transform='translate3d('+cx+'px,'+cy+'px,0)';requestAnimationFrame(loop)};loop();
+  document.addEventListener('pointerover',e=>cur.classList.toggle('big',!!(e.target.closest&&e.target.closest('a,button,.app,.slide-in,.pj-card,[data-yt],[data-proj],[data-full]'))));
+  addEventListener('pointerdown',()=>cur.classList.add('down'));
+  addEventListener('pointerup',()=>cur.classList.remove('down'));
+  document.documentElement.addEventListener('pointerleave',()=>cur.style.opacity=0);
+  document.documentElement.addEventListener('pointerenter',()=>cur.style.opacity=1);
 })();
 </script>
 </body>
