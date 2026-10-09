@@ -252,6 +252,34 @@ nav b,nav ul a{color:var(--ink)}
 .dots button.on{background:var(--blue)}
 .arrows button{background:rgba(255,255,255,.7);color:var(--ink);border:1px solid rgba(255,255,255,.9)}
 .cap{color:#fff}
+
+/* ===== hero glass chips: frosted blur, scattered around the headline like the reference ===== */
+.glass{z-index:3;background:rgba(255,255,255,.3)!important;backdrop-filter:blur(20px) saturate(180%)!important;-webkit-backdrop-filter:blur(20px) saturate(180%)!important;border:1px solid rgba(255,255,255,.8)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 18px 40px -16px rgba(10,60,140,.4)!important;color:var(--ink);font-weight:500;padding:14px 26px}
+.g4{left:40%;top:12%}
+.g1{right:5%;top:20%}
+.g2{left:6%;top:47%}
+.g3{right:9%;top:58%}
+@media(max-width:700px){.g1{top:13%;right:4%}.g2{top:42%;left:4%}.g4{top:8%;left:34%}.g3{display:none}}
+
+/* ===== hero chips: drop into the empty space at the top, then drift gently downward ===== */
+.glass{animation:drop 1.1s cubic-bezier(.2,.95,.3,1.1) both,drift 7s ease-in-out 1.1s infinite!important}
+@keyframes drop{from{opacity:0;transform:translateY(-70px) rotate(var(--r))}to{opacity:1;transform:translateY(0) rotate(var(--r))}}
+@keyframes drift{0%,100%{transform:translateY(0) rotate(var(--r))}50%{transform:translateY(16px) rotate(var(--r))}}
+.g4{left:40%;top:9%}
+.g1{right:6%;top:15%}
+.g2{left:7%;top:25%}
+.g3{right:14%;top:33%}
+@media(max-width:700px){.g1{top:12%;right:4%}.g2{top:24%;left:4%}.g4{top:7%;left:34%}}
+
+/* ===== hero chips: moved down to the lower right, top-left left empty ===== */
+.glass{animation:fadein .9s ease-out both,drift 7s ease-in-out 1s infinite!important}
+@keyframes fadein{from{opacity:0;transform:scale(.94) rotate(var(--r))}to{opacity:1;transform:scale(1) rotate(var(--r))}}
+@keyframes drift{0%,100%{transform:translateY(0) rotate(var(--r))}50%{transform:translateY(10px) rotate(var(--r))}}
+.g1{right:4%;top:56%;left:auto}
+.g4{right:26%;top:72%;left:auto}
+.g2{right:34%;top:52%;left:auto}
+.g3{right:4%;top:78%;left:auto}
+@media(max-width:700px){.g1{top:52%;right:4%}.g2{top:66%;right:4%;left:auto}.g4,.g3{display:none}}
 </style>
 </head>
 <body>
