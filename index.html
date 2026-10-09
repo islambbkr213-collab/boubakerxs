@@ -2,7 +2,7 @@
 <html lang="en" class="pending">
 <head>
 <meta charset="utf-8">
-<meta name="theme-color" content="#06263c">
+<meta name="theme-color" content="#f3f8ff">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Boubaker — Video Editor & Motion Designer</title>
 <meta name="description" content="Video editing and SaaS product animation portfolio.">
@@ -11,17 +11,17 @@
 <script src="config.js"></script>
 <style>
 :root{
-  --bg:#06263c; --card:rgba(255,255,255,.07); --soft:rgba(255,255,255,.09); --ink:#eef6fb; --mute:rgba(238,246,251,.68);
+  --bg:#f3f8ff; --card:rgba(255,255,255,.58); --soft:rgba(255,255,255,.5); --ink:#0b1c2e; --mute:rgba(11,28,46,.62);
   --line:rgba(255,255,255,.15); --blue:#7cc4f4; --nav:rgba(6,38,60,.55);
   --r-lg:32px; --r-md:24px; --r-sm:14px;
-  color-scheme:dark;--font:"Inter",-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,Helvetica,Arial,sans-serif;--serif:"Instrument Serif",Georgia,"Times New Roman",serif;--deep:#0a3a5c;
+  color-scheme:light;--font:"Inter",-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,Helvetica,Arial,sans-serif;--serif:"Instrument Serif",Georgia,"Times New Roman",serif;--deep:#0a3a5c;
 }
 *{box-sizing:border-box;margin:0}
 html{scroll-behavior:smooth;scroll-padding-top:70px}
 body{background:var(--bg);color:var(--ink);font-family:var(--font);line-height:1.5;-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
-body::before{content:"";position:fixed;inset:0;z-index:-2;background:var(--bg) url(assets/wave-top.jpg) center/cover no-repeat}
-body::after{content:"";position:fixed;inset:0;z-index:-1;background:rgba(4,30,50,.72)}
+body::before{content:"";position:fixed;inset:0;z-index:-2;background:var(--bg) url(assets/bg-blue.jpg) center/cover no-repeat}
+body::after{content:"";position:fixed;inset:0;z-index:-1;background:rgba(255,255,255,.28)}
 :focus-visible{outline:3px solid var(--blue);outline-offset:3px;border-radius:12px}
 .wrap{max-width:1180px;margin:0 auto;padding:0 22px}
 
@@ -31,14 +31,14 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:5
 nav b{font-weight:600;font-size:17px;letter-spacing:-.01em}
 nav ul{display:flex;gap:28px;list-style:none;padding:0;font-size:13px;color:var(--mute)}
 nav ul a:hover{color:var(--ink)}
-.pill{display:inline-block;background:var(--blue);color:#05263c;padding:9px 20px;border-radius:999px;font-size:14px;font-weight:500;transition:transform .2s}
+.pill{display:inline-block;background:var(--blue);color:#fff;padding:9px 20px;border-radius:999px;font-size:14px;font-weight:500;transition:transform .2s}
 .pill:hover{transform:scale(1.04)}
 .pill.ghost{background:transparent;color:var(--blue);border:1px solid var(--blue)}
 @media(max-width:700px){nav ul{display:none}}
 
 /* hero */
 .hero{padding:22px 0 0}
-.stage{position:relative;overflow:hidden;border-radius:40px;min-height:clamp(600px,84vh,720px);background:var(--deep) url(assets/wave-top.jpg) center/cover;color:#fff;display:flex;flex-direction:column;justify-content:flex-end;padding:clamp(28px,5vw,64px)}
+.stage{position:relative;overflow:hidden;border-radius:40px;min-height:clamp(600px,84vh,720px);background:var(--deep) url(assets/bg-blue.jpg) center/cover;color:var(--ink);display:flex;flex-direction:column;justify-content:flex-end;padding:clamp(28px,5vw,64px)}
 .stage::before{content:"";position:absolute;inset:0;background:rgba(0,24,48,.26)}
 .stage>:not(.glass){position:relative}
 .status,.glass,.pill.glassbtn{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.32);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
@@ -48,7 +48,7 @@ nav ul a:hover{color:var(--ink)}
 h1{font-size:clamp(34px,5.6vw,72px);line-height:1.04;letter-spacing:-.045em;font-weight:700}
 h1 .sep{font-weight:300;opacity:.55;margin:0 .1em}
 h1 em,.contact em{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:-.02em;color:#86c9f6;font-size:1.14em}
-.hero p{font-size:clamp(17px,2vw,21px);color:rgba(255,255,255,.85);max-width:540px;margin:18px 0 28px}
+.hero p{font-size:clamp(17px,2vw,21px);color:var(--mute);max-width:540px;margin:18px 0 28px}
 .hero .row{display:flex;gap:12px;flex-wrap:wrap}
 .pill.light{background:#fff;color:var(--deep)}
 .pill.glassbtn{color:#fff}
@@ -115,7 +115,7 @@ h2{font-size:clamp(34px,5vw,56px);letter-spacing:-.03em;line-height:1.08;font-we
 .avatar img{width:100%;height:100%;object-fit:cover}
 .about p{font-size:20px;color:var(--mute);margin-top:14px;letter-spacing:-.01em}
 @media(max-width:760px){.about{grid-template-columns:1fr;padding:28px}}
-.contact{text-align:center;padding:96px 28px;background:var(--deep) url(assets/wave-bottom.jpg) center/cover;color:#fff;border:none}
+.contact{text-align:center;padding:96px 28px;background:var(--deep) url(assets/bg-blue.jpg) center/cover;color:var(--ink);border:none}
 .contact::before{content:"";position:absolute;inset:0;background:rgba(0,24,48,.28)}
 .contact>*{position:relative}
 .contact h2{margin-bottom:14px}
@@ -217,11 +217,41 @@ body{overflow-x:clip}
 .glass{background:rgba(130,200,250,.16)!important;border:1px solid rgba(255,255,255,.34)!important;backdrop-filter:blur(24px) saturate(190%);-webkit-backdrop-filter:blur(24px) saturate(190%);color:#fff;text-shadow:0 0 14px rgba(150,215,255,.75);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 0 30px rgba(110,190,255,.4),0 20px 44px -18px rgba(0,20,50,.65)!important}
 .hero .pill.light{background:rgba(255,255,255,.94);color:#06263c;box-shadow:inset 0 1px 0 #fff,0 0 36px rgba(110,190,255,.6)}
 .hero .pill.glassbtn{background:rgba(255,255,255,.12);backdrop-filter:blur(22px) saturate(180%);-webkit-backdrop-filter:blur(22px) saturate(180%);border:1px solid rgba(255,255,255,.4);box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 0 26px rgba(110,190,255,.35)}
-.fx,.fx *{cursor:none!important}
-.cur{position:fixed;left:0;top:0;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;pointer-events:none;z-index:300;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.7);backdrop-filter:blur(8px) saturate(170%);-webkit-backdrop-filter:blur(8px) saturate(170%);box-shadow:0 0 22px rgba(110,190,255,.55),inset 0 1px 0 rgba(255,255,255,.6);transition:width .4s cubic-bezier(.2,.95,.3,1.2),height .4s cubic-bezier(.2,.95,.3,1.2),margin .4s cubic-bezier(.2,.95,.3,1.2),background .3s,opacity .3s}
-.cur::after{content:"";position:absolute;left:50%;top:50%;width:5px;height:5px;margin:-2.5px 0 0 -2.5px;border-radius:50%;background:#fff;box-shadow:0 0 12px #7cc4f4}
-.cur.big{width:70px;height:70px;margin:-35px 0 0 -35px;background:rgba(130,200,250,.2)}
-.cur.down{width:24px;height:24px;margin:-12px 0 0 -12px}
+/* system-style cursors: arrow by default, hand over things you can press */
+html,body{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='32' viewBox='0 0 24 32'%3E%3Cpath d='M2 1L2 25L7.5 19.8L11.5 28.5L15.2 26.8L11.2 18.3L18.5 18.3Z' fill='none' stroke='black' stroke-width='6' stroke-linejoin='round'/%3E%3Cpath d='M2 1L2 25L7.5 19.8L11.5 28.5L15.2 26.8L11.2 18.3L18.5 18.3Z' fill='none' stroke='white' stroke-width='3' stroke-linejoin='round'/%3E%3Cpath d='M2 1L2 25L7.5 19.8L11.5 28.5L15.2 26.8L11.2 18.3L18.5 18.3Z' fill='black'/%3E%3C/svg%3E") 2 1, default}
+a,button,[role=button],[data-yt],[data-proj],[data-full],.app,.pill,.arrows button,.dots button,label,summary{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='32' viewBox='0 0 24 32'%3E%3Cpath d='M9 13.5V3.2Q9 1 11.2 1Q13.4 1 13.4 3.2V12.2Q14.2 11.2 15.8 11.8Q17.4 12.2 17.6 13Q18.8 12.4 20.2 13.2Q21.4 14 21 16V23Q21 30 15 30H10.5Q7.5 30 5.8 27.5L2.5 21Q1.5 18.8 3.4 17.8Q5.2 16.9 6.2 18.6L7.4 20Z' fill='white' stroke='black' stroke-width='2.4' stroke-linejoin='round'/%3E%3Cpath d='M15.5 16V23M18.5 16V23' stroke='black' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") 9 1, pointer}
+button:disabled{cursor:default}
+
+/* ===== BRIGHT THEME: light glass, blue accents, the blue wave background ===== */
+:root{--blue:#0a72ff;--line:rgba(10,40,80,.12)}
+.stage::before{background:rgba(255,255,255,.18)!important}
+.stage{background:rgba(255,255,255,.22)!important;color:var(--ink)!important;border:1px solid rgba(255,255,255,.8)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 -1px 0 rgba(10,40,80,.04),0 40px 80px -36px rgba(10,60,140,.35)!important}
+.stage::after{background:radial-gradient(380px circle at var(--mx,72%) var(--my,22%),rgba(255,255,255,.7),transparent 70%);mix-blend-mode:normal}
+.hero h1{color:var(--ink);text-shadow:0 2px 24px rgba(255,255,255,.7)}
+.hero h1 em{color:var(--blue);text-shadow:0 0 28px rgba(10,114,255,.25)}
+.hero h1 .sep{color:var(--blue);opacity:.7;text-shadow:none}
+.hero p{text-shadow:0 1px 12px rgba(255,255,255,.8)}
+.status{background:rgba(255,255,255,.75)!important;border:1px solid rgba(10,40,80,.1)!important;color:var(--ink);box-shadow:0 6px 18px -8px rgba(10,60,140,.3)!important}
+.status i{background:#22c55e}
+.glass{background:rgba(255,255,255,.72)!important;border:1px solid rgba(255,255,255,.9)!important;color:var(--ink);text-shadow:none;box-shadow:inset 0 1px 0 #fff,0 18px 40px -18px rgba(10,60,140,.35)!important}
+.hero .pill.light{background:var(--blue);color:#fff;box-shadow:0 10px 30px -10px rgba(10,114,255,.7)}
+.hero .pill.glassbtn{background:rgba(255,255,255,.7);color:var(--ink);border:1px solid rgba(10,40,80,.12);box-shadow:0 8px 22px -12px rgba(10,60,140,.35)}
+.contact::before{background:rgba(255,255,255,.35)!important}
+.contact p{color:var(--mute)!important}
+.contact h2 em{color:var(--blue)}
+.card{background:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.85);box-shadow:inset 0 1px 0 #fff,0 24px 50px -28px rgba(10,60,140,.3)}
+.tools{background:rgba(255,255,255,.6)!important;border:1px solid rgba(255,255,255,.9)!important}
+.lbl{color:var(--mute)}
+nav{background:rgba(255,255,255,.6)!important;border-bottom:1px solid rgba(10,40,80,.08)}
+nav b,nav ul a{color:var(--ink)}
+.socials .app .lbl{color:var(--mute)}
+.head p,.about p{color:var(--mute)}
+.pill.ghost{color:var(--blue);border-color:var(--blue)}
+.dots{background:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.9)}
+.dots button{background:rgba(10,40,80,.25)}
+.dots button.on{background:var(--blue)}
+.arrows button{background:rgba(255,255,255,.7);color:var(--ink);border:1px solid rgba(255,255,255,.9)}
+.cap{color:#fff}
 </style>
 </head>
 <body>
@@ -672,23 +702,15 @@ document.addEventListener('keydown',e=>{const t=e.target.closest?e.target:null,e
 })();
 </script>
 <script>
-/* hero: a glass lens cursor and a soft light that follows the mouse (desktop only) */
+/* hero: a soft light that follows the mouse (desktop only) */
 (()=>{
   if(!matchMedia('(hover:hover) and (pointer:fine)').matches||matchMedia('(prefers-reduced-motion:reduce)').matches)return;
-  const cur=document.createElement('div');cur.className='cur';document.body.append(cur);
-  document.documentElement.classList.add('fx');
-  let x=innerWidth/2,y=innerHeight/2,cx=x,cy=y;
   addEventListener('pointermove',e=>{
-    x=e.clientX;y=e.clientY;cur.style.opacity=1;
-    const st=document.querySelector('.stage');
-    if(st){const r=st.getBoundingClientRect();st.style.setProperty('--mx',(x-r.left)+'px');st.style.setProperty('--my',(y-r.top)+'px');st.style.setProperty('--spot',(x>r.left&&x<r.right&&y>r.top&&y<r.bottom)?1:0)}
+    const st=document.querySelector('.stage');if(!st)return;
+    const r=st.getBoundingClientRect(),x=e.clientX,y=e.clientY;
+    st.style.setProperty('--mx',(x-r.left)+'px');st.style.setProperty('--my',(y-r.top)+'px');
+    st.style.setProperty('--spot',(x>r.left&&x<r.right&&y>r.top&&y<r.bottom)?1:0);
   },{passive:true});
-  const loop=()=>{cx+=(x-cx)*.2;cy+=(y-cy)*.2;cur.style.transform='translate3d('+cx+'px,'+cy+'px,0)';requestAnimationFrame(loop)};loop();
-  document.addEventListener('pointerover',e=>cur.classList.toggle('big',!!(e.target.closest&&e.target.closest('a,button,.app,.slide-in,.pj-card,[data-yt],[data-proj],[data-full]'))));
-  addEventListener('pointerdown',()=>cur.classList.add('down'));
-  addEventListener('pointerup',()=>cur.classList.remove('down'));
-  document.documentElement.addEventListener('pointerleave',()=>cur.style.opacity=0);
-  document.documentElement.addEventListener('pointerenter',()=>cur.style.opacity=1);
 })();
 </script>
 </body>
