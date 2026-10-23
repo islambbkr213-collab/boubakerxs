@@ -357,6 +357,15 @@ section{padding:150px 0 0}
 .callbox{border-radius:44px}
 .callbox h2{font-size:clamp(40px,6vw,76px);letter-spacing:-.045em;line-height:1.02}
 @media(max-width:700px){section{padding:110px 0 0}.cat{flex-direction:column;align-items:flex-start}}
+
+/* ===== work grouped by category ===== */
+.grp{margin-top:56px;scroll-margin-top:90px}
+.grp:first-child{margin-top:0}
+.grp-t{font-size:clamp(24px,3vw,34px);letter-spacing:-.03em;margin:0 0 22px;font-weight:700}
+.grp .grid{gap:20px}
+.grp .grid .card{grid-column:span 4}
+@media(max-width:1000px){.grp .grid .card{grid-column:span 6}}
+@media(max-width:640px){.grp .grid .card{grid-column:span 12}}
 </style>
 </head>
 <body>
@@ -401,7 +410,7 @@ section{padding:150px 0 0}
   <!-- VIDEO EDITING -->
   <section id="projects">
     <div class="head"><small class="eyebrow">Services</small><h2>Projects</h2><p>Pick what you need.</p></div>
-    <div class="cats"><a class="cat glass-card" href="#edits"><small>01</small><h3>Product launch & demos</h3><p>Launch films and product walkthroughs</p><span class="cat-go">View work →</span></a><a class="cat glass-card" href="#edits"><small>02</small><h3>YouTube & VSLs</h3><p>Long-form videos and sales letters</p><span class="cat-go">View work →</span></a><a class="cat glass-card" href="#edits"><small>03</small><h3>Shorts & reels</h3><p>Fast cuts built for short-form feeds</p><span class="cat-go">View work →</span></a></div>
+    <div class="cats"><a class="cat glass-card" href="#grp-product"><small>01</small><h3>Product launch & demos</h3><p>Launch films and product walkthroughs</p><span class="cat-go">View work →</span></a><a class="cat glass-card" href="#grp-long"><small>02</small><h3>YouTube & VSLs</h3><p>Long-form videos and sales letters</p><span class="cat-go">View work →</span></a><a class="cat glass-card" href="#grp-shorts"><small>03</small><h3>Shorts & reels</h3><p>Fast cuts built for short-form feeds</p><span class="cat-go">View work →</span></a></div>
   </section>
 
   <section id="edits">
@@ -820,7 +829,19 @@ document.addEventListener('keydown',e=>{const t=e.target.closest?e.target:null,e
     const work=data.filter(p=>p.category!=='Design'),des=data.filter(p=>p.category==='Design'&&p.thumb_url);
     window.__designs=des;
     const nav=h=>document.querySelector('nav a[href="'+h+'"]');
-    if(work.length)document.getElementById('work').innerHTML=work.map(p=>card(p,work.length===1)).join('');
+    const groupOf=p=>{const c=(p.category||'').toLowerCase();
+      if(/short|reel/.test(c))return 'shorts';
+      if(/long|youtube|vsl/.test(c))return 'long';
+      if(/product|launch|demo|saas/.test(c))return 'product';
+      return 'long';};
+    const GROUPS=[['product','Product launch & demos','grp-product'],['long','Long-form · YouTube & VSLs','grp-long'],['shorts','Shorts & reels','grp-shorts']];
+    if(work.length){
+      document.getElementById('work').innerHTML=GROUPS.map(([k,title,id])=>{
+        const items=work.filter(p=>groupOf(p)===k);
+        if(!items.length)return '';
+        return '<div class="grp" id="'+id+'"><h3 class="grp-t">'+title+'</h3><div class="grid">'+items.map(p=>card(p,false)).join('')+'</div></div>';
+      }).join('');
+    }
     else{document.getElementById('edits').hidden=true;const nl=nav('#edits');nl&&(nl.parentElement.hidden=true)}
     if(des.length){document.getElementById('design').hidden=false;document.getElementById('navdesign').hidden=false;
       document.getElementById('designs').innerHTML=des.map((p,i)=>slide(p,i)).join('');initCar()}
