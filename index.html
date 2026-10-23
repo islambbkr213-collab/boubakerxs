@@ -370,6 +370,18 @@ section{padding:150px 0 0}
 /* fix: the Work container is a plain block, so each group gets the full width */
 #work{display:block}
 .grp .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:20px}
+
+/* ===== client reviews ===== */
+.rv-grid{gap:20px}
+.rv-grid .rv-card{grid-column:span 4;padding:30px;display:flex;flex-direction:column;gap:14px}
+.rv-stars{color:#f5b400;letter-spacing:3px;font-size:16px}
+.rv-q{font-size:18px;line-height:1.5;letter-spacing:-.01em;color:var(--ink)}
+.rv-by{color:var(--mute);font-size:14px;margin-top:auto}
+.rv-by b{color:var(--ink)}
+.rv-src{color:var(--blue);font-size:14px;font-weight:500}
+.rv-links{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:34px}
+@media(max-width:1000px){.rv-grid .rv-card{grid-column:span 6}}
+@media(max-width:640px){.rv-grid .rv-card{grid-column:span 12}}
 </style>
 </head>
 <body>
@@ -380,6 +392,7 @@ section{padding:150px 0 0}
     <li><a href="#projects">Projects</a></li>
     <li><a href="#edits">Work</a></li>
     <li id="navdesign" hidden><a href="#design">Design</a></li>
+    <li id="navrev" hidden><a href="#reviews">Reviews</a></li>
     <li><a href="#about">About</a></li>
   </ul>
   <a class="pill" href="#call">Book a call</a>
@@ -456,6 +469,12 @@ section{padding:150px 0 0}
   </section>
 
   <!-- CONTACT -->
+  <section id="reviews" hidden>
+    <div class="head"><small class="eyebrow">Client reviews</small><h2>What clients say.</h2><p>Real feedback from my Behance and Upwork work.</p></div>
+    <div class="grid rv-grid" id="rv-list"></div>
+    <div class="rv-links"><a class="pill ghost" href="https://www.behance.net/boubakeboubake" target="_blank" rel="noopener">See all on Behance</a><a class="pill ghost" href="https://www.upwork.com/freelancers/~01b1f386e63a808b0c" target="_blank" rel="noopener">See all on Upwork</a></div>
+  </section>
+
   <section id="call">
     <div class="card callbox">
       <small>Book a call</small>
@@ -516,6 +535,12 @@ const applySettings=S=>{
   document.documentElement.dataset.label=S.labelOn==='no'?'off':'on';
   if(v('vidText'))document.documentElement.dataset.vidText=S.vidText;
   if(v('projText'))document.documentElement.dataset.projText=S.projText;
+  const rows=String(S.reviews||'').split('\n').map(l=>l.split('|').map(x=>x.trim())).filter(r=>r[0]&&r[2]);
+  const rvSec=document.getElementById('reviews'),rvBox=document.getElementById('rv-list');
+  if(rvSec&&rvBox&&rows.length){
+    rvBox.innerHTML=rows.map(r=>'<article class="card rv-card"><div class="rv-stars">★★★★★</div><p class="rv-q">“'+esc(r[2])+'”</p><div class="rv-by"><b>'+esc(r[0])+'</b>'+(r[1]?' · '+esc(r[1]):'')+'</div>'+(r[3]&&/^https?:\/\//.test(r[3])?'<a class="rv-src" href="'+esc(r[3])+'" target="_blank" rel="noopener">View project →</a>':'')+'</article>').join('');
+    rvSec.hidden=false;const nr=document.getElementById('navrev');if(nr)nr.hidden=false;
+  }
   if(v('speed')!=null)document.documentElement.style.setProperty('--spd',parseFloat(S.speed)||1);
 };
 </script>
