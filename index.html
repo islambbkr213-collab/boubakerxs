@@ -21,7 +21,7 @@ html{scroll-behavior:smooth;scroll-padding-top:70px}
 body{background:var(--bg);color:var(--ink);font-family:var(--font);line-height:1.5;-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
 body::before{content:"";position:fixed;inset:0;z-index:-2;background:var(--bg) url(assets/bg-blue.jpg) center/cover no-repeat}
-body::after{content:"";position:fixed;inset:0;z-index:-1;background:rgba(255,255,255,.28)}
+body::after{content:"";position:fixed;inset:0;z-index:-1;background:rgba(255,255,255,var(--veil,.28))}
 :focus-visible{outline:3px solid var(--blue);outline-offset:3px;border-radius:12px}
 .wrap{max-width:1180px;margin:0 auto;padding:0 22px}
 
@@ -301,6 +301,29 @@ nav b,nav ul a{color:var(--ink)}
 .cur-label.on{opacity:1}
 .cur-label.big{scale:1}
 .hide-cursor,.hide-cursor *{cursor:none!important}
+
+/* ===== booking calendar ===== */
+.cal{width:100%;max-width:700px;margin-top:18px;display:grid;gap:14px;text-align:left}
+.cal .mh{display:flex;justify-content:space-between;align-items:center;font-weight:600;color:var(--ink)}
+.cal .mh button,.cal .go{border:0;border-radius:99px;font:inherit;cursor:pointer}
+.cal .mh button{width:38px;height:38px;background:rgba(255,255,255,.7);color:var(--ink);border:1px solid rgba(255,255,255,.95);font-size:18px}
+.cal .mh button:disabled{opacity:.3;cursor:default}
+.cal .wd,.cal .days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;text-align:center}
+.cal .wd{font-size:12px;color:var(--mute)}
+.cal .days button{aspect-ratio:1;border-radius:14px;border:1px solid rgba(255,255,255,.85);background:rgba(255,255,255,.55);color:var(--ink);font:inherit;cursor:pointer;transition:transform .25s cubic-bezier(.2,.95,.3,1.2)}
+.cal .days button:not(:disabled):hover{transform:scale(1.06)}
+.cal .days button:disabled{opacity:.3;cursor:default}
+.cal .days button.sel{background:var(--blue);color:#fff;border-color:transparent}
+.cal .days button.blank{visibility:hidden}
+.cal .lbl2{font-size:14px;color:var(--mute)}
+.cal .slots{display:flex;flex-wrap:wrap;gap:8px}
+.cal .slots button{padding:10px 16px;border-radius:99px;border:1px solid rgba(255,255,255,.95);background:rgba(255,255,255,.65);color:var(--ink);font:inherit;cursor:pointer}
+.cal .slots button.sel{background:var(--blue);color:#fff}
+.cal .slots button:disabled{text-decoration:line-through;opacity:.4;cursor:default}
+.cal input,.cal textarea{width:100%;padding:12px 14px;border-radius:14px;border:1px solid rgba(10,40,80,.15);background:rgba(255,255,255,.8);color:var(--ink);font:inherit}
+.cal .go{justify-self:start;padding:12px 26px;background:var(--blue);color:#fff;font-weight:600;box-shadow:0 10px 26px -10px var(--blue)}
+.cal .go:disabled{opacity:.5}
+.cal .msg{font-size:15px;color:var(--mute)}
 </style>
 </head>
 <body>
@@ -392,7 +415,7 @@ nav b,nav ul a{color:var(--ink)}
       <small>Book a call</small>
       <h2>Let's talk scope, timeline and budget.</h2>
       <p>No fluff, just clarity. Tell me what you're building and I'll tell you how I can help.</p>
-      <a class="pill" href="#contact">Book a free call</a>
+      <div id="cal" class="cal"></div>
     </div>
   </section>
 
@@ -435,6 +458,11 @@ const applySettings=S=>{
   if(box)box.innerHTML=[['instagram','Instagram',S.ig],['behance','Behance',S.be],['linkedin','LinkedIn',S.li],['whatsapp','WhatsApp',S.wa]]
     .filter(x=>x[2]&&/^https?:\/\//.test(x[2].trim()))
     .map((x,i)=>'<a class="app" href="'+esc(x[2].trim())+'" target="_blank" rel="noopener" aria-label="'+x[1]+'" style="--i:'+i+'"><span class="ico" style="background:'+ICO[x[0]][0]+';font-size:26px">'+ICO[x[0]][1]+'</span><span class="lbl">'+x[1]+'</span></a>').join('');
+  if(v('accent')&&/^#[0-9a-f]{6}$/i.test(S.accent.trim()))document.documentElement.style.setProperty('--blue',S.accent.trim());
+  if(v('veil'))document.documentElement.style.setProperty('--veil',parseFloat(S.veil));
+  document.documentElement.dataset.label=S.labelOn==='no'?'off':'on';
+  if(v('vidText'))document.documentElement.dataset.vidText=S.vidText;
+  if(v('projText'))document.documentElement.dataset.projText=S.projText;
   if(v('speed')!=null)document.documentElement.style.setProperty('--spd',parseFloat(S.speed)||1);
 };
 </script>
@@ -781,13 +809,68 @@ document.addEventListener('keydown',e=>{const t=e.target.closest?e.target:null,e
   const loop=()=>{cx+=(x-cx)*.28;cy+=(y-cy)*.28;lab.style.transform='translate3d('+(cx+16)+'px,'+(cy+16)+'px,0)';requestAnimationFrame(loop)};loop();
   document.addEventListener('pointermove',e=>{x=e.clientX;y=e.clientY;
     const t=e.target.closest&&e.target.closest('[data-yt],[data-proj],[data-full],.cat');
-    if(t){
-      const txt=t.dataset.yt?'Watch video':t.classList.contains('cat')?'View work':'View project';
+    if(t&&document.documentElement.dataset.label!=='off'){
+      const txt=t.dataset.yt?(document.documentElement.dataset.vidText||'Watch video'):t.classList.contains('cat')?'View work':(document.documentElement.dataset.projText||'View project');
       if(lab.textContent!==txt)lab.textContent=txt;
       if(!on){on=true;lab.classList.add('on');document.documentElement.classList.add('hide-cursor')}
     }else if(on){on=false;lab.classList.remove('on');document.documentElement.classList.remove('hide-cursor')}
   },{passive:true});
   document.documentElement.addEventListener('pointerleave',()=>{lab.classList.remove('on');on=false;document.documentElement.classList.remove('hide-cursor')});
+})();
+</script>
+<script>
+/* booking calendar: pick a day, pick a time, send your details. Times are Algeria time (UTC+1). */
+(async()=>{
+  const host=document.getElementById('cal'),C=window.SITE_CONFIG;
+  if(!host||!C||/PASTE/.test(C.SUPABASE_URL)||!window.supabase)return;
+  let S={};
+  try{const r=await fetch(C.SUPABASE_URL+'/rest/v1/site_settings?key=eq.main&select=value',{headers:{apikey:C.SUPABASE_ANON_KEY}});const j=await r.json();S=(j[0]&&j[0].value)||{}}catch(e){}
+  const days=String(S.bookDays||'0,1,2,3,4').split(',').map(x=>+x.trim()).filter(x=>x>=0&&x<=6);
+  const slots=String(S.bookSlots||'10:00,12:00,14:00,16:00').split(',').map(x=>x.trim()).filter(x=>/^\d{1,2}:\d{2}$/.test(x));
+  const sb=supabase.createClient(C.SUPABASE_URL,C.SUPABASE_ANON_KEY);
+  const pad=n=>String(n).padStart(2,'0');
+  const ymd=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+  const slotMs=(d,t)=>new Date(ymd(d)+'T'+(t.length===4?'0'+t:t)+':00+01:00').getTime();
+  const today=new Date();today.setHours(0,0,0,0);
+  const minMonth=new Date(today.getFullYear(),today.getMonth(),1);
+  let view=new Date(today.getFullYear(),today.getMonth(),1),picked=null,pickedSlot=null,booked=new Set();
+  const loadBooked=async()=>{
+    const a=new Date(view.getFullYear(),view.getMonth(),1),b=new Date(view.getFullYear(),view.getMonth()+1,1);
+    const{data}=await sb.from('booked_slots').select('starts_at').gte('starts_at',a.toISOString()).lt('starts_at',b.toISOString());
+    booked=new Set((data||[]).map(r=>new Date(r.starts_at).getTime()));
+  };
+  const free=(d,t)=>{const ms=slotMs(d,t);return ms>Date.now()&&!booked.has(ms)};
+  const dayOpen=d=>d>=today&&days.includes(d.getDay())&&slots.some(t=>free(d,t));
+  const monthName=d=>d.toLocaleString('en',{month:'long',year:'numeric'});
+  const draw=()=>{
+    const first=new Date(view.getFullYear(),view.getMonth(),1),n=new Date(view.getFullYear(),view.getMonth()+1,0).getDate();
+    let cells='';for(let i=0;i<first.getDay();i++)cells+='<button class="blank" disabled></button>';
+    for(let d=1;d<=n;d++){const dt=new Date(view.getFullYear(),view.getMonth(),d),ok=dayOpen(dt),sel=picked&&ymd(picked)===ymd(dt);
+      cells+='<button type="button" data-d="'+d+'"'+(ok?'':' disabled')+(sel?' class="sel"':'')+'>'+d+'</button>';}
+    let times='';
+    if(picked){times='<div class="lbl2">Times for '+picked.toLocaleDateString('en',{weekday:'long',month:'long',day:'numeric'})+' (Algeria time)</div><div class="slots">'+
+      slots.map(t=>'<button type="button" data-t="'+t+'"'+(free(picked,t)?'':' disabled')+(pickedSlot===t?' class="sel"':'')+'>'+t+'</button>').join('')+'</div>';}
+    let form='';
+    if(picked&&pickedSlot){form='<input id="cn" placeholder="Your name" autocomplete="name"><input id="ce" type="email" placeholder="Your email" autocomplete="email"><textarea id="cp" rows="2" placeholder="What is your project? (optional)"></textarea><button class="go" id="cgo" type="button">Confirm booking</button><div class="msg" id="cm"></div>';}
+    host.innerHTML='<div class="mh"><button type="button" id="cprev"'+(view<=minMonth?' disabled':'')+'>‹</button><span>'+monthName(view)+'</span><button type="button" id="cnext">›</button></div>'+
+      '<div class="wd">'+['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(x=>'<span>'+x+'</span>').join('')+'</div><div class="days">'+cells+'</div>'+times+form;
+    host.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{picked=new Date(view.getFullYear(),view.getMonth(),+b.dataset.d);pickedSlot=null;draw()});
+    host.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{pickedSlot=b.dataset.t;draw()});
+    const prev=document.getElementById('cprev'),next=document.getElementById('cnext');
+    if(prev)prev.onclick=async()=>{view=new Date(view.getFullYear(),view.getMonth()-1,1);picked=null;pickedSlot=null;await loadBooked();draw()};
+    if(next)next.onclick=async()=>{view=new Date(view.getFullYear(),view.getMonth()+1,1);picked=null;pickedSlot=null;await loadBooked();draw()};
+    const go=document.getElementById('cgo');
+    if(go)go.onclick=async()=>{
+      const name=document.getElementById('cn').value.trim(),email=document.getElementById('ce').value.trim(),project=document.getElementById('cp').value.trim(),m=document.getElementById('cm');
+      if(!name||!/^\S+@\S+\.\S+$/.test(email)){m.textContent='Please add your name and a valid email.';return}
+      go.disabled=true;m.textContent='Sending...';
+      const starts=new Date(slotMs(picked,pickedSlot)).toISOString();
+      const{error}=await sb.from('bookings').insert({name,email,project,starts_at:starts});
+      if(error){go.disabled=false;m.textContent='Sorry, that did not go through. Please try another time or email me.';return}
+      host.innerHTML='<div class="msg" style="font-size:18px;color:var(--ink);padding:18px 0">Booked! I will confirm by email, '+name+'.</div>';
+    };
+  };
+  await loadBooked();draw();
 })();
 </script>
 </body>

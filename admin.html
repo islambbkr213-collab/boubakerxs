@@ -16,6 +16,9 @@ button.ghost{background:transparent;color:var(--blue);border:1px solid var(--blu
 .row div{flex:1;min-width:0}.row b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .row button{padding:8px 14px;font-size:14px}
 .sh{font-size:15px;color:var(--blue);margin:24px 0 2px;font-weight:600}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;max-width:640px;margin:0 auto 20px}
+.tabs button{margin:0;background:rgba(255,255,255,.08);color:var(--ink);border:1px solid var(--line)}
+.tabs button.on{background:var(--blue);color:#05263c}
 .m{margin-top:14px;font-size:14px;color:var(--blue)}.hide{display:none}.top{display:flex;justify-content:space-between;align-items:center}
 </style></head><body>
 <div class="box" id="login"><h1>Admin login</h1><p style="color:var(--mute)">Only you can sign in here.</p>
@@ -23,7 +26,8 @@ button.ghost{background:transparent;color:var(--blue);border:1px solid var(--blu
 <button id="go" type="button">Sign in</button><p class="m" id="lmsg"></p></div>
 
 <div id="app" class="hide">
-<div class="box"><div class="top"><h1>Your projects</h1><button class="ghost" id="out" type="button">Sign out</button></div>
+<div class="tabs"><button data-t="projects" class="on" type="button">Projects</button><button data-t="bookings" type="button">Bookings</button><button data-t="site" type="button">Site &amp; design</button></div>
+<div class="box" data-tab="projects"><div class="top"><h1>Your projects</h1><button class="ghost" id="out" type="button">Sign out</button></div>
 <h2 style="margin-top:18px">Add or edit a project</h2>
 <form id="form"><label>Title</label><input id="t">
 <label>Type</label><select id="c"><option>Video editing</option><option>SaaS motion</option><option>Design</option></select>
@@ -31,8 +35,9 @@ button.ghost{background:transparent;color:var(--blue);border:1px solid var(--blu
 <label>YouTube link (leave empty for design work)</label><input id="y" placeholder="https://youtu.be/...">
 <label>Thumbnail image</label><input id="f" type="file" accept="image/*">
 <button id="save" type="button">Add project</button></form><p class="m" id="msg"></p></div>
-<div class="box"><h2>Published on your site</h2><div id="list"></div></div>
-<div class="box"><h2>Site text and settings</h2><p class="m" style="color:var(--mute)">Change any text below, then click Save. Your site updates within a few seconds. Leave a social link empty to hide it.</p>
+<div class="box" data-tab="projects"><h2>Published on your site</h2><div id="list"></div></div>
+<div class="box" data-tab="bookings"><h2>Bookings</h2><p class="m" style="color:var(--mute)">New requests from your booking calendar. Change the status or delete them.</p><div id="blist"></div></div>
+<div class="box" data-tab="site"><h2>Site text and settings</h2><p class="m" style="color:var(--mute)">Change any text below, then click Save. Your site updates within a few seconds. Leave a social link empty to hide it.</p>
 <div id="sfields"></div><button id="ssave" type="button">Save site settings</button><p class="m" id="smsg"></p></div></div>
 
 <script src="config.js"></script>
@@ -43,7 +48,7 @@ if(!C||/PASTE/.test(C.SUPABASE_URL)){$('login').innerHTML='<h1>Setup needed</h1>
 else{
 const sb=supabase.createClient(C.SUPABASE_URL,C.SUPABASE_ANON_KEY);let editId=null;
 const ytId=u=>{const m=String(u||'').match(/(?:v=|youtu\.be\/|shorts\/|embed\/)([\w-]{11})/);return m?m[1]:/^[\w-]{11}$/.test(u||'')?u:''};
-const show=async()=>{const{data:{session}}=await sb.auth.getSession();$('login').classList.toggle('hide',!!session);$('app').classList.toggle('hide',!session);if(session){load();loadS()}};
+const show=async()=>{const{data:{session}}=await sb.auth.getSession();$('login').classList.toggle('hide',!!session);$('app').classList.toggle('hide',!session);if(session){load();loadS();loadB();showTab('projects')}};
 $('go').onclick=async()=>{const{error}=await sb.auth.signInWithPassword({email:$('em').value.trim(),password:$('pw').value});$('lmsg').textContent=error?error.message:'';show()};
 $('out').onclick=async()=>{await sb.auth.signOut();show()};
 const load=async()=>{const{data}=await sb.from('projects').select('*').order('created_at',{ascending:false});const rows=data||[];
@@ -67,7 +72,7 @@ $('save').onclick=async()=>{
  const{error}=await(editId?sb.from('projects').update(rec).eq('id',editId):sb.from('projects').insert(rec));
  if(error)return msg(error.message);
  editId=null;$('form').reset();$('save').textContent='Add project';msg('Saved! It is now live on your website.');load()};
-// ---- site text & settings ----
+// ---- site text, design, cursor, bookings ----
 const SF=[
  ['h','Hero'],['status','Badge text','t'],['h1','Headline (use | to separate)','t'],['h1Prefix','Headline line 2, start (white)','t'],['h1Accent','Headline line 2, accent (blue italic)','t'],
  ['lead','Hero description','a'],['btn1','Button 1 text','t'],['btn2','Button 2 text','t'],
@@ -76,18 +81,24 @@ const SF=[
  ['h','Contact'],['cTitle','Title (the last word becomes italic)','t'],['cSub','Text','a'],['cBtn','Email button text','t'],['email','Email address','t'],
  ['h','Social links (empty = hidden, full https link)'],['ig','Instagram','t'],['be','Behance','t'],['li','LinkedIn','t'],['wa','WhatsApp','t'],
  ['h','Footer'],['footer','Footer text','t'],
- ['h','Animation'],['speed','Animation length (1 = normal, below 1 faster, above 1 slower)','r']
+ ['h','Design'],['accent','Accent color (hex, e.g. #0a72ff)','t'],['veil','Background brightness: 0 = clear, 0.8 = white','r2'],
+ ['h','Cursor'],['labelOn','Hover label on videos and projects','s'],['vidText','Video hover label text','t'],['projText','Project hover label text','t'],
+ ['h','Animation'],['speed','Animation length (1 = normal, below 1 faster, above 1 slower)','r'],
+ ['h','Booking calendar'],['bookDays','Bookable days (0 = Sun ... 6 = Sat, comma separated)','t'],['bookSlots','Time slots, Algeria time (e.g. 10:00,12:00,14:00)','t']
 ];
-const SDEF={status:'Open for projects',h1:'Video Editing | Motion | Design',h1Prefix:'for',h1Accent:'Brands & Creators',
+const SDEF={status:'2 spots left for October',h1:'Video Editing | Motion | Design',h1Prefix:'for',h1Accent:'Brands & Creators',
  lead:'I edit videos and animate SaaS products so people understand them in seconds.',btn1:'See my work',btn2:'Start a project',
  s1n:'120+',s1l:'Videos delivered',s2n:'35',s2l:'SaaS products animated',s3n:'48h',s3l:'Typical first draft',
  aTitle:"Hi, I'm Boubaker.",aP1:"I'm a video editor and motion designer based in Algeria, working with SaaS teams and creators worldwide. I turn complex products into clear, watchable stories.",aP2:'Available for freelance and long-term collaborations.',
  cTitle:"Let's make something move.",cSub:"Tell me about your project and I'll reply within a day.",cBtn:'Email me',email:'you@example.com',
- ig:'',be:'',li:'',wa:'',footer:'© 2026 Boubaker. All rights reserved.',speed:1};
+ ig:'',be:'',li:'',wa:'',footer:'© 2026 Boubaker. All rights reserved.',
+ accent:'#0a72ff',veil:0.28,labelOn:'yes',vidText:'Watch video',projText:'View project',speed:1,bookDays:'0,1,2,3,4',bookSlots:'10:00,12:00,14:00,16:00'};
 $('sfields').innerHTML=SF.map(([k,l,t])=>{
   if(t===undefined)return '<h3 class="sh">'+l+'</h3>';
   if(t==='a')return '<label>'+l+'</label><textarea id="f_'+k+'" rows="3"></textarea>';
-  if(t==='r')return '<label>'+l+' <span id="o_speed" style="color:var(--blue)"></span></label><input id="f_'+k+'" type="range" min="0.5" max="2" step="0.1" oninput="document.getElementById(\'o_speed\').textContent=this.value">';
+  if(t==='s')return '<label>'+l+'</label><select id="f_'+k+'"><option value="yes">Yes</option><option value="no">No</option></select>';
+  if(t==='r'||t==='r2'){const mn=t==='r'?0.5:0,mx=t==='r'?2:0.8,st=t==='r'?0.1:0.05;
+    return '<label>'+l+' <span id="o_'+k+'" style="color:var(--blue)"></span></label><input id="f_'+k+'" type="range" min="'+mn+'" max="'+mx+'" step="'+st+'" oninput="document.getElementById(\'o_'+k+'\').textContent=this.value">';}
   return '<label>'+l+'</label><input id="f_'+k+'">';
 }).join('');
 const loadS=async()=>{
@@ -95,13 +106,33 @@ const loadS=async()=>{
   if(error){$('smsg').textContent=error.message;return}
   const v=Object.assign({},SDEF,(data&&data.value)||{});
   SF.filter(x=>x[2]).forEach(([k])=>{const el=$('f_'+k);if(el)el.value=v[k]!=null?v[k]:''});
-  $('o_speed').textContent=$('f_speed').value;
+  SF.filter(x=>x[2]==='r'||x[2]==='r2').forEach(([k])=>{const o=$('o_'+k),el=$('f_'+k);if(o&&el)o.textContent=el.value});
 };
 $('ssave').onclick=async()=>{
-  const o={};SF.filter(x=>x[2]).forEach(([k,l,t])=>{const el=$('f_'+k);o[k]=t==='r'?parseFloat(el.value):el.value.trim()});
+  const o={};SF.filter(x=>x[2]).forEach(([k,l,t])=>{const el=$('f_'+k);o[k]=(t==='r'||t==='r2')?parseFloat(el.value):el.value.trim()});
   $('smsg').textContent='Saving...';
   const{error}=await sb.from('site_settings').upsert({key:'main',value:o});
   $('smsg').textContent=error?error.message:'Saved! Your site updates within a few seconds. Refresh the site to see it.';
 };
+// ---- bookings ----
+const loadB=async()=>{
+  const{data,error}=await sb.from('bookings').select('*').order('starts_at',{ascending:true});
+  const rows=data||[];
+  $('blist').innerHTML=error?'<p class="m">'+error.message+'</p>':(rows.length?'':'<p style="color:var(--mute)">No bookings yet.</p>');
+  rows.forEach(b=>{const d=document.createElement('div');d.className='row';
+    d.innerHTML='<div><b></b><small style="color:var(--mute)"></small></div><select style="width:auto;padding:8px 10px"></select><button class="ghost" type="button">Delete</button>';
+    d.querySelector('b').textContent=new Date(b.starts_at).toLocaleString(undefined,{dateStyle:'medium',timeStyle:'short'})+' · '+b.name;
+    d.querySelector('small').textContent=b.email+(b.project?' · '+b.project:'');
+    const sel=d.querySelector('select');['new','confirmed','done'].forEach(s=>{const o=document.createElement('option');o.value=s;o.textContent=s;if(s===b.status)o.selected=true;sel.append(o)});
+    sel.onchange=async()=>{await sb.from('bookings').update({status:sel.value}).eq('id',b.id)};
+    d.querySelector('button').onclick=async()=>{if(!confirm('Delete this booking?'))return;await sb.from('bookings').delete().eq('id',b.id);loadB()};
+    $('blist').append(d)});
+};
+// ---- tabs ----
+const showTab=t=>{
+  document.querySelectorAll('#app [data-tab]').forEach(el=>{el.hidden=el.dataset.tab!==t});
+  document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
+};
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>showTab(b.dataset.t));
 show();}
 </script></body></html>
