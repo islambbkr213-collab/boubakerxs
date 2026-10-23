@@ -324,6 +324,21 @@ nav b,nav ul a{color:var(--ink)}
 .cal .go{justify-self:start;padding:12px 26px;background:var(--blue);color:#fff;font-weight:600;box-shadow:0 10px 26px -10px var(--blue)}
 .cal .go:disabled{opacity:.5}
 .cal .msg{font-size:15px;color:var(--mute)}
+
+/* ===== clean pass: lighter cards, eyebrow labels, organised footer ===== */
+.eyebrow{display:block;color:var(--blue);font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px}
+.card{background:rgba(255,255,255,.72)!important;border:1px solid rgba(10,40,80,.06)!important;box-shadow:0 1px 2px rgba(10,40,80,.04),0 18px 40px -26px rgba(10,60,140,.22)!important}
+.head{margin-bottom:40px}
+section{padding:104px 0 0}
+.foot{margin-top:120px;border-top:1px solid rgba(10,40,80,.08);padding:56px 0 28px;background:rgba(255,255,255,.55);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.foot-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px}
+.foot-grid b{font-size:20px;letter-spacing:-.02em}
+.foot-grid small{display:block;color:var(--mute);font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px}
+.foot-grid a{display:block;color:var(--ink);font-size:15px;margin-bottom:10px;opacity:.85}
+.foot-grid a:hover{opacity:1;color:var(--blue)}
+.foot-mute{color:var(--mute);font-size:15px;margin-top:10px;max-width:320px}
+.foot-bottom{margin-top:44px;padding-top:20px;border-top:1px solid rgba(10,40,80,.08);color:var(--mute);font-size:13px}
+@media(max-width:700px){.foot-grid{grid-template-columns:1fr 1fr}.foot-grid>div:first-child{grid-column:1/-1}}
 </style>
 </head>
 <body>
@@ -367,12 +382,12 @@ nav b,nav ul a{color:var(--ink)}
 
   <!-- VIDEO EDITING -->
   <section id="projects">
-    <div class="head"><h2>Projects</h2><p>Pick what you need.</p></div>
+    <div class="head"><small class="eyebrow">Services</small><h2>Projects</h2><p>Pick what you need.</p></div>
     <div class="cats"><a class="cat glass-card" href="#edits"><small>01</small><h3>Product launch & demos</h3><p>Launch films and product walkthroughs</p><span class="cat-go">View work →</span></a><a class="cat glass-card" href="#edits"><small>02</small><h3>YouTube & VSLs</h3><p>Long-form videos and sales letters</p><span class="cat-go">View work →</span></a><a class="cat glass-card" href="#edits"><small>03</small><h3>Shorts & reels</h3><p>Fast cuts built for short-form feeds</p><span class="cat-go">View work →</span></a></div>
   </section>
 
   <section id="edits">
-    <div class="head"><h2>My work</h2><p>Recent projects.</p></div>
+    <div class="head"><small class="eyebrow">Selected work</small><h2>My work</h2><p>Recent projects.</p></div>
     <div class="grid" id="work"></div>
   </section>
 
@@ -429,7 +444,14 @@ nav b,nav ul a{color:var(--ink)}
   </section>
 </main>
 
-<footer id="fText">© 2026 Boubaker. All rights reserved.</footer>
+<footer class="foot">
+  <div class="wrap foot-grid">
+    <div><b>Boubaker<span style="color:var(--blue)">.</span></b><p class="foot-mute">Video editing, motion and design for brands and creators.</p></div>
+    <div><small>Work</small><a href="#projects">Services</a><a href="#edits">Selected work</a><a href="#design">Design</a></div>
+    <div><small>Studio</small><a href="#about">About</a><a href="#call">Book a call</a><a href="#contact">Contact</a></div>
+  </div>
+  <div class="wrap foot-bottom"><span id="fText">© 2026 Boubaker. All rights reserved.</span></div>
+</footer>
 <script>
 /* ---- live site settings (edited in admin.html, no upload needed) ---- */
 const applySettings=S=>{
