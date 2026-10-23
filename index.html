@@ -295,6 +295,12 @@ nav b,nav ul a{color:var(--ink)}
 .callbox h2{font-size:clamp(30px,4.6vw,48px)}
 .callbox p{color:var(--mute);font-size:19px;margin-bottom:14px}
 @media(max-width:860px){.cats{grid-template-columns:1fr}}
+
+/* hover label cursor on videos and project cards */
+.cur-label{position:fixed;left:0;top:0;z-index:300;pointer-events:none;padding:9px 16px;border-radius:99px;font-size:14px;font-weight:600;color:var(--ink);background:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.95);backdrop-filter:blur(16px) saturate(180%);-webkit-backdrop-filter:blur(16px) saturate(180%);box-shadow:0 12px 30px -12px rgba(10,60,140,.45);opacity:0;transform:translate3d(-100px,-100px,0) scale(.6);transition:opacity .25s ease,scale .35s cubic-bezier(.2,.95,.3,1.2);white-space:nowrap}
+.cur-label.on{opacity:1}
+.cur-label.big{scale:1}
+.hide-cursor,.hide-cursor *{cursor:none!important}
 </style>
 </head>
 <body>
@@ -344,12 +350,7 @@ nav b,nav ul a{color:var(--ink)}
 
   <section id="edits">
     <div class="head"><h2>My work</h2><p>Recent projects.</p></div>
-    <div class="grid" id="projects">
-      <article class="card feature">
-        <div class="vid" data-yt="SgmuplXU2iY" role="button" tabindex="0" aria-label="Play Ordo Aure - Aure Ventus" style="aspect-ratio:16/9;cursor:pointer"><img src="assets/ordo-aure.jpg" alt="Ordo Aure Aure Ventus perfume bottle on a silver tray beside an embroidered lace doily" loading="lazy"><span class="play"></span></div>
-        <div class="meta"><small>Brand film · Video editing</small><h3>Ordo Aure — Aure Ventus</h3><p>Video edit for a perfume brand.</p></div>
-      </article>
-    </div>
+    <div class="grid" id="work"></div>
   </section>
 
   <!-- TOOLS -->
@@ -751,8 +752,8 @@ document.addEventListener('keydown',e=>{const t=e.target.closest?e.target:null,e
     const work=data.filter(p=>p.category!=='Design'),des=data.filter(p=>p.category==='Design'&&p.thumb_url);
     window.__designs=des;
     const nav=h=>document.querySelector('nav a[href="'+h+'"]');
-    if(work.length)document.getElementById('projects').innerHTML=work.map(p=>card(p,work.length===1)).join('');
-    else{document.getElementById('edits').hidden=true;nav('#edits').parentElement.hidden=true}
+    if(work.length)document.getElementById('work').innerHTML=work.map(p=>card(p,work.length===1)).join('');
+    else{document.getElementById('edits').hidden=true;const nl=nav('#edits');nl&&(nl.parentElement.hidden=true)}
     if(des.length){document.getElementById('design').hidden=false;document.getElementById('navdesign').hidden=false;
       document.getElementById('designs').innerHTML=des.map((p,i)=>slide(p,i)).join('');initCar()}
     if(!work.length&&des.length)document.querySelector('.hero a.light').href='#design';
@@ -769,6 +770,24 @@ document.addEventListener('keydown',e=>{const t=e.target.closest?e.target:null,e
     st.style.setProperty('--mx',(x-r.left)+'px');st.style.setProperty('--my',(y-r.top)+'px');
     st.style.setProperty('--spot',(x>r.left&&x<r.right&&y>r.top&&y<r.bottom)?1:0);
   },{passive:true});
+})();
+</script>
+<script>
+/* hovering a video or project shows a label that follows the mouse, like zakariahq.com */
+(()=>{
+  if(!matchMedia('(hover:hover) and (pointer:fine)').matches)return;
+  const lab=document.createElement('div');lab.className='cur-label';document.body.append(lab);
+  let x=0,y=0,cx=0,cy=0,on=false;
+  const loop=()=>{cx+=(x-cx)*.28;cy+=(y-cy)*.28;lab.style.transform='translate3d('+(cx+16)+'px,'+(cy+16)+'px,0)';requestAnimationFrame(loop)};loop();
+  document.addEventListener('pointermove',e=>{x=e.clientX;y=e.clientY;
+    const t=e.target.closest&&e.target.closest('[data-yt],[data-proj],[data-full],.cat');
+    if(t){
+      const txt=t.dataset.yt?'Watch video':t.classList.contains('cat')?'View work':'View project';
+      if(lab.textContent!==txt)lab.textContent=txt;
+      if(!on){on=true;lab.classList.add('on');document.documentElement.classList.add('hide-cursor')}
+    }else if(on){on=false;lab.classList.remove('on');document.documentElement.classList.remove('hide-cursor')}
+  },{passive:true});
+  document.documentElement.addEventListener('pointerleave',()=>{lab.classList.remove('on');on=false;document.documentElement.classList.remove('hide-cursor')});
 })();
 </script>
 </body>
