@@ -339,6 +339,24 @@ section{padding:104px 0 0}
 .foot-mute{color:var(--mute);font-size:15px;margin-top:10px;max-width:320px}
 .foot-bottom{margin-top:44px;padding-top:20px;border-top:1px solid rgba(10,40,80,.08);color:var(--mute);font-size:13px}
 @media(max-width:700px){.foot-grid{grid-template-columns:1fr 1fr}.foot-grid>div:first-child{grid-column:1/-1}}
+
+/* ===== Apple Vision Pro style layout: big statement headings, list-style services, generous space ===== */
+section{padding:150px 0 0}
+.head{text-align:center;margin-bottom:64px;max-width:860px;margin-left:auto;margin-right:auto}
+.head h2{font-size:clamp(44px,7vw,92px);line-height:1.02;letter-spacing:-.045em;font-weight:700}
+.head p{font-size:clamp(19px,2.2vw,24px);color:var(--mute);margin-top:18px;letter-spacing:-.01em}
+.eyebrow{font-size:14px;letter-spacing:.02em;text-transform:uppercase}
+.cats{display:flex;flex-direction:column;gap:0;border-top:1px solid rgba(10,40,80,.12);max-width:900px;margin:0 auto}
+.cat{flex-direction:row!important;align-items:center;justify-content:space-between;gap:24px;padding:34px 8px!important;border-radius:0!important;background:transparent!important;border:0!important;border-bottom:1px solid rgba(10,40,80,.12)!important;box-shadow:none!important;flex-wrap:wrap}
+.cat:hover{scale:1}
+.cat:hover h3{color:var(--blue)}
+.cat h3{font-size:clamp(26px,3.4vw,40px);letter-spacing:-.03em;transition:color .3s;margin:0;flex:1 1 360px}
+.cat p{flex:1 1 280px;margin:0}
+.cat small{display:none}
+.cat-go{margin:0;padding:0;font-size:17px}
+.callbox{border-radius:44px}
+.callbox h2{font-size:clamp(40px,6vw,76px);letter-spacing:-.045em;line-height:1.02}
+@media(max-width:700px){section{padding:110px 0 0}.cat{flex-direction:column;align-items:flex-start}}
 </style>
 </head>
 <body>
