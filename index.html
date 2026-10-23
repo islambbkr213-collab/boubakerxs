@@ -280,6 +280,21 @@ nav b,nav ul a{color:var(--ink)}
 .g2{right:34%;top:52%;left:auto}
 .g3{right:4%;top:78%;left:auto}
 @media(max-width:700px){.g1{top:52%;right:4%}.g2{top:66%;right:4%;left:auto}.g4,.g3{display:none}}
+
+/* ===== layout additions: projects categories and book-a-call ===== */
+.cats{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.cat{display:flex;flex-direction:column;gap:6px;padding:30px;border-radius:var(--r-lg);text-decoration:none;color:var(--ink);transition:scale .35s cubic-bezier(.2,.8,.2,1)}
+.cat:hover{scale:1.02}
+.cat small{color:var(--blue);font-weight:600;font-size:14px}
+.cat h3{font-size:24px;letter-spacing:-.02em;line-height:1.15}
+.cat p{color:var(--mute);font-size:16px}
+.cat-go{margin-top:auto;padding-top:18px;color:var(--blue);font-weight:500;font-size:15px}
+.glass-card{background:rgba(255,255,255,.6);backdrop-filter:blur(22px) saturate(170%);-webkit-backdrop-filter:blur(22px) saturate(170%);border:1px solid rgba(255,255,255,.85);box-shadow:inset 0 1px 0 #fff,0 24px 50px -28px rgba(10,60,140,.3)}
+.callbox{text-align:center;padding:64px 28px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.callbox small{color:var(--blue);font-weight:600;font-size:14px}
+.callbox h2{font-size:clamp(30px,4.6vw,48px)}
+.callbox p{color:var(--mute);font-size:19px;margin-bottom:14px}
+@media(max-width:860px){.cats{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -287,11 +302,12 @@ nav b,nav ul a{color:var(--ink)}
 <nav><div class="wrap">
   <b>Boubaker<span style="color:var(--blue)">.</span></b>
   <ul>
+    <li><a href="#projects">Projects</a></li>
     <li><a href="#edits">Work</a></li>
     <li id="navdesign" hidden><a href="#design">Design</a></li>
     <li><a href="#about">About</a></li>
   </ul>
-  <a class="pill" href="#contact">Hire me</a>
+  <a class="pill" href="#call">Book a call</a>
 </div></nav>
 
 <header class="hero"><div class="wrap">
@@ -300,7 +316,7 @@ nav b,nav ul a{color:var(--ink)}
     <span class="glass g2" style="--r:3deg">Short-form videos</span>
     <span class="glass g3" style="--r:-2deg">Long-form videos</span>
     <span class="glass g4" style="--r:2deg">SaaS motion</span>
-    <span class="status"><i></i><span id="hStatus">Open for projects</span></span>
+    <span class="status"><i></i><span id="hStatus">2 spots left for October</span></span>
     <h1 id="hH1">Video Editing <span class="sep">|</span> Motion <span class="sep">|</span> Design<br>for <em>Brands &amp; Creators</em></h1>
     <p id="hLead">I edit videos and animate SaaS products so people understand them in seconds.</p>
     <div class="row">
@@ -321,6 +337,11 @@ nav b,nav ul a{color:var(--ink)}
   </section>
 
   <!-- VIDEO EDITING -->
+  <section id="projects">
+    <div class="head"><h2>Projects</h2><p>Pick what you need.</p></div>
+    <div class="cats"><a class="cat glass-card" href="#edits"><small>01</small><h3>Product launch & demos</h3><p>Launch films and product walkthroughs</p><span class="cat-go">View work →</span></a><a class="cat glass-card" href="#edits"><small>02</small><h3>YouTube & VSLs</h3><p>Long-form videos and sales letters</p><span class="cat-go">View work →</span></a><a class="cat glass-card" href="#edits"><small>03</small><h3>Shorts & reels</h3><p>Fast cuts built for short-form feeds</p><span class="cat-go">View work →</span></a></div>
+  </section>
+
   <section id="edits">
     <div class="head"><h2>My work</h2><p>Recent projects.</p></div>
     <div class="grid" id="projects">
@@ -365,6 +386,15 @@ nav b,nav ul a{color:var(--ink)}
   </section>
 
   <!-- CONTACT -->
+  <section id="call">
+    <div class="card callbox">
+      <small>Book a call</small>
+      <h2>Let's talk scope, timeline and budget.</h2>
+      <p>No fluff, just clarity. Tell me what you're building and I'll tell you how I can help.</p>
+      <a class="pill" href="#contact">Book a free call</a>
+    </div>
+  </section>
+
   <section id="contact">
     <div class="card contact">
       <h2 id="cTitle">Let's make something <em>move.</em></h2>
