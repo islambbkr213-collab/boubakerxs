@@ -366,6 +366,10 @@ section{padding:150px 0 0}
 .grp .grid .card{grid-column:span 4}
 @media(max-width:1000px){.grp .grid .card{grid-column:span 6}}
 @media(max-width:640px){.grp .grid .card{grid-column:span 12}}
+
+/* fix: the Work container is a plain block, so each group gets the full width */
+#work{display:block}
+.grp .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:20px}
 </style>
 </head>
 <body>
