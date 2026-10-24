@@ -400,6 +400,32 @@ section{padding:150px 0 0}
 .pc-arrows button{width:48px;height:48px;border-radius:50%;border:1px solid rgba(255,255,255,.9);background:rgba(255,255,255,.7);color:var(--ink);display:grid;place-items:center;cursor:pointer;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);transition:transform .25s}
 .pc-arrows button:hover{transform:scale(1.1)}
 .pc-arrows button:active{transform:scale(.95)}
+
+/* ===== About: Apple-style portrait layout ===== */
+.card.about.ab{display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);gap:clamp(28px,4vw,64px);align-items:center;padding:14px;border-radius:44px}
+.ab-photo{position:relative;aspect-ratio:3/4;border-radius:32px;overflow:hidden;background:#0d3a8a;box-shadow:0 30px 60px -30px rgba(10,60,140,.55);transition:transform .5s cubic-bezier(.2,.8,.2,1);will-change:transform}
+.ab-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%;transform:scale(1.03);transition:transform 1.4s cubic-bezier(.2,.8,.2,1)}
+.ab-photo:hover img{transform:scale(1.08)}
+.ab-photo::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px rgba(255,255,255,.3);pointer-events:none}
+.ab-chip,.ab-bar{background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.85);backdrop-filter:blur(18px) saturate(180%);-webkit-backdrop-filter:blur(18px) saturate(180%);box-shadow:inset 0 1px 0 #fff,0 14px 30px -14px rgba(0,30,80,.55);color:var(--ink)}
+.ab-chip{position:absolute;z-index:2;padding:10px 18px;border-radius:99px;font-size:14px;font-weight:600;animation:abfloat 6s ease-in-out infinite}
+.ab-c1{top:6%;left:6%}.ab-c2{top:15%;right:6%;animation-delay:-2.5s}
+@keyframes abfloat{50%{transform:translateY(-8px)}}
+.ab-bar{position:absolute;z-index:2;left:14px;right:14px;bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-radius:22px}
+.ab-bar b{display:block;font-size:17px;letter-spacing:-.02em;line-height:1.2}
+.ab-bar small{display:block;font-size:13px;color:var(--mute)}
+.ab-live{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;white-space:nowrap}
+.ab-live i{width:8px;height:8px;border-radius:50%;background:#22c55e;animation:ping 2s infinite}
+.ab-text{padding:clamp(6px,2vw,28px) clamp(6px,3vw,40px) clamp(6px,2vw,28px) 0}
+.ab-text h2{font-size:clamp(38px,5vw,68px);line-height:1.02;letter-spacing:-.045em;font-weight:700;margin-bottom:6px}
+.ab-text p{font-size:clamp(17px,1.7vw,20px);line-height:1.5}
+.ab-facts{display:grid;grid-template-columns:1fr 1fr;margin:30px 0 0;border-top:1px solid rgba(10,40,80,.1)}
+.ab-facts div{padding:16px 0;border-bottom:1px solid rgba(10,40,80,.1)}
+.ab-facts div:nth-child(odd){padding-right:16px}
+.ab-facts dt{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);font-weight:600}
+.ab-facts dd{margin:4px 0 0;font-size:17px;font-weight:600;letter-spacing:-.01em}
+.ab-cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+@media(max-width:860px){.card.about.ab{grid-template-columns:1fr;padding:12px;border-radius:36px}.ab-photo{aspect-ratio:4/5;border-radius:26px}.ab-text{padding:10px 12px 20px}}
 </style>
 </head>
 <body>
@@ -477,15 +503,28 @@ section{padding:150px 0 0}
   </section>
 
   <section id="about">
-    <div class="card about">
-      <div class="avatar"><!-- <img src="assets/me.jpg" alt="Boubaker"> -->B</div>
-      <div>
-        <h2 id="aTitle" style="font-size:40px">Hi, I'm Boubaker.</h2>
-        <p id="aP1">I'm a video editor and motion designer based in Algeria, working with SaaS teams and creators worldwide. I turn complex products into clear, watchable stories.</p>
-        <p id="aP2">Available for freelance and long-term collaborations.</p>
-      </div>
-    </div>
-  </section>
+<div class="card about ab">
+<div class="ab-photo" id="abPhoto">
+<img src="assets/me.jpg" alt="Portrait of Boubaker, video editor and motion designer" width="1000" height="1333" loading="lazy">
+<span class="ab-chip ab-c1">Video editor</span>
+<span class="ab-chip ab-c2">Motion designer</span>
+<div class="ab-bar"><div><b>Boubaker</b><small>Algeria</small></div><span class="ab-live"><i></i>Open for work</span></div>
+</div>
+<div class="ab-text">
+<small class="eyebrow">About</small>
+<h2 id="aTitle">Hi, I'm Boubaker.</h2>
+<p id="aP1">I'm a video editor and motion designer based in Algeria, working with SaaS teams and creators worldwide. I turn complex products into clear, watchable stories.</p>
+<p id="aP2">Available for freelance and long-term collaborations.</p>
+<dl class="ab-facts">
+<div><dt>Based in</dt><dd>Algeria</dd></div>
+<div><dt>Focus</dt><dd>Video &amp; motion</dd></div>
+<div><dt>Works with</dt><dd>SaaS teams &amp; creators</dd></div>
+<div><dt>Availability</dt><dd>Freelance &amp; long-term</dd></div>
+</dl>
+<div class="ab-cta"><a class="pill" href="#call">Book a call</a><a class="pill ghost" href="#contact">Say hello</a></div>
+</div>
+</div>
+</section>
 
   <!-- CONTACT -->
   <section id="reviews" hidden>
@@ -1036,6 +1075,14 @@ setInterval(()=>{if(visible&&!hover&&!down&&Date.now()-last>6000)go(idx()+1)},45
 }
 tr.scrollLeft=0;upd();
 }
+})();
+</script>
+<script>
+/* about portrait: gentle 3D tilt that follows the mouse (desktop only) */
+(()=>{const p=document.getElementById('abPhoto');
+if(!p||!matchMedia('(hover:hover) and (pointer:fine)').matches||matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+p.addEventListener('pointermove',e=>{const r=p.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;p.style.transform='perspective(1000px) rotateY('+(x*6).toFixed(2)+'deg) rotateX('+(-y*6).toFixed(2)+'deg)'});
+p.addEventListener('pointerleave',()=>{p.style.transform=''});
 })();
 </script>
 </body>
