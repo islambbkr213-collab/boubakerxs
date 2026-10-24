@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#000000"><meta name="color-scheme" content="dark">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/design.css">
+<link rel="stylesheet" href="assets/design-dark.css?v=4">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script>
 </head>
 <body>
@@ -20,9 +20,9 @@ let all=[];
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
 function render(){$('#show').innerHTML=all.length?all.map((p,i)=>`<button class="tile" data-i="${i}" aria-label="${esc(p.title)}">${p.cover_url?`<img src="${esc(p.cover_url)}" alt="${esc(p.title)}" loading="${i<2?'eager':'lazy'}">`:`<div class="ph">${esc(p.category||'')}</div>`}<div class="cap"><small>${esc(p.category)}</small><b>${esc(p.title)}</b></div></button>`).join(''):'<div class="none">New work coming soon.</div>';
 document.querySelectorAll('.tile').forEach(t=>io.observe(t))}
-$('#show').onclick=e=>{const t=e.target.closest('.tile');if(t)open(all[+t.dataset.i])};
-function open(p){const g=Array.isArray(p.media_urls)?p.media_urls:[];let em=p.behance_embed_url||'';if(!em&&p.behance_url){const m=p.behance_url.match(/behance\.net\/(?:gallery|project)\/(\d+)/);if(m)em=`https://www.behance.net/embed/project/${m[1]}?ilo0=1`}
-$('#mc').innerHTML=`<div><small>${esc(p.category)}</small><h2>${esc(p.title)}</h2>${p.description?`<p>${esc(p.description)}</p>`:''}</div>${p.cover_url?`<img src="${esc(p.cover_url)}" alt="${esc(p.title)}">`:''}${g.map(u=>`<img src="${esc(u)}" loading="lazy" alt="">`).join('')}${em?`<iframe src="${esc(em)}" loading="lazy" allowfullscreen title="Project"></iframe>`:''}${p.behance_url?`<a class="go" href="${esc(p.behance_url)}" target="_blank" rel="noopener">View on Behance ↗</a>`:''}`;
+$('#show').onclick=e=>{const t=e.target.closest('.tile');if(!t)return;const p=all[+t.dataset.i];if(p.behance_url){window.open(p.behance_url,'_blank','noopener')}else{open(p)}};
+function open(p){const g=Array.isArray(p.media_urls)?p.media_urls:[];
+$('#mc').innerHTML=`<div><small>${esc(p.category)}</small><h2>${esc(p.title)}</h2>${p.description?`<p>${esc(p.description)}</p>`:''}</div>${p.cover_url?`<img src="${esc(p.cover_url)}" alt="${esc(p.title)}">`:''}${g.map(u=>`<img src="${esc(u)}" loading="lazy" alt="">`).join('')}`;
 $('#modal').classList.add('open');$('#modal').scrollTop=0;document.body.classList.add('lock')}
 const close=()=>{$('#modal').classList.remove('open');document.body.classList.remove('lock')};
 $('#x').onclick=close;document.addEventListener('keydown',e=>e.key==='Escape'&&close());
