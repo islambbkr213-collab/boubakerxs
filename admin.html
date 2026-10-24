@@ -1,139 +1,81 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Admin</title>
-<style>
-:root{--bg:#06263c;--ink:#eef6fb;--mute:rgba(238,246,251,.68);--line:rgba(255,255,255,.16);--blue:#7cc4f4}
-*{box-sizing:border-box;margin:0}
-body{font-family:Inter,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;padding:24px;line-height:1.5}
-.box{max-width:640px;margin:0 auto 20px;background:rgba(255,255,255,.07);border:1px solid var(--line);border-radius:28px;padding:28px}
-h1{font-size:28px;letter-spacing:-.03em;margin-bottom:6px}h2{font-size:20px;margin-bottom:6px}
-label{display:block;font-size:14px;color:var(--mute);margin:14px 0 6px}
-input,select,textarea{width:100%;padding:13px 16px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.08);color:var(--ink);font:inherit}
-select option{color:#000}
-button{margin-top:18px;padding:12px 22px;border:0;border-radius:99px;background:var(--blue);color:#05263c;font:inherit;font-weight:600;cursor:pointer}
-button.ghost{background:transparent;color:var(--blue);border:1px solid var(--blue);margin:0}
-.row{display:flex;gap:10px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}
-.row img{width:84px;height:52px;object-fit:cover;border-radius:10px}
-.row div{flex:1;min-width:0}.row b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.row button{padding:8px 14px;font-size:14px}
-.sh{font-size:15px;color:var(--blue);margin:24px 0 2px;font-weight:600}
-.tabs{display:flex;gap:8px;flex-wrap:wrap;max-width:640px;margin:0 auto 20px}
-.tabs button{margin:0;background:rgba(255,255,255,.08);color:var(--ink);border:1px solid var(--line)}
-.tabs button.on{background:var(--blue);color:#05263c}
-.m{margin-top:14px;font-size:14px;color:var(--blue)}.hide{display:none}.top{display:flex;justify-content:space-between;align-items:center}
-</style></head><body>
-<div class="box" id="login"><h1>Admin login</h1><p style="color:var(--mute)">Only you can sign in here.</p>
-<label>Email</label><input id="em" type="email" autocomplete="username"><label>Password</label><input id="pw" type="password" autocomplete="current-password">
-<button id="go" type="button">Sign in</button><p class="m" id="lmsg"></p></div>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Generate Project HTML</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f1f5f9; padding: 40px; color: #0f172a; }
+        .admin-container { max-width: 700px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        h1 { margin-bottom: 20px; font-size: 1.8rem; }
+        p { color: #64748b; margin-bottom: 20px; font-size: 0.9rem; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: 600; margin-bottom: 5px; font-size: 0.9rem; }
+        input, textarea { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: inherit; }
+        button { background: #2563eb; color: white; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; width: 100%; margin-top: 10px; }
+        button:hover { background: #1d4ed8; }
+        .output-box { margin-top: 30px; }
+        textarea.code-output { height: 250px; font-family: monospace; background: #f8fafc; color: #0f172a; }
+        .note { background: #fef3c7; color: #92400e; padding: 15px; border-radius: 6px; font-size: 0.85rem; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
 
-<div id="app" class="hide">
-<div class="tabs"><button data-t="projects" class="on" type="button">Projects</button><button data-t="bookings" type="button">Bookings</button><button data-t="site" type="button">Site &amp; design</button></div>
-<div class="box" data-tab="projects"><div class="top"><h1>Your projects</h1><button class="ghost" id="out" type="button">Sign out</button></div>
-<h2 style="margin-top:18px">Add or edit a project</h2>
-<form id="form"><label>Title</label><input id="t">
-<label>Category</label><select id="c"><option>Product launch &amp; demos</option><option>Long-form (YouTube &amp; VSLs)</option><option>Shorts &amp; reels</option><option>Design</option></select>
-<label>Short description</label><textarea id="d" rows="2"></textarea>
-<label>YouTube link (leave empty for design work)</label><input id="y" placeholder="https://youtu.be/...">
-<label>Thumbnail image</label><input id="f" type="file" accept="image/*">
-<button id="save" type="button">Add project</button></form><p class="m" id="msg"></p></div>
-<div class="box" data-tab="projects"><h2>Published on your site</h2><div id="list"></div></div>
-<div class="box" data-tab="bookings"><h2>Bookings</h2><p class="m" style="color:var(--mute)">New requests from your booking calendar. Change the status or delete them.</p><div id="blist"></div></div>
-<div class="box" data-tab="site"><h2>Site text and settings</h2><p class="m" style="color:var(--mute)">Change any text below, then click Save. Your site updates within a few seconds. Leave a social link empty to hide it.</p>
-<div id="sfields"></div><button id="ssave" type="button">Save site settings</button><p class="m" id="smsg"></p></div></div>
+    <div class="admin-container">
+        <h1>Project HTML Generator</h1>
+        
+        <div class="note">
+            <strong>Note:</strong> Since your site is hosted on GitHub Pages (static), you cannot auto-post directly from here. Fill out the form below, click "Generate Code", copy the HTML code, and paste it into your <code>index.html</code> file inside the <code>&lt;div class="portfolio-grid"&gt;</code> section.
+        </div>
 
-<script src="config.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-const C=window.SITE_CONFIG,$=id=>document.getElementById(id),msg=t=>$('msg').textContent=t;
-if(!C||/PASTE/.test(C.SUPABASE_URL)){$('login').innerHTML='<h1>Setup needed</h1><p>Open config.js and paste your Supabase URL and key.</p>'}
-else{
-const sb=supabase.createClient(C.SUPABASE_URL,C.SUPABASE_ANON_KEY);let editId=null;
-const ytId=u=>{const m=String(u||'').match(/(?:v=|youtu\.be\/|shorts\/|embed\/)([\w-]{11})/);return m?m[1]:/^[\w-]{11}$/.test(u||'')?u:''};
-const show=async()=>{const{data:{session}}=await sb.auth.getSession();$('login').classList.toggle('hide',!!session);$('app').classList.toggle('hide',!session);if(session){load();loadS();loadB();showTab('projects')}};
-$('go').onclick=async()=>{const{error}=await sb.auth.signInWithPassword({email:$('em').value.trim(),password:$('pw').value});$('lmsg').textContent=error?error.message:'';show()};
-$('out').onclick=async()=>{await sb.auth.signOut();show()};
-const load=async()=>{const{data}=await sb.from('projects').select('*').order('created_at',{ascending:false});const rows=data||[];
- $('list').innerHTML=rows.length?'':'<p style="color:var(--mute)">Nothing yet.</p>';
- rows.forEach(p=>{const d=document.createElement('div');d.className='row';d.innerHTML='<img alt=""><div><b></b><small style="color:var(--mute)"></small></div><button class="ghost">Edit</button><button class="ghost">Delete</button>';
-  d.querySelector('img').src=p.thumb_url||'';d.querySelector('b').textContent=p.title;d.querySelector('small').textContent=p.category||'';
-  const[ed,del]=d.querySelectorAll('button');
-  ed.onclick=()=>{editId=p.id;$('t').value=p.title;$('c').value=p.category||'Video editing';$('d').value=p.description||'';$('y').value=p.youtube_id?'https://youtu.be/'+p.youtube_id:'';$('save').textContent='Save changes';scrollTo(0,0)};
-  del.onclick=async()=>{if(!confirm('Delete "'+p.title+'"?'))return;
-   if((p.thumb_url||'').includes('/thumbs/'))await sb.storage.from('thumbs').remove([p.thumb_url.split('/thumbs/')[1]]);
-   await sb.from('projects').delete().eq('id',p.id);load()};
-  $('list').append(d)})};
-const shrink=f=>new Promise(r=>{const i=new Image();i.onload=()=>{const k=Math.min(1,1600/i.width),c=document.createElement('canvas');c.width=i.width*k;c.height=i.height*k;c.getContext('2d').drawImage(i,0,0,c.width,c.height);c.toBlob(r,'image/jpeg',.86)};i.src=URL.createObjectURL(f)});
-$('save').onclick=async()=>{
- const title=$('t').value.trim();if(!title)return msg('Please write a title.');
- if($('c').value==='Design'&&!$('f').files[0]&&!editId)return msg('Please choose an image for your design.');
- const y=$('y').value.trim(),yid=ytId(y);if(y&&!yid)return msg('That YouTube link does not look right.');
- msg('Saving...');const rec={title,category:$('c').value,description:$('d').value.trim(),youtube_id:yid||null};
- const f=$('f').files[0];
- if(f){const path=Date.now()+'.jpg',up=await sb.storage.from('thumbs').upload(path,await shrink(f),{contentType:'image/jpeg'});if(up.error)return msg(up.error.message);rec.thumb_url=sb.storage.from('thumbs').getPublicUrl(path).data.publicUrl}
- const{error}=await(editId?sb.from('projects').update(rec).eq('id',editId):sb.from('projects').insert(rec));
- if(error)return msg(error.message);
- editId=null;$('form').reset();$('save').textContent='Add project';msg('Saved! It is now live on your website.');load()};
-// ---- site text, design, cursor, bookings ----
-const SF=[
- ['h','Hero'],['status','Badge text','t'],['h1','Headline (use | to separate)','t'],['h1Prefix','Headline line 2, start (white)','t'],['h1Accent','Headline line 2, accent (blue italic)','t'],
- ['lead','Hero description','a'],['btn1','Button 1 text','t'],['btn2','Button 2 text','t'],
- ['h','Stats'],['s1n','Stat 1 number','t'],['s1l','Stat 1 label','t'],['s2n','Stat 2 number','t'],['s2l','Stat 2 label','t'],['s3n','Stat 3 number','t'],['s3l','Stat 3 label','t'],
- ['h','About'],['aTitle','Title','t'],['aP1','Paragraph 1','a'],['aP2','Paragraph 2','a'],
- ['h','Contact'],['cTitle','Title (the last word becomes italic)','t'],['cSub','Text','a'],['cBtn','Email button text','t'],['email','Email address','t'],
- ['h','Social links (empty = hidden, full https link)'],['ig','Instagram','t'],['be','Behance','t'],['li','LinkedIn','t'],['wa','WhatsApp','t'],
- ['h','Footer'],['footer','Footer text','t'],
- ['h','Client reviews'],['reviews','One per line: Client name | Role | Review text | Link to the project (optional)','a'],
- ['h','Design'],['accent','Accent color (hex, e.g. #0a72ff)','t'],['veil','Background brightness: 0 = clear, 0.8 = white','r2'],
- ['h','Cursor'],['labelOn','Hover label on videos and projects','s'],['vidText','Video hover label text','t'],['projText','Project hover label text','t'],
- ['h','Animation'],['speed','Animation length (1 = normal, below 1 faster, above 1 slower)','r'],
- ['h','Booking calendar'],['bookDays','Bookable days (0 = Sun ... 6 = Sat, comma separated)','t'],['bookSlots','Time slots, Algeria time (e.g. 10:00,12:00,14:00)','t']
-];
-const SDEF={status:'2 spots left for October',h1:'Video Editing | Motion | Design',h1Prefix:'for',h1Accent:'Brands & Creators',
- lead:'I edit videos and animate SaaS products so people understand them in seconds.',btn1:'See my work',btn2:'Start a project',
- s1n:'120+',s1l:'Videos delivered',s2n:'35',s2l:'SaaS products animated',s3n:'48h',s3l:'Typical first draft',
- reviews:'',aTitle:"Hi, I'm Boubaker.",aP1:"I'm a video editor and motion designer based in Algeria, working with SaaS teams and creators worldwide. I turn complex products into clear, watchable stories.",aP2:'Available for freelance and long-term collaborations.',
- cTitle:"Let's make something move.",cSub:"Tell me about your project and I'll reply within a day.",cBtn:'Email me',email:'you@example.com',
- ig:'',be:'',li:'',wa:'',footer:'© 2026 Boubaker. All rights reserved.',
- accent:'#0a72ff',veil:0.28,labelOn:'yes',vidText:'Watch video',projText:'View project',speed:1,bookDays:'0,1,2,3,4',bookSlots:'10:00,12:00,14:00,16:00'};
-$('sfields').innerHTML=SF.map(([k,l,t])=>{
-  if(t===undefined)return '<h3 class="sh">'+l+'</h3>';
-  if(t==='a')return '<label>'+l+'</label><textarea id="f_'+k+'" rows="3"></textarea>';
-  if(t==='s')return '<label>'+l+'</label><select id="f_'+k+'"><option value="yes">Yes</option><option value="no">No</option></select>';
-  if(t==='r'||t==='r2'){const mn=t==='r'?0.5:0,mx=t==='r'?2:0.8,st=t==='r'?0.1:0.05;
-    return '<label>'+l+' <span id="o_'+k+'" style="color:var(--blue)"></span></label><input id="f_'+k+'" type="range" min="'+mn+'" max="'+mx+'" step="'+st+'" oninput="document.getElementById(\'o_'+k+'\').textContent=this.value">';}
-  return '<label>'+l+'</label><input id="f_'+k+'">';
-}).join('');
-const loadS=async()=>{
-  const{data,error}=await sb.from('site_settings').select('value').eq('key','main').maybeSingle();
-  if(error){$('smsg').textContent=error.message;return}
-  const v=Object.assign({},SDEF,(data&&data.value)||{});
-  SF.filter(x=>x[2]).forEach(([k])=>{const el=$('f_'+k);if(el)el.value=v[k]!=null?v[k]:''});
-  SF.filter(x=>x[2]==='r'||x[2]==='r2').forEach(([k])=>{const o=$('o_'+k),el=$('f_'+k);if(o&&el)o.textContent=el.value});
-};
-$('ssave').onclick=async()=>{
-  const o={};SF.filter(x=>x[2]).forEach(([k,l,t])=>{const el=$('f_'+k);o[k]=(t==='r'||t==='r2')?parseFloat(el.value):el.value.trim()});
-  $('smsg').textContent='Saving...';
-  const{error}=await sb.from('site_settings').upsert({key:'main',value:o});
-  $('smsg').textContent=error?error.message:'Saved! Your site updates within a few seconds. Refresh the site to see it.';
-};
-// ---- bookings ----
-const loadB=async()=>{
-  const{data,error}=await sb.from('bookings').select('*').order('starts_at',{ascending:true});
-  const rows=data||[];
-  $('blist').innerHTML=error?'<p class="m">'+error.message+'</p>':(rows.length?'':'<p style="color:var(--mute)">No bookings yet.</p>');
-  rows.forEach(b=>{const d=document.createElement('div');d.className='row';
-    d.innerHTML='<div><b></b><small style="color:var(--mute)"></small></div><select style="width:auto;padding:8px 10px"></select><button class="ghost" type="button">Delete</button>';
-    d.querySelector('b').textContent=new Date(b.starts_at).toLocaleString(undefined,{dateStyle:'medium',timeStyle:'short'})+' · '+b.name;
-    d.querySelector('small').textContent=b.email+(b.project?' · '+b.project:'');
-    const sel=d.querySelector('select');['new','confirmed','done'].forEach(s=>{const o=document.createElement('option');o.value=s;o.textContent=s;if(s===b.status)o.selected=true;sel.append(o)});
-    sel.onchange=async()=>{await sb.from('bookings').update({status:sel.value}).eq('id',b.id)};
-    d.querySelector('button').onclick=async()=>{if(!confirm('Delete this booking?'))return;await sb.from('bookings').delete().eq('id',b.id);loadB()};
-    $('blist').append(d)});
-};
-// ---- tabs ----
-const showTab=t=>{
-  document.querySelectorAll('#app [data-tab]').forEach(el=>{el.hidden=el.dataset.tab!==t});
-  document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
-};
-document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>showTab(b.dataset.t));
-show();}
-</script></body></html>
+        <div class="form-group">
+            <label>Project Title</label>
+            <input type="text" id="p-title" placeholder="e.g., 3D Character Design">
+        </div>
+        
+        <div class="form-group">
+            <label>Image URL (or path)</label>
+            <input type="text" id="p-image" placeholder="e.g., assets/my-image.jpg or https://...">
+        </div>
+
+        <div class="form-group">
+            <label>Short Description</label>
+            <textarea id="p-desc" rows="3" placeholder="e.g., Advanced 3D modeling and texturing."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Behance Project Link</label>
+            <input type="text" id="p-link" placeholder="e.g., https://www.behance.net/gallery/12345/Project">
+        </div>
+
+        <button onclick="generateCode()">Generate HTML Code</button>
+
+        <div class="output-box">
+            <label>Copy this code into index.html:</label>
+            <textarea class="code-output" id="output" readonly></textarea>
+        </div>
+    </div>
+
+    <script>
+        function generateCode() {
+            const title = document.getElementById('p-title').value || 'Project Title';
+            const image = document.getElementById('p-image').value || 'https://via.placeholder.com/400x250';
+            const desc = document.getElementById('p-desc').value || 'Project Description';
+            const link = document.getElementById('p-link').value || '#';
+
+            const htmlCode = `
+<!-- Project Card -->
+<div class="portfolio-card">
+    <img src="${image}" alt="${title}">
+    <div class="portfolio-content">
+        <h3>${title}</h3>
+        <p>${desc}</p>
+        <a href="${link}" target="_blank" class="portfolio-link">View on Behance &rarr;</a>
+    </div>
+</div>
+`;
+            document.getElementById('output').value = htmlCode.trim();
+        }
+    </script>
+</body>
+</html>
