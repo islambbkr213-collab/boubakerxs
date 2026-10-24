@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f7faff"><meta name="description" content="Selected branding, graphic design and 3D work by Boubaker.">
+<title>Design & 3D — Boubaker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/design.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script>
+</head>
+<body>
+<header class="topbar"><a class="wordmark" href="design.html">BOUBAKER<span>®</span></a><nav><a class="nav-current" href="#work">Selected work</a><a href="#about">About</a><a href="https://boubakerxs.vercel.app/">Video & motion ↗</a></nav><a class="contact-link" href="https://x.com/8oubaker" target="_blank" rel="noopener">Let's talk <span>↗</span></a></header>
+<main>
+<section class="intro"><div class="eyebrow"><i></i> INDEPENDENT DESIGNER & 3D ARTIST</div><h1>Ideas made<br><span>impossible to ignore.</span></h1><div class="intro-bottom"><p>Building distinctive identities, expressive visuals<br>and digital objects with a point of view.</p><a href="#work" class="scroll-link">SCROLL TO EXPLORE <span>↓</span></a></div><div class="orb orb-one"></div><div class="orb orb-two"></div></section>
+<section id="work" class="work-section"><div class="section-head"><div><div class="eyebrow">THE PORTFOLIO</div><h2>Selected projects<span class="count" id="project-count">—</span></h2></div><div class="filters" id="filters"><button class="filter active" data-filter="All">All work</button><button class="filter" data-filter="Branding">Branding</button><button class="filter" data-filter="3D">3D</button><button class="filter" data-filter="Logo">Logo</button><button class="filter" data-filter="Graphic design">Graphic design</button></div></div>
+<div class="project-grid" id="project-grid"><div class="loading">Loading selected work<span>…</span></div></div>
+<div class="empty-state" id="empty-state" hidden><span>✳</span><h3>New work is on its way.</h3><p>In the meantime, explore my projects on Behance.</p><a href="https://www.behance.net/boubakeboubake" target="_blank" rel="noopener">Explore Behance ↗</a></div>
+</section>
+<section class="about-section" id="about"><div class="eyebrow">A LITTLE ABOUT ME</div><div class="about-grid"><h2>Design with<br>dimension.</h2><div><p>I'm Boubaker, an independent designer exploring the space between brand identity, graphic design and 3D. I turn ideas into visual systems and images that give brands a distinctive presence.</p><p class="muted">For selected collaborations, creative direction and good ideas.</p><a class="text-link" href="https://x.com/8oubaker" target="_blank" rel="noopener">Start a project ↗</a></div></div></section>
+<section class="contact-band"><div><div class="eyebrow">HAVE SOMETHING IN MIND?</div><h2>Let's make it<br><em>stand out.</em></h2></div><a href="https://x.com/8oubaker" target="_blank" rel="noopener" class="round-link">Get in touch <span>↗</span></a></section>
+</main>
+<footer><a class="wordmark" href="design.html">BOUBAKER<span>®</span></a><span class="copyright">© <span id="year"></span> Boubaker. All rights reserved.</span><div class="social-links"><a href="https://www.behance.net/boubakeboubake" target="_blank" rel="noopener" aria-label="Behance">Bē <small>Behance</small></a><a href="https://x.com/8oubaker" target="_blank" rel="noopener" aria-label="X">𝕏 <small>Follow on X</small></a></div></footer>
+<div class="modal" id="project-modal" aria-hidden="true"><button class="modal-close" id="modal-close" aria-label="Close project">×</button><div class="modal-panel" id="modal-content"></div></div>
+<script>
+const $=s=>document.querySelector(s);const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+$('#year').textContent=new Date().getFullYear();let allProjects=[],activeFilter='All';
+const demo=[];
+function projectCard(p,i){return `<article class="project-card" data-index="${i}"><button class="project-image" aria-label="Open ${esc(p.title)}">${p.cover_url?`<img src="${esc(p.cover_url)}" alt="${esc(p.title)}" loading="lazy">`:`<div class="image-placeholder"><span>${esc(p.category||'PROJECT')}</span></div>`}<span class="image-arrow">↗</span></button><div class="project-meta"><div><span class="project-category">${esc(p.category)}</span><h3>${esc(p.title)}</h3></div><span class="project-number">${String(i+1).padStart(2,'0')}</span></div></article>`}
+function render(){const list=allProjects.filter(p=>activeFilter==='All'||p.category===activeFilter);$('#project-count').textContent=String(list.length).padStart(2,'0');$('#project-grid').innerHTML=list.map(projectCard).join('');$('#empty-state').hidden=list.length!==0;$('#project-grid').hidden=list.length===0;document.querySelectorAll('.filter').forEach(b=>b.classList.toggle('active',b.dataset.filter===activeFilter));}
+function showProject(p){const imgs=Array.isArray(p.media_urls)?p.media_urls:[];let embed=p.behance_embed_url||'';if(!embed&&p.behance_url){const m=p.behance_url.match(/behance\.net\/(?:gallery|project)\/(\d+)/);if(m)embed=`https://www.behance.net/embed/project/${m[1]}?ilo0=1`}
+$('#modal-content').innerHTML=`<div class="modal-hero">${p.cover_url?`<img src="${esc(p.cover_url)}" alt="${esc(p.title)}">`:''}<div><span>${esc(p.category)}</span><h2>${esc(p.title)}</h2><p>${esc(p.description||'')}</p></div></div>${imgs.length?`<div class="modal-gallery">${imgs.map(u=>`<img src="${esc(u)}" loading="lazy" alt="${esc(p.title)} project image">`).join('')}</div>`:''}${embed?`<div class="behance-embed"><div class="eyebrow">PROJECT ON BEHANCE</div><iframe src="${esc(embed)}" title="${esc(p.title)} on Behance" loading="lazy" allowfullscreen></iframe></div>`:''}${p.behance_url?`<a class="behance-button" href="${esc(p.behance_url)}" target="_blank" rel="noopener">View project on Behance ↗</a>`:''}`;
+$('#project-modal').classList.add('open');$('#project-modal').setAttribute('aria-hidden','false');document.body.classList.add('modal-open');}
+$('#project-grid').addEventListener('click',e=>{const b=e.target.closest('.project-image');if(!b)return;const card=b.closest('.project-card');const visible=allProjects.filter(p=>activeFilter==='All'||p.category===activeFilter);showProject(visible[+card.dataset.index]);});
+$('#filters').addEventListener('click',e=>{const b=e.target.closest('button[data-filter]');if(!b)return;activeFilter=b.dataset.filter;render();});
+function closeModal(){$('#project-modal').classList.remove('open');$('#project-modal').setAttribute('aria-hidden','true');document.body.classList.remove('modal-open');}
+$('#modal-close').onclick=closeModal;$('#project-modal').addEventListener('click',e=>{if(e.target===$('#project-modal'))closeModal()});document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+(async()=>{try{const C=window.SITE_CONFIG;if(!C?.SUPABASE_URL||!C?.SUPABASE_ANON_KEY)throw Error('Missing config');const sb=window.supabase.createClient(C.SUPABASE_URL,C.SUPABASE_ANON_KEY);const{data,error}=await sb.from('design_projects').select('*').eq('published',true).order('sort_order',{ascending:true}).order('created_at',{ascending:false});if(error)throw error;allProjects=data||[];render();}catch(err){console.warn('Design portfolio:',err.message);allProjects=demo;render();$('#empty-state').hidden=false;$('#empty-state').innerHTML='<span>✳</span><h3>Portfolio is being prepared.</h3><p>Explore my latest projects on Behance while the project gallery is being connected.</p><a href="https://www.behance.net/boubakeboubake" target="_blank" rel="noopener">Explore Behance ↗</a>';}})();
+</script>
+</body></html>
