@@ -426,6 +426,25 @@ section{padding:150px 0 0}
 .ab-facts dd{margin:4px 0 0;font-size:17px;font-weight:600;letter-spacing:-.01em}
 .ab-cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
 @media(max-width:860px){.card.about.ab{grid-template-columns:1fr;padding:12px;border-radius:36px}.ab-photo{aspect-ratio:4/5;border-radius:26px}.ab-text{padding:10px 12px 20px}}
+
+/* ===== minimal footer ===== */
+.foot.foot-min{margin-top:100px;padding:28px 0 32px}
+.foot-min .foot-bottom{margin:0 auto;padding:0 22px;border:0;text-align:center}
+
+/* ===== hero: tighter, chips tucked into the bottom-right instead of floating in empty space ===== */
+.stage{min-height:clamp(440px,56vh,500px)!important;padding:clamp(28px,4.5vw,56px)!important}
+.stage>.chips{position:absolute;z-index:3;right:clamp(28px,4.5vw,56px);bottom:clamp(28px,4.5vw,56px);display:flex;flex-wrap:wrap;justify-content:flex-end;gap:14px;max-width:min(520px,44%)}
+.chips .glass{position:relative;inset:auto;left:auto;right:auto;top:auto;bottom:auto;display:inline-block}
+.hero h1{font-size:clamp(34px,5.2vw,66px)}
+.hero p{margin:14px 0 24px}
+main>section:first-child{padding-top:64px}
+@media(max-width:1100px){
+.stage{min-height:0!important}
+.stage>.chips{position:relative;right:auto;bottom:auto;max-width:none;justify-content:flex-start;gap:10px;margin:0 0 20px}
+.chips .glass{padding:9px 16px;font-size:14px}
+.chips .g3,.chips .g4{display:inline-block}
+.stage .row{margin-bottom:4px}
+}
 </style>
 </head>
 <body>
@@ -445,11 +464,8 @@ section{padding:150px 0 0}
 
 <header class="hero"><div class="wrap">
   <div class="stage">
-    <span class="glass g1" style="--r:-4deg">Social media design</span>
-    <span class="glass g2" style="--r:3deg">Short-form videos</span>
-    <span class="glass g3" style="--r:-2deg">Long-form videos</span>
-    <span class="glass g4" style="--r:2deg">SaaS motion</span>
-    <span class="status"><i></i><span id="hStatus">2 spots left for October</span></span>
+                    <div class="chips"><span class="glass g4" style="--r:2deg">SaaS motion</span><span class="glass g1" style="--r:-4deg">Social media design</span><span class="glass g2" style="--r:3deg">Short-form videos</span><span class="glass g3" style="--r:-2deg">Long-form videos</span></div>
+<span class="status"><i></i><span id="hStatus">2 spots left for October</span></span>
     <h1 id="hH1">Video Editing <span class="sep">|</span> Motion <span class="sep">|</span> Design<br>for <em>Brands &amp; Creators</em></h1>
     <p id="hLead">I edit videos and animate SaaS products so people understand them in seconds.</p>
     <div class="row">
@@ -568,14 +584,7 @@ section{padding:150px 0 0}
   </section>
 </main>
 
-<footer class="foot">
-  <div class="wrap foot-grid">
-    <div><b>Boubaker<span style="color:var(--blue)">.</span></b><p class="foot-mute">Video editing, motion and design for brands and creators.</p></div>
-    <div><small>Work</small><a href="#projects">Services</a><a href="#edits">Selected work</a><a href="#design">Design</a></div>
-    <div><small>Studio</small><a href="#about">About</a><a href="#call">Book a call</a><a href="#contact">Contact</a></div>
-  </div>
-  <div class="wrap foot-bottom"><span id="fText">© 2026 Boubaker. All rights reserved.</span></div>
-</footer>
+<footer class="foot foot-min"><div class="wrap foot-bottom"><span id="fText">© 2026 Boubaker. All rights reserved.</span></div></footer>
 <script>
 /* ---- live site settings (edited in admin.html, no upload needed) ---- */
 const applySettings=S=>{
