@@ -20,9 +20,10 @@ let all=[];
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
 function render(){$('#show').innerHTML=all.length?all.map((p,i)=>`<button class="tile" data-i="${i}" aria-label="${esc(p.title)}">${p.cover_url?`<img src="${esc(p.cover_url)}" alt="${esc(p.title)}" loading="${i<2?'eager':'lazy'}">`:`<div class="ph">${esc(p.category||'')}</div>`}<div class="cap"><small>${esc(p.category)}</small><b>${esc(p.title)}</b></div></button>`).join(''):'<div class="none">New work coming soon.</div>';
 document.querySelectorAll('.tile').forEach(t=>io.observe(t))}
-$('#show').onclick=e=>{const t=e.target.closest('.tile');if(!t)return;const p=all[+t.dataset.i];if(p.behance_url){window.open(p.behance_url,'_blank','noopener')}else{open(p)}};
-function open(p){const g=Array.isArray(p.media_urls)?p.media_urls:[];
-$('#mc').innerHTML=`<div><small>${esc(p.category)}</small><h2>${esc(p.title)}</h2>${p.description?`<p>${esc(p.description)}</p>`:''}</div>${p.cover_url?`<img src="${esc(p.cover_url)}" alt="${esc(p.title)}">`:''}${g.map(u=>`<img src="${esc(u)}" loading="lazy" alt="">`).join('')}`;
+$('#show').onclick=e=>{const t=e.target.closest('.tile');if(t)open(all[+t.dataset.i])};
+function open(p){const g=Array.isArray(p.media_urls)?p.media_urls:[];const imgs=[p.cover_url,...g].filter(Boolean);
+const bh=p.behance_url?`<a class="bh" href="${esc(p.behance_url)}" target="_blank" rel="noopener" aria-label="View on Behance"><b>Bē</b><span>View on Behance</span><i>↗</i></a>`:'';
+$('#mc').innerHTML=`<div class="top"><div><small>${esc(p.category)}</small><h2>${esc(p.title)}</h2>${p.description?`<p>${esc(p.description)}</p>`:''}</div>${bh}</div>${imgs.map(u=>`<img src="${esc(u)}" loading="lazy" alt="${esc(p.title)}">`).join('')}${bh?`<div class="end">${bh}</div>`:''}`;
 $('#modal').classList.add('open');$('#modal').scrollTop=0;document.body.classList.add('lock')}
 const close=()=>{$('#modal').classList.remove('open');document.body.classList.remove('lock')};
 $('#x').onclick=close;document.addEventListener('keydown',e=>e.key==='Escape'&&close());
