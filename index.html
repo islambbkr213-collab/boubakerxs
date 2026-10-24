@@ -1094,6 +1094,13 @@ p.addEventListener('pointermove',e=>{const r=p.getBoundingClientRect(),x=(e.clie
 p.addEventListener('pointerleave',()=>{p.style.transform=''});
 })();
 </script>
-<a href="design.html" style="position:fixed;top:18px;right:18px;z-index:9999;padding:11px 20px;border-radius:999px;background:#0a7cff;color:#fff;font:600 14px Inter,system-ui,sans-serif;text-decoration:none;box-shadow:0 6px 20px rgba(10,124,255,.35);">Design Portfolio →</a>
-</body>
+In your index.html:
+1. Press Ctrl+F and search for:  Book
+2. Find the button/link that says "Book call" (or similar). It looks like:  <a href="...">Book call</a>
+3. Change ONLY the href and the text, keep its class/style so the look stays the same:
+
+   <a href="design.html">Design Portfolio</a>
+
+4. If there is a second "Book call" button further down the page, change it the same way.
+5. Commit changes.</body>
 </html>
