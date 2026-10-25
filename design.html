@@ -29,4 +29,5 @@ const close=()=>{$('#modal').classList.remove('open');document.body.classList.re
 $('#x').onclick=close;document.addEventListener('keydown',e=>e.key==='Escape'&&close());
 (async()=>{try{const C=window.SITE_CONFIG;if(!C?.SUPABASE_URL)throw 0;const sb=window.supabase.createClient(C.SUPABASE_URL,C.SUPABASE_ANON_KEY);const{data,error}=await sb.from('design_projects').select('*').eq('published',true).order('sort_order').order('created_at',{ascending:false});if(error)throw error;all=data||[]}catch(e){all=[]}render()})();
 </script>
+<script src="assets/cursor-trail.js" defer></script>
 </body></html>
