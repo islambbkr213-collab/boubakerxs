@@ -1,81 +1,334 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Generate Project HTML</title>
-    <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f1f5f9; padding: 40px; color: #0f172a; }
-        .admin-container { max-width: 700px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
-        h1 { margin-bottom: 20px; font-size: 1.8rem; }
-        p { color: #64748b; margin-bottom: 20px; font-size: 0.9rem; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; font-weight: 600; margin-bottom: 5px; font-size: 0.9rem; }
-        input, textarea { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: inherit; }
-        button { background: #2563eb; color: white; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; width: 100%; margin-top: 10px; }
-        button:hover { background: #1d4ed8; }
-        .output-box { margin-top: 30px; }
-        textarea.code-output { height: 250px; font-family: monospace; background: #f8fafc; color: #0f172a; }
-        .note { background: #fef3c7; color: #92400e; padding: 15px; border-radius: 6px; font-size: 0.85rem; margin-bottom: 20px; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Project Manager</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0b1c2e;
+  --muted: rgba(11, 28, 46, 0.62);
+  --accent: #0a72ff;
+  --bg: #f5f7fa;
+  --surface: rgba(255, 255, 255, 0.9);
+  --border: rgba(10, 40, 80, 0.08);
+  --shadow: 0 20px 50px -20px rgba(10, 60, 140, 0.15);
+  --radius: 24px;
+  --ease: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.6;
+  padding: 40px 24px;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+h1 {
+  font-size: 48px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  margin-bottom: 12px;
+}
+
+.subtitle {
+  font-size: 18px;
+  color: var(--muted);
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 40px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: var(--shadow);
+  margin-bottom: 24px;
+}
+
+.notice {
+  background: rgba(255, 193, 7, 0.1);
+  border: 1px solid rgba(255, 193, 7, 0.3);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 32px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.notice strong {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #ff9800;
+}
+
+.form-group {
+  margin-bottom: 24px;
+}
+
+label {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: 14px 18px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 15px;
+  background: white;
+  transition: all 0.3s var(--ease);
+}
+
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(10, 114, 255, 0.1);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.code-output {
+  font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace;
+  font-size: 13px;
+  background: #f8fafc;
+  color: #0f172a;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  min-height: 280px;
+}
+
+button {
+  width: 100%;
+  padding: 16px 28px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s var(--ease);
+  box-shadow: 0 8px 24px -8px rgba(10, 114, 255, 0.4);
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px -8px rgba(10, 114, 255, 0.5);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+.output-section {
+  margin-top: 40px;
+}
+
+.output-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.copy-btn {
+  width: auto;
+  padding: 8px 16px;
+  font-size: 14px;
+  background: var(--ink);
+}
+
+.copy-btn:hover {
+  background: #1a2b3d;
+}
+
+.success-message {
+  display: none;
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: #16a34a;
+  padding: 16px;
+  border-radius: 12px;
+  margin-top: 16px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.success-message.show {
+  display: block;
+  animation: slideIn 0.4s var(--ease);
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 24px 16px;
+  }
+
+  h1 {
+    font-size: 36px;
+  }
+
+  .card {
+    padding: 28px 24px;
+  }
+}
+</style>
 </head>
 <body>
-
-    <div class="admin-container">
-        <h1>Project HTML Generator</h1>
-        
-        <div class="note">
-            <strong>Note:</strong> Since your site is hosted on GitHub Pages (static), you cannot auto-post directly from here. Fill out the form below, click "Generate Code", copy the HTML code, and paste it into your <code>index.html</code> file inside the <code>&lt;div class="portfolio-grid"&gt;</code> section.
-        </div>
-
-        <div class="form-group">
-            <label>Project Title</label>
-            <input type="text" id="p-title" placeholder="e.g., 3D Character Design">
-        </div>
-        
-        <div class="form-group">
-            <label>Image URL (or path)</label>
-            <input type="text" id="p-image" placeholder="e.g., assets/my-image.jpg or https://...">
-        </div>
-
-        <div class="form-group">
-            <label>Short Description</label>
-            <textarea id="p-desc" rows="3" placeholder="e.g., Advanced 3D modeling and texturing."></textarea>
-        </div>
-
-        <div class="form-group">
-            <label>Behance Project Link</label>
-            <input type="text" id="p-link" placeholder="e.g., https://www.behance.net/gallery/12345/Project">
-        </div>
-
-        <button onclick="generateCode()">Generate HTML Code</button>
-
-        <div class="output-box">
-            <label>Copy this code into index.html:</label>
-            <textarea class="code-output" id="output" readonly></textarea>
-        </div>
+  <div class="container">
+    <div class="header">
+      <h1>Project Manager</h1>
+      <p class="subtitle">Generate HTML code for your portfolio projects</p>
     </div>
 
-    <script>
-        function generateCode() {
-            const title = document.getElementById('p-title').value || 'Project Title';
-            const image = document.getElementById('p-image').value || 'https://via.placeholder.com/400x250';
-            const desc = document.getElementById('p-desc').value || 'Project Description';
-            const link = document.getElementById('p-link').value || '#';
+    <div class="card">
+      <div class="notice">
+        <strong>📝 Static Site Notice</strong>
+        Since your site is hosted on GitHub Pages (static), you cannot auto-post directly from here. Fill out the form below, click "Generate Code", copy the HTML code, and paste it into your <code>index.html</code> file inside the project grid section.
+      </div>
 
-            const htmlCode = `
-<!-- Project Card -->
-<div class="portfolio-card">
-    <img src="${image}" alt="${title}">
-    <div class="portfolio-content">
-        <h3>${title}</h3>
-        <p>${desc}</p>
-        <a href="${link}" target="_blank" class="portfolio-link">View on Behance &rarr;</a>
+      <form id="projectForm">
+        <div class="form-group">
+          <label for="p-title">Project Title</label>
+          <input type="text" id="p-title" placeholder="e.g., 3D Character Animation" required>
+        </div>
+
+        <div class="form-group">
+          <label for="p-image">Image URL</label>
+          <input type="text" id="p-image" placeholder="e.g., assets/project-image.jpg or https://...">
+        </div>
+
+        <div class="form-group">
+          <label for="p-category">Category</label>
+          <input type="text" id="p-category" placeholder="e.g., Product Demo, YouTube, Social Media">
+        </div>
+
+        <div class="form-group">
+          <label for="p-desc">Short Description</label>
+          <textarea id="p-desc" rows="3" placeholder="e.g., Advanced motion graphics with smooth transitions and modern aesthetics."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="p-link">Project Link (Optional)</label>
+          <input type="url" id="p-link" placeholder="e.g., https://www.behance.net/gallery/12345/Project">
+        </div>
+
+        <button type="submit">Generate HTML Code</button>
+      </form>
+
+      <div class="output-section">
+        <div class="output-header">
+          <label>Generated Code</label>
+          <button type="button" class="copy-btn" id="copyBtn" onclick="copyCode()">Copy Code</button>
+        </div>
+        <textarea class="code-output" id="output" readonly placeholder="Your generated HTML code will appear here..."></textarea>
+        <div class="success-message" id="successMessage">
+          ✓ Code copied to clipboard!
+        </div>
+      </div>
     </div>
-</div>
-`;
-            document.getElementById('output').value = htmlCode.trim();
-        }
-    </script>
+  </div>
+
+  <script>
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    document.getElementById('projectForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const title = document.getElementById('p-title').value || 'Project Title';
+      const image = document.getElementById('p-image').value || 'https://via.placeholder.com/640x400/e0e7ff/0a72ff?text=Project+Image';
+      const category = document.getElementById('p-category').value || 'Project';
+      const desc = document.getElementById('p-desc').value || 'Project description';
+      const link = document.getElementById('p-link').value || '#';
+
+      const htmlCode = `<!-- Project Card -->
+<div class="work-card fade-in">
+  <div class="work-image">
+    <img src="${escapeHtml(image)}" alt="${escapeHtml(title)}" loading="lazy">
+  </div>
+  <div class="work-content">
+    <div class="work-category">${escapeHtml(category)}</div>
+    <h3>${escapeHtml(title)}</h3>
+    <p>${escapeHtml(desc)}</p>
+    ${link !== '#' ? `<a href="${escapeHtml(link)}" target="_blank" rel="noopener">View Project →</a>` : ''}
+  </div>
+</div>`;
+
+      document.getElementById('output').value = htmlCode.trim();
+      document.getElementById('output').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+
+    function copyCode() {
+      const output = document.getElementById('output');
+      const successMessage = document.getElementById('successMessage');
+
+      output.select();
+      output.setSelectionRange(0, 99999); // For mobile devices
+
+      navigator.clipboard.writeText(output.value).then(() => {
+        successMessage.classList.add('show');
+
+        setTimeout(() => {
+          successMessage.classList.remove('show');
+        }, 3000);
+      }).catch(err => {
+        console.error('Failed to copy:', err);
+        alert('Failed to copy code. Please copy manually.');
+      });
+    }
+  </script>
 </body>
 </html>
