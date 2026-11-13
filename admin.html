@@ -1,87 +1,61 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Generate Project HTML</title>
-    <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f1f5f9; padding: 40px; color: #0f172a; }
-        .admin-container { max-width: 700px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); transition: box-shadow .4s cubic-bezier(.2,.8,.2,1); }
-        .admin-container:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.08); }
-        h1 { margin-bottom: 20px; font-size: 1.8rem; }
-        p { color: #64748b; margin-bottom: 20px; font-size: 0.9rem; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; font-weight: 600; margin-bottom: 5px; font-size: 0.9rem; transition: color .3s ease; }
-        input, textarea { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: inherit; transition: all .3s cubic-bezier(.2,.8,.2,1); }
-        input:focus, textarea:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); transform: translateY(-1px); }
-        button { background: #2563eb; color: white; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; width: 100%; margin-top: 10px; transition: all .4s cubic-bezier(.2,.8,.2,1); }
-        button:hover { background: #1d4ed8; transform: translateY(-2px); box-shadow: 0 8px 20px -6px rgba(37,99,235,0.5); }
-        button:active { transform: translateY(0); }
-        .output-box { margin-top: 30px; }
-        textarea.code-output { height: 250px; font-family: monospace; background: #f8fafc; color: #0f172a; transition: all .3s ease; }
-        textarea.code-output:focus { background: #f1f5f9; }
-        .note { background: #fef3c7; color: #92400e; padding: 15px; border-radius: 6px; font-size: 0.85rem; margin-bottom: 20px; animation: slideIn .5s cubic-bezier(.2,.8,.2,1); }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-    </style>
-</head>
-<body>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin — Boubaker</title><meta name="robots" content="noindex">
+<style>
+:root{--b:#0a72ff;--ink:#0b1c2e;--m:#64748b;--l:#e2e8f0}
+*{box-sizing:border-box}body{margin:0;font:16px/1.5 Inter,system-ui,sans-serif;background:#f1f5f9;color:var(--ink);padding:28px 16px}
+.w{max-width:860px;margin:auto;display:grid;gap:20px}.c{background:#fff;border-radius:16px;padding:24px;box-shadow:0 4px 24px rgba(15,23,42,.06)}
+h1{margin:0 0 4px;font-size:26px}h2{margin:0 0 14px;font-size:18px}p{color:var(--m);margin:0 0 14px;font-size:14px}
+label{display:block;font-weight:600;font-size:14px;margin:12px 0 5px}
+input,select,textarea{width:100%;padding:11px 12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit;background:#fff}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--b);border-color:transparent}
+.r{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:640px){.r{grid-template-columns:1fr}}
+button{font:inherit;font-weight:600;border:0;border-radius:10px;padding:12px 20px;background:var(--b);color:#fff;cursor:pointer}
+button.g{background:#e2e8f0;color:var(--ink)}button.d{background:#fee2e2;color:#b91c1c;padding:8px 14px}
+.it{display:flex;gap:14px;align-items:center;padding:12px 0;border-top:1px solid var(--l)}.it img{width:96px;height:60px;object-fit:cover;border-radius:8px;background:var(--l)}
+.it div{flex:1;min-width:0}.it b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.it small{color:var(--m)}
+.ok{background:#dcfce7;color:#166534;padding:12px 14px;border-radius:10px;font-size:14px;display:none}.steps{font-size:14px;color:var(--m);padding-left:18px;margin:0}
+</style></head><body><div class="w">
+<div class="c"><h1>Admin</h1><p>Add your videos and projects here. Nothing goes live until you download <b>projects.json</b> and upload it to GitHub (steps at the bottom).</p></div>
 
-    <div class="admin-container">
-        <h1>Project HTML Generator</h1>
-        
-        <div class="note">
-            <strong>Note:</strong> Since your site is hosted on GitHub Pages (static), you cannot auto-post directly from here. Fill out the form below, click "Generate Code", copy the HTML code, and paste it into your <code>index.html</code> file inside the <code>&lt;div class="portfolio-grid"&gt;</code> section.
-        </div>
+<div class="c"><h2 id="ft">Add a project</h2>
+<label>YouTube link (or video ID)</label><input id="yt" placeholder="https://www.youtube.com/watch?v=… or youtu.be/…">
+<div class="r"><div><label>Title</label><input id="ti" placeholder="e.g. Notion launch film"></div>
+<div><label>Category</label><select id="ca"><option>Product launch &amp; demos</option><option>YouTube &amp; VSLs</option><option>Shorts &amp; reels</option></select></div></div>
+<label>Short description</label><textarea id="de" rows="2" placeholder="One line about the project"></textarea>
+<label>Thumbnail (optional — leave empty to use the YouTube thumbnail)</label><input id="th" type="file" accept="image/*">
+<p style="margin:8px 0 0">Or paste an image link: <input id="thu" placeholder="https://… or assets/my-thumb.jpg" style="margin-top:6px"></p>
+<div style="display:flex;gap:10px;margin-top:16px"><button id="add">Add project</button><button class="g" id="cancel" hidden>Cancel edit</button></div></div>
 
-        <div class="form-group">
-            <label>Project Title</label>
-            <input type="text" id="p-title" placeholder="e.g., 3D Character Design">
-        </div>
-        
-        <div class="form-group">
-            <label>Image URL (or path)</label>
-            <input type="text" id="p-image" placeholder="e.g., assets/my-image.jpg or https://...">
-        </div>
+<div class="c"><h2>Your projects (<span id="n">0</span>)</h2><div id="list"></div>
+<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px"><button id="dl">Download projects.json</button><button class="g" id="reset">Reload from site</button></div>
+<div class="ok" id="ok">Saved to your browser as a draft. Don't forget to download and upload the file.</div></div>
 
-        <div class="form-group">
-            <label>Short Description</label>
-            <textarea id="p-desc" rows="3" placeholder="e.g., Advanced 3D modeling and texturing."></textarea>
-        </div>
-
-        <div class="form-group">
-            <label>Behance Project Link</label>
-            <input type="text" id="p-link" placeholder="e.g., https://www.behance.net/gallery/12345/Project">
-        </div>
-
-        <button onclick="generateCode()">Generate HTML Code</button>
-
-        <div class="output-box">
-            <label>Copy this code into index.html:</label>
-            <textarea class="code-output" id="output" readonly></textarea>
-        </div>
-    </div>
-
-    <script>
-        function generateCode() {
-            const title = document.getElementById('p-title').value || 'Project Title';
-            const image = document.getElementById('p-image').value || 'https://via.placeholder.com/400x250';
-            const desc = document.getElementById('p-desc').value || 'Project Description';
-            const link = document.getElementById('p-link').value || '#';
-
-            const htmlCode = `
-<!-- Project Card -->
-<div class="portfolio-card">
-    <img src="${image}" alt="${title}">
-    <div class="portfolio-content">
-        <h3>${title}</h3>
-        <p>${desc}</p>
-        <a href="${link}" target="_blank" class="portfolio-link">View on Behance &rarr;</a>
-    </div>
+<div class="c"><h2>How to publish</h2><ol class="steps"><li>Click <b>Download projects.json</b>.</li><li>Open your GitHub repo → <b>Add file → Upload files</b> → drop <b>projects.json</b> (replace the old one) → <b>Commit changes</b>.</li><li>Wait about a minute, then refresh your site.</li></ol>
+<p style="margin-top:12px">If you upload an image file, put it in <b>assets/</b> in the repo and use its path, e.g. <code>assets/my-thumb.jpg</code>. Thumbnails you pick here are shrunk and saved inside projects.json automatically.</p></div>
 </div>
-`;
-            document.getElementById('output').value = htmlCode.trim();
-        }
-    </script>
-<script src="enhance.js" defer></script>
-</body>
-</html>
+<script>
+const $=s=>document.querySelector(s),KEY='bk_projects_draft';let P=[],edit=-1;
+const yid=v=>{v=(v||'').trim();const m=v.match(/(?:v=|youtu\.be\/|shorts\/|embed\/)([\w-]{11})/);return m?m[1]:/^[\w-]{11}$/.test(v)?v:''};
+const esc=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(P))}catch(e){}};
+const shrink=f=>new Promise(res=>{const r=new FileReader();r.onload=()=>{const i=new Image();i.onload=()=>{const k=Math.min(1,960/i.width),c=document.createElement('canvas');c.width=i.width*k;c.height=i.height*k;c.getContext('2d').drawImage(i,0,0,c.width,c.height);res(c.toDataURL('image/webp',.78))};i.src=r.result};r.readAsDataURL(f)});
+const draw=()=>{$('#n').textContent=P.length;$('#list').innerHTML=P.map((p,i)=>`<div class="it"><img src="${esc(p.thumb_url||(p.youtube_id?'https://i.ytimg.com/vi/'+p.youtube_id+'/mqdefault.jpg':''))}" alt=""><div><b>${esc(p.title)}</b><small>${esc(p.category)}${p.youtube_id?' · YouTube':''}</small></div><button class="g" data-e="${i}">Edit</button><button class="g" data-u="${i}" ${i?'':'disabled'}>↑</button><button class="d" data-x="${i}">Delete</button></div>`).join('')||'<p>No projects yet.</p>'};
+$('#list').onclick=e=>{const b=e.target.closest('button');if(!b)return;const d=b.dataset;
+ if(d.x!==undefined&&confirm('Delete this project?')){P.splice(+d.x,1)}
+ else if(d.u!==undefined){const i=+d.u;[P[i-1],P[i]]=[P[i],P[i-1]]}
+ else if(d.e!==undefined){edit=+d.e;const p=P[edit];$('#yt').value=p.youtube_id||'';$('#ti').value=p.title||'';$('#ca').value=p.category;$('#de').value=p.description||'';$('#thu').value=(p.thumb_url||'').startsWith('data:')?'':p.thumb_url||'';$('#ft').textContent='Edit project';$('#add').textContent='Save changes';$('#cancel').hidden=false;scrollTo({top:0,behavior:'smooth'})}
+ save();draw()};
+const clear=()=>{edit=-1;['#yt','#ti','#de','#thu','#th'].forEach(s=>$(s).value='');$('#ft').textContent='Add a project';$('#add').textContent='Add project';$('#cancel').hidden=true};
+$('#cancel').onclick=clear;
+$('#add').onclick=async()=>{const id=yid($('#yt').value),t=$('#ti').value.trim();
+ if(!t)return alert('Please add a title.');if(!id&&!$('#th').files[0]&&!$('#thu').value.trim())return alert('Add a YouTube link or a thumbnail image.');
+ let th=$('#thu').value.trim();if($('#th').files[0])th=await shrink($('#th').files[0]);
+ const p={title:t,category:$('#ca').value,description:$('#de').value.trim(),youtube_id:id||null,thumb_url:th||null};
+ if(edit>=0){p.thumb_url=p.thumb_url||P[edit].thumb_url;P[edit]=p}else P.unshift(p);
+ save();draw();clear()};
+$('#dl').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(P,null,2)],{type:'application/json'}));a.download='projects.json';a.click();$('#ok').style.display='block'};
+const fromSite=async()=>{try{P=await (await fetch('projects.json',{cache:'no-cache'})).json()}catch(e){P=[]}save();draw()};
+$('#reset').onclick=()=>confirm('Discard your draft and reload the live list?')&&fromSite();
+try{P=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){P=null}P?draw():fromSite();
+</script></body></html>

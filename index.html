@@ -459,14 +459,14 @@ main>section:first-child{padding-top:64px}
 <nav><div class="wrap">
   <b>Boubaker<span style="color:var(--blue)">.</span></b>
   <ul>
-    <li><a href="#projects">Projects</a></li>
     <li><a href="#edits">Work</a></li>
     <li id="navdesign" hidden><a href="#design">Design</a></li>
     <li id="navrev" hidden><a href="#reviews">Reviews</a></li>
     <li id="navproof" hidden><a href="#proof">Reviews</a></li>
+<li><a href="#call">Book a call</a></li>
 <li><a href="#about">About</a></li>
   </ul>
-  <a class="pill" href="design.html">Design Portfolio</a>
+  <a class="pill" href="https://www.behance.net/boubakeboubake" target="_blank" rel="noopener">Design Portfolio ↗</a>
 </div></nav>
 
 <header class="hero"><div class="wrap">
@@ -493,10 +493,6 @@ main>section:first-child{padding-top:64px}
   </section>
 
   <!-- VIDEO EDITING -->
-  <section id="projects">
-    <div class="head"><small class="eyebrow">Services</small><h2>Projects</h2><p>Pick what you need.</p></div>
-    <div class="cats"><a class="cat glass-card" href="#grp-product"><small>01</small><h3>Product launch & demos</h3><p>Launch films and product walkthroughs</p><span class="cat-go">View work →</span></a><a class="cat glass-card" href="#grp-long"><small>02</small><h3>YouTube & VSLs</h3><p>Long-form videos and sales letters</p><span class="cat-go">View work →</span></a><a class="cat glass-card" href="#grp-shorts"><small>03</small><h3>Shorts & reels</h3><p>Fast cuts built for short-form feeds</p><span class="cat-go">View work →</span></a></div>
-  </section>
 
   <section id="edits">
     <div class="head"><small class="eyebrow">Selected work</small><h2>My work</h2><p>Recent projects.</p></div>
@@ -544,7 +540,7 @@ main>section:first-child{padding-top:64px}
 <div><dt>Works with</dt><dd>SaaS teams &amp; creators</dd></div>
 <div><dt>Availability</dt><dd>Freelance &amp; long-term</dd></div>
 </dl>
-<div class="ab-cta"><a class="pill" href="design.html">Design Portfolio</a><a class="pill ghost" href="#contact">Say hello</a></div>
+<div class="ab-cta"><a class="pill" href="https://www.behance.net/boubakeboubake" target="_blank" rel="noopener">Design Portfolio ↗</a><a class="pill ghost" href="#contact">Say hello</a></div>
 </div>
 </div>
 </section>
@@ -572,6 +568,15 @@ main>section:first-child{padding-top:64px}
 <div class="rv-links"><a class="pill ghost" href="https://www.behance.net/boubakeboubake" target="_blank" rel="noopener">See all on Behance</a><a class="pill ghost" href="https://www.upwork.com/freelancers/~01b1f386e63a808b0c" target="_blank" rel="noopener">See all on Upwork</a></div>
 </section>
 
+
+  <section id="call">
+    <div class="card callbox">
+      <small>Book a call</small>
+      <h2>Pick a day that works for you.</h2>
+      <p>Choose a date and time (Algeria time), and I'll confirm by email.</p>
+      <div id="cal" class="cal"></div>
+    </div>
+  </section>
 
   <section id="contact">
     <div class="card contact">
@@ -908,10 +913,9 @@ document.addEventListener('keydown',e=>{const t=e.target.closest?e.target:null,e
 <script>
 /* load the projects you add in /admin.html (the card above is shown until then) */
 (async()=>{
-  const C=window.SITE_CONFIG;if(!C||/PASTE/.test(C.SUPABASE_URL)||!window.supabase)return;
+  const C=window.SITE_CONFIG,live=!!(C&&!/PASTE/.test(C.SUPABASE_URL)&&window.supabase);
   try{
-    const sb=supabase.createClient(C.SUPABASE_URL,C.SUPABASE_ANON_KEY);
-    const{data}=await sb.from('projects').select('*').order('created_at',{ascending:false});
+    let data;if(live){const sb=supabase.createClient(C.SUPABASE_URL,C.SUPABASE_ANON_KEY);data=(await sb.from('projects').select('*').order('created_at',{ascending:false})).data}else{data=await (await fetch('projects.json',{cache:'no-cache'})).json()}
     if(!data||!data.length)return;
     const e=v=>String(v||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     const card=(p,one)=>{const yt=p.youtube_id,img=p.thumb_url;
@@ -976,7 +980,7 @@ document.addEventListener('keydown',e=>{const t=e.target.closest?e.target:null,e
 /* hovering a video or project shows a label that follows the mouse, like zakariahq.com */
 (()=>{
   if(!matchMedia('(hover:hover) and (pointer:fine)').matches)return;
-  const lab=document.createElement('div');lab.className='cur-label';document.body.append(lab);
+  return;const lab=document.createElement('div');
   let x=0,y=0,cx=0,cy=0,on=false;
   const loop=()=>{cx+=(x-cx)*.28;cy+=(y-cy)*.28;lab.style.transform='translate3d('+(cx+16)+'px,'+(cy+16)+'px,0)';requestAnimationFrame(loop)};loop();
   document.addEventListener('pointermove',e=>{x=e.clientX;y=e.clientY;
@@ -994,19 +998,19 @@ document.addEventListener('keydown',e=>{const t=e.target.closest?e.target:null,e
 /* booking calendar: pick a day, pick a time, send your details. Times are Algeria time (UTC+1). */
 (async()=>{
   const host=document.getElementById('cal'),C=window.SITE_CONFIG;
-  if(!host||!C||/PASTE/.test(C.SUPABASE_URL)||!window.supabase)return;
+  if(!host)return;const live=!!(C&&!/PASTE/.test(C.SUPABASE_URL)&&window.supabase);
   let S={};
-  try{const r=await fetch(C.SUPABASE_URL+'/rest/v1/site_settings?key=eq.main&select=value',{headers:{apikey:C.SUPABASE_ANON_KEY}});const j=await r.json();S=(j[0]&&j[0].value)||{}}catch(e){}
+  try{if(!live)throw 0;const r=await fetch(C.SUPABASE_URL+'/rest/v1/site_settings?key=eq.main&select=value',{headers:{apikey:C.SUPABASE_ANON_KEY}});const j=await r.json();S=(j[0]&&j[0].value)||{}}catch(e){}
   const days=String(S.bookDays||'0,1,2,3,4').split(',').map(x=>+x.trim()).filter(x=>x>=0&&x<=6);
   const slots=String(S.bookSlots||'10:00,12:00,14:00,16:00').split(',').map(x=>x.trim()).filter(x=>/^\d{1,2}:\d{2}$/.test(x));
-  const sb=supabase.createClient(C.SUPABASE_URL,C.SUPABASE_ANON_KEY);
+  const sb=live?supabase.createClient(C.SUPABASE_URL,C.SUPABASE_ANON_KEY):null;
   const pad=n=>String(n).padStart(2,'0');
   const ymd=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
   const slotMs=(d,t)=>new Date(ymd(d)+'T'+(t.length===4?'0'+t:t)+':00+01:00').getTime();
   const today=new Date();today.setHours(0,0,0,0);
   const minMonth=new Date(today.getFullYear(),today.getMonth(),1);
   let view=new Date(today.getFullYear(),today.getMonth(),1),picked=null,pickedSlot=null,booked=new Set();
-  const loadBooked=async()=>{
+  const loadBooked=async()=>{if(!sb){booked=new Set();return}
     const a=new Date(view.getFullYear(),view.getMonth(),1),b=new Date(view.getFullYear(),view.getMonth()+1,1);
     const{data}=await sb.from('booked_slots').select('starts_at').gte('starts_at',a.toISOString()).lt('starts_at',b.toISOString());
     booked=new Set((data||[]).map(r=>new Date(r.starts_at).getTime()));
@@ -1037,9 +1041,9 @@ document.addEventListener('keydown',e=>{const t=e.target.closest?e.target:null,e
       if(!name||!/^\S+@\S+\.\S+$/.test(email)){m.textContent='Please add your name and a valid email.';return}
       go.disabled=true;m.textContent='Sending...';
       const starts=new Date(slotMs(picked,pickedSlot)).toISOString();
-      const{error}=await sb.from('bookings').insert({name,email,project,starts_at:starts});
+      let error=null;if(sb){({error}=await sb.from('bookings').insert({name,email,project,starts_at:starts}))}else{const to=((document.getElementById('cMail')||{}).href||'').replace('mailto:','');location.href='mailto:'+to+'?subject='+encodeURIComponent('Call booking: '+ymd(picked)+' '+pickedSlot+' (Algeria time)')+'&body='+encodeURIComponent('Name: '+name+'\nEmail: '+email+'\nProject: '+project)}
       if(error){go.disabled=false;m.textContent='Sorry, that did not go through. Please try another time or email me.';return}
-      host.innerHTML='<div class="msg" style="font-size:18px;color:var(--ink);padding:18px 0">Booked! I will confirm by email, '+name+'.</div>';
+      host.innerHTML='<div class="msg" style="font-size:18px;color:var(--ink);padding:18px 0">Almost done, '+name+'! Your email app opened. Press send and I will confirm your slot.</div>';
     };
   };
   await loadBooked();draw();
@@ -1093,7 +1097,6 @@ p.addEventListener('pointermove',e=>{const r=p.getBoundingClientRect(),x=(e.clie
 p.addEventListener('pointerleave',()=>{p.style.transform=''});
 })();
 </script>
-<script src="assets/cursor-trail.js" defer></script>
 <script src="enhance.js" defer></script>
 </body>
 </html>
