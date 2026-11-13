@@ -1,0 +1,42 @@
+/* ===== enhance.css — drop next to index.html ===== */
+
+/* 1. Normal cursor: arrow everywhere, hand on clickable things, text bar in fields */
+html:not(#x) *{cursor:auto!important}
+html:not(#x) a,html:not(#x) button,html:not(#x) [role=button],html:not(#x) [data-yt],html:not(#x) [data-proj],
+html:not(#x) [data-full],html:not(#x) .cat,html:not(#x) .app,html:not(#x) .pill,html:not(#x) label,
+html:not(#x) summary,html:not(#x) .chips button{cursor:pointer!important}
+html:not(#x) input,html:not(#x) textarea{cursor:text!important}
+html:not(#x) button:disabled{cursor:default!important}
+.cur-label{display:none!important}
+
+/* 2. Smoother scrolling: no blur filters on reveal, lighter glass on phones, skip off-screen work */
+.js .reveal,.js .split .w{filter:none!important}
+section{content-visibility:auto;contain-intrinsic-size:auto 700px}
+#call,#contact{content-visibility:visible}
+@media(max-width:700px){
+  .card,.glass,.stage,.status,.tools,.dots,.arrows button,nav{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+  .card{background:rgba(255,255,255,.9)!important}
+}
+
+/* 3. Thumbnails: skeleton while loading, soft fade-in once ready */
+.vid{background:linear-gradient(110deg,#e4edf9 8%,#f3f7fd 18%,#e4edf9 33%);background-size:200% 100%;animation:enh-sh 1.4s linear infinite}
+.vid.ld,.slide-in.ld{animation:none;background:#e4edf9}
+.js-img .vid img,.js-img .slide-in img{opacity:0;transition:opacity .35s ease}
+.js-img .vid img.ld,.js-img .slide-in img.ld{opacity:1}
+@keyframes enh-sh{to{background-position-x:-200%}}
+
+/* 4. Category filter chips above My work */
+.chips{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:0 0 36px}
+.chips button{font:inherit;font-size:15px;font-weight:500;padding:10px 20px;border-radius:99px;border:1px solid rgba(10,40,80,.12);
+  background:rgba(255,255,255,.75);color:var(--ink);transition:background .2s,color .2s,transform .2s}
+.chips button:hover{transform:translateY(-1px)}
+.chips button.on{background:var(--blue);color:#fff;border-color:transparent}
+
+/* 5. Booking calendar: bigger touch targets, clearer states */
+.cal .days button,.cal .slots button{min-height:44px}
+.cal .days button:not(:disabled):not(.sel){font-weight:600}
+.cal .days button.sel,.cal .slots button.sel{box-shadow:0 8px 20px -8px var(--blue)}
+.cal input,.cal textarea{font-size:16px} /* stops iOS zooming into fields */
+
+/* hero second button row wraps nicely on phones */
+.hero .row .pill{white-space:nowrap}
