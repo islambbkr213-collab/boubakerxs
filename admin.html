@@ -1,61 +1,347 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Admin — Boubaker</title><meta name="robots" content="noindex">
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Admin · Boubaker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{--b:#0a72ff;--ink:#0b1c2e;--m:#64748b;--l:#e2e8f0}
-*{box-sizing:border-box}body{margin:0;font:16px/1.5 Inter,system-ui,sans-serif;background:#f1f5f9;color:var(--ink);padding:28px 16px}
-.w{max-width:860px;margin:auto;display:grid;gap:20px}.c{background:#fff;border-radius:16px;padding:24px;box-shadow:0 4px 24px rgba(15,23,42,.06)}
-h1{margin:0 0 4px;font-size:26px}h2{margin:0 0 14px;font-size:18px}p{color:var(--m);margin:0 0 14px;font-size:14px}
-label{display:block;font-weight:600;font-size:14px;margin:12px 0 5px}
-input,select,textarea{width:100%;padding:11px 12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit;background:#fff}
-input:focus,select:focus,textarea:focus{outline:2px solid var(--b);border-color:transparent}
-.r{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:640px){.r{grid-template-columns:1fr}}
-button{font:inherit;font-weight:600;border:0;border-radius:10px;padding:12px 20px;background:var(--b);color:#fff;cursor:pointer}
-button.g{background:#e2e8f0;color:var(--ink)}button.d{background:#fee2e2;color:#b91c1c;padding:8px 14px}
-.it{display:flex;gap:14px;align-items:center;padding:12px 0;border-top:1px solid var(--l)}.it img{width:96px;height:60px;object-fit:cover;border-radius:8px;background:var(--l)}
-.it div{flex:1;min-width:0}.it b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.it small{color:var(--m)}
-.ok{background:#dcfce7;color:#166534;padding:12px 14px;border-radius:10px;font-size:14px;display:none}.steps{font-size:14px;color:var(--m);padding-left:18px;margin:0}
-</style></head><body><div class="w">
-<div class="c"><h1>Admin</h1><p>Add your videos and projects here. Nothing goes live until you download <b>projects.json</b> and upload it to GitHub (steps at the bottom).</p></div>
+:root{--bg:#f3f8ff;--card:#fff;--ink:#0b1c2e;--mute:rgba(11,28,46,.62);--line:rgba(10,40,80,.12);--blue:#0a72ff;--red:#d23b3b;--ok:#13874b;--e:cubic-bezier(.2,.8,.2,1)}
+*{box-sizing:border-box;margin:0}
+body{font:15px/1.5 Inter,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;min-height:100vh}
+[hidden]{display:none!important}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px;border-radius:10px}
+.wrap{max-width:880px;margin:0 auto;padding:0 20px 80px}
+header{position:sticky;top:0;z-index:20;background:rgba(243,248,255,.85);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+header .in{max-width:880px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+header b{font-size:17px;letter-spacing:-.02em}header b span{color:var(--blue)}header b em{font-style:normal;font-weight:500;color:var(--mute);margin-left:6px}
+.tabs{display:flex;gap:4px;margin-left:auto;background:rgba(10,40,80,.06);padding:4px;border-radius:12px}
+.tabs button{border:0;background:none;padding:7px 14px;border-radius:9px;font:inherit;font-weight:500;color:var(--mute);cursor:pointer;white-space:nowrap}
+.tabs button[aria-selected=true]{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(10,40,80,.12)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:26px;margin-top:20px;box-shadow:0 18px 40px -30px rgba(10,60,140,.3)}
+h1{font-size:30px;letter-spacing:-.035em;margin:34px 0 0}h2{font-size:19px;letter-spacing:-.02em;margin-bottom:4px}
+.sub{color:var(--mute);margin-top:4px}
+label{display:block;font-size:13px;font-weight:600;color:#3d4e64;margin-top:16px}
+label.ck{display:flex;gap:9px;align-items:center;font-weight:500}label.ck input{width:auto;margin:0}
+input,select,textarea{display:block;width:100%;margin-top:6px;padding:11px 13px;border:1px solid var(--line);border-radius:11px;background:#fbfdff;color:var(--ink);font:inherit;transition:border-color .2s,box-shadow .2s}
+input:focus,select:focus,textarea:focus{outline:0;border-color:var(--blue);box-shadow:0 0 0 3px rgba(10,114,255,.14)}
+input[type=file]{padding:9px;background:#fff}
+fieldset{border:1px solid var(--line);border-radius:14px;padding:4px 16px 16px;margin-top:18px}legend{font-size:13px;font-weight:600;color:#3d4e64;padding:0 6px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
+button.b{border:0;border-radius:11px;background:var(--blue);color:#fff;padding:11px 20px;font:inherit;font-weight:600;cursor:pointer;transition:transform .2s var(--e),opacity .2s}
+button.b:hover:not(:disabled){transform:translateY(-1px)}button.b:disabled{opacity:.55;cursor:wait}
+button.g,a.g{background:#eef4fc;color:#24415f}button.d{background:#fdeeee;color:var(--red)}button.s,a.s{padding:7px 12px;font-size:13px;border-radius:9px}
+a.b{display:inline-block;border-radius:9px;font-weight:600;text-decoration:none}
+.act{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap}
+.dz{margin-top:18px;border:1.5px dashed rgba(10,114,255,.45);border-radius:14px;padding:22px;text-align:center;color:var(--mute);cursor:pointer;background:rgba(10,114,255,.03);transition:background .2s,border-color .2s}
+.dz:hover,.dz.over{background:rgba(10,114,255,.09);border-color:var(--blue)}
+.dz b{color:var(--ink)}
+.pv{display:flex;gap:14px;align-items:center;margin-top:12px}.pv img{width:150px;aspect-ratio:16/10;object-fit:cover;border-radius:10px;background:#e8eef6}.pv small{color:var(--mute)}
+.bar{height:6px;border-radius:9px;background:#e4ecf6;overflow:hidden;margin-top:10px}.bar i{display:block;height:100%;width:0;background:var(--blue);transition:width .15s linear}
+.note{background:#fff7e0;border:1px solid #f1dc9a;color:#6b5200;border-radius:14px;padding:14px 16px;margin-top:20px;font-size:14px}
+.note button{margin-top:10px}
+.row{display:flex;gap:12px;align-items:center;padding:13px 0;border-top:1px solid var(--line)}.row:first-of-type{border-top:0}
+.row .th{width:84px;aspect-ratio:16/10;border-radius:9px;background:#e8eef6 center/cover;flex:none;display:grid;place-items:center;color:#8aa3c4;font-size:12px}
+.row .tx{flex:1;min-width:0}.row .tx b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.row .tx small{color:var(--mute)}
+.row .ac{display:flex;gap:6px;flex:none;align-items:center}
+.days{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.days label{margin:0;display:flex;align-items:center;gap:7px;padding:9px 13px;border:1px solid var(--line);border-radius:11px;cursor:pointer;font-weight:500}
+.days input{width:auto;margin:0}
+.sh{font-size:13px;font-weight:700;color:var(--blue);margin-top:28px;padding-top:18px;border-top:1px solid var(--line)}
+.sh:first-child{border:0;margin-top:0;padding:0}
+#toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:#0b1c2e;color:#fff;padding:12px 20px;border-radius:12px;font-weight:500;opacity:0;pointer-events:none;transition:all .3s var(--e);z-index:50;max-width:90vw}
+#toast.on{opacity:1;transform:translate(-50%,0)}#toast.bad{background:var(--red)}
+.login{max-width:420px;margin:12vh auto 0}
+.empty{color:var(--mute);padding:18px 0;text-align:center}
+@media(max-width:640px){.g2{grid-template-columns:1fr}.tabs{margin-left:0;width:100%;overflow-x:auto}.row{flex-wrap:wrap}.row .ac{width:100%}.pv img{width:110px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
 
-<div class="c"><h2 id="ft">Add a project</h2>
-<label>YouTube link (or video ID)</label><input id="yt" placeholder="https://www.youtube.com/watch?v=… or youtu.be/…">
-<div class="r"><div><label>Title</label><input id="ti" placeholder="e.g. Notion launch film"></div>
-<div><label>Category</label><select id="ca"><option>Product launch &amp; demos</option><option>YouTube &amp; VSLs</option><option>Shorts &amp; reels</option></select></div></div>
-<label>Short description</label><textarea id="de" rows="2" placeholder="One line about the project"></textarea>
-<label>Thumbnail (optional — leave empty to use the YouTube thumbnail)</label><input id="th" type="file" accept="image/*">
-<p style="margin:8px 0 0">Or paste an image link: <input id="thu" placeholder="https://… or assets/my-thumb.jpg" style="margin-top:6px"></p>
-<div style="display:flex;gap:10px;margin-top:16px"><button id="add">Add project</button><button class="g" id="cancel" hidden>Cancel edit</button></div></div>
+<main class="wrap login" id="login" hidden>
+  <h1>Sign in</h1><p class="sub">Only you can manage this site.</p>
+  <form class="card" id="lf">
+    <label style="margin-top:0">Email<input id="em" type="email" required autocomplete="username"></label>
+    <label>Password<input id="pw" type="password" required autocomplete="current-password"></label>
+    <div class="act"><button class="b" id="lgo">Sign in</button></div>
+    <p class="sub" id="lmsg" role="alert" style="color:var(--red)"></p>
+  </form>
+</main>
 
-<div class="c"><h2>Your projects (<span id="n">0</span>)</h2><div id="list"></div>
-<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px"><button id="dl">Download projects.json</button><button class="g" id="reset">Reload from site</button></div>
-<div class="ok" id="ok">Saved to your browser as a draft. Don't forget to download and upload the file.</div></div>
+<div id="app" hidden>
+<header><div class="in">
+  <b>Boubaker<span>.</span><em>Admin</em></b>
+  <div class="tabs" role="tablist" aria-label="Sections">
+    <button role="tab" data-t="projects" aria-selected="true">Projects</button>
+    <button role="tab" data-t="bookings" aria-selected="false">Bookings</button>
+    <button role="tab" data-t="avail" aria-selected="false">Availability</button>
+    <button role="tab" data-t="site" aria-selected="false">Site text</button>
+  </div>
+  <a href="index.html" target="_blank" rel="noopener" style="color:var(--blue);font-weight:600;text-decoration:none">View site ↗</a>
+  <button class="b g s" id="out" type="button">Sign out</button>
+</div></header>
 
-<div class="c"><h2>How to publish</h2><ol class="steps"><li>Click <b>Download projects.json</b>.</li><li>Open your GitHub repo → <b>Add file → Upload files</b> → drop <b>projects.json</b> (replace the old one) → <b>Commit changes</b>.</li><li>Wait about a minute, then refresh your site.</li></ol>
-<p style="margin-top:12px">If you upload an image file, put it in <b>assets/</b> in the repo and use its path, e.g. <code>assets/my-thumb.jpg</code>. Thumbnails you pick here are shrunk and saved inside projects.json automatically.</p></div>
+<div class="wrap">
+
+<section data-p="projects">
+  <div class="note" id="upg" hidden>
+    <b>One-time setup needed for video upload, links and ordering.</b><br>
+    Open Supabase → SQL Editor, paste the copied SQL, press Run, then reload this page. Until then you can still add projects with a thumbnail and a YouTube link.
+    <br><button class="b s" id="copysql" type="button">Copy the SQL</button>
+  </div>
+
+  <h1>Projects</h1><p class="sub">Add a video or a design. It appears on your site straight away.</p>
+
+  <form class="card" id="pf" novalidate>
+    <h2 id="pft">Add a project</h2>
+    <div class="g2">
+      <label>Title<input id="t" required maxlength="120" placeholder="e.g. Acme product launch"></label>
+      <label>Category<select id="c"><option>Product launch &amp; demos</option><option>Long-form (YouTube &amp; VSLs)</option><option>Shorts &amp; reels</option><option>Design</option></select></label>
+    </div>
+    <label>Short description<textarea id="d" rows="2" maxlength="220" placeholder="One line about the project"></textarea></label>
+
+    <fieldset id="vfs"><legend>Video</legend>
+      <label>YouTube link<input id="y" placeholder="https://youtu.be/…"></label>
+      <label>…or upload a video file (MP4 works best)<input id="v" type="file" accept="video/mp4,video/webm,video/quicktime"></label>
+      <p class="sub" style="font-size:13px">Supabase’s free plan accepts files up to 50 MB. For bigger videos, upload to YouTube and paste the link.</p>
+      <div class="bar" id="vbar" hidden><i></i></div>
+      <label class="ck" id="rvw" hidden><input id="rv" type="checkbox"> Remove the uploaded video</label>
+    </fieldset>
+
+    <div class="dz" id="dz" tabindex="0" role="button" aria-label="Choose thumbnail image">
+      <b>Drop a thumbnail here</b> or click to choose<br><small>Resized to 3 sizes plus a blur preview automatically, so it loads fast on bad networks.</small>
+      <input id="f" type="file" accept="image/*" hidden>
+    </div>
+    <div class="pv" id="pv" hidden><img id="pvi" alt="Thumbnail preview"><small id="pvt"></small></div>
+
+    <label>Project link <span style="font-weight:400;color:var(--mute)">(optional, e.g. the Behance project)</span><input id="l" type="url" placeholder="https://www.behance.net/gallery/…"></label>
+    <div class="act"><button class="b" id="save" type="submit">Publish project</button><button class="b g" id="cancel" type="button" hidden>Cancel edit</button></div>
+  </form>
+
+  <div class="card"><h2>On your site</h2><p class="sub" id="lsub"></p><div id="list"></div></div>
+</section>
+
+<section data-p="bookings" hidden>
+  <h1>Bookings</h1><p class="sub">Call requests from your calendar. Times are in Algeria time (UTC+1).</p>
+  <div class="card"><div id="blist"></div></div>
+</section>
+
+<section data-p="avail" hidden>
+  <h1>Availability</h1><p class="sub">What visitors can book on your site.</p>
+  <form class="card" id="af">
+    <label style="margin-top:0">Days you take calls</label>
+    <div class="days" id="adays"></div>
+    <label>Time slots (Algeria time, comma separated)<input id="aslots" placeholder="10:00, 12:00, 14:00, 16:00"></label>
+    <label>Days off <span style="font-weight:400;color:var(--mute)">(dates as YYYY-MM-DD, comma separated)</span><textarea id="aoff" rows="2" placeholder="2026-12-25, 2027-01-01"></textarea></label>
+    <div class="act"><button class="b" type="submit">Save availability</button></div>
+  </form>
+</section>
+
+<section data-p="site" hidden>
+  <h1>Site text</h1><p class="sub">Change any text, then save. Leave a social link empty to hide it.</p>
+  <form class="card" id="sf"><div id="sfields"></div><div class="act"><button class="b" type="submit">Save site text</button></div></form>
+</section>
+
 </div>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>
+
 <script>
-const $=s=>document.querySelector(s),KEY='bk_projects_draft';let P=[],edit=-1;
-const yid=v=>{v=(v||'').trim();const m=v.match(/(?:v=|youtu\.be\/|shorts\/|embed\/)([\w-]{11})/);return m?m[1]:/^[\w-]{11}$/.test(v)?v:''};
-const esc=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(P))}catch(e){}};
-const shrink=f=>new Promise(res=>{const r=new FileReader();r.onload=()=>{const i=new Image();i.onload=()=>{const k=Math.min(1,960/i.width),c=document.createElement('canvas');c.width=i.width*k;c.height=i.height*k;c.getContext('2d').drawImage(i,0,0,c.width,c.height);res(c.toDataURL('image/webp',.78))};i.src=r.result};r.readAsDataURL(f)});
-const draw=()=>{$('#n').textContent=P.length;$('#list').innerHTML=P.map((p,i)=>`<div class="it"><img src="${esc(p.thumb_url||(p.youtube_id?'https://i.ytimg.com/vi/'+p.youtube_id+'/mqdefault.jpg':''))}" alt=""><div><b>${esc(p.title)}</b><small>${esc(p.category)}${p.youtube_id?' · YouTube':''}</small></div><button class="g" data-e="${i}">Edit</button><button class="g" data-u="${i}" ${i?'':'disabled'}>↑</button><button class="d" data-x="${i}">Delete</button></div>`).join('')||'<p>No projects yet.</p>'};
-$('#list').onclick=e=>{const b=e.target.closest('button');if(!b)return;const d=b.dataset;
- if(d.x!==undefined&&confirm('Delete this project?')){P.splice(+d.x,1)}
- else if(d.u!==undefined){const i=+d.u;[P[i-1],P[i]]=[P[i],P[i-1]]}
- else if(d.e!==undefined){edit=+d.e;const p=P[edit];$('#yt').value=p.youtube_id||'';$('#ti').value=p.title||'';$('#ca').value=p.category;$('#de').value=p.description||'';$('#thu').value=(p.thumb_url||'').startsWith('data:')?'':p.thumb_url||'';$('#ft').textContent='Edit project';$('#add').textContent='Save changes';$('#cancel').hidden=false;scrollTo({top:0,behavior:'smooth'})}
- save();draw()};
-const clear=()=>{edit=-1;['#yt','#ti','#de','#thu','#th'].forEach(s=>$(s).value='');$('#ft').textContent='Add a project';$('#add').textContent='Add project';$('#cancel').hidden=true};
-$('#cancel').onclick=clear;
-$('#add').onclick=async()=>{const id=yid($('#yt').value),t=$('#ti').value.trim();
- if(!t)return alert('Please add a title.');if(!id&&!$('#th').files[0]&&!$('#thu').value.trim())return alert('Add a YouTube link or a thumbnail image.');
- let th=$('#thu').value.trim();if($('#th').files[0])th=await shrink($('#th').files[0]);
- const p={title:t,category:$('#ca').value,description:$('#de').value.trim(),youtube_id:id||null,thumb_url:th||null};
- if(edit>=0){p.thumb_url=p.thumb_url||P[edit].thumb_url;P[edit]=p}else P.unshift(p);
- save();draw();clear()};
-$('#dl').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(P,null,2)],{type:'application/json'}));a.download='projects.json';a.click();$('#ok').style.display='block'};
-const fromSite=async()=>{try{P=await (await fetch('projects.json',{cache:'no-cache'})).json()}catch(e){P=[]}save();draw()};
-$('#reset').onclick=()=>confirm('Discard your draft and reload the live list?')&&fromSite();
-try{P=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){P=null}P?draw():fromSite();
-</script></body></html>
+const C=window.SITE_CONFIG,$=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const BUCKET='thumbs',PUB=C.SUPABASE_URL+'/storage/v1/object/public/'+BUCKET+'/';
+const sb=supabase.createClient(C.SUPABASE_URL,C.SUPABASE_ANON_KEY);
+let HAS=false,cur=null,thumbSet=null,list=[];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let tt;const toast=(m,bad)=>{const t=$('#toast');t.textContent=m;t.className='on'+(bad?' bad':'');clearTimeout(tt);tt=setTimeout(()=>t.className='',bad?6000:3200)};
+const fmtKB=b=>b>1048576?(b/1048576).toFixed(1)+' MB':Math.max(1,Math.round(b/1024))+' KB';
+const ytId=u=>{const m=String(u||'').match(/(?:v=|youtu\.be\/|shorts\/|embed\/|live\/)([\w-]{11})/);return m?m[1]:/^[\w-]{11}$/.test(u||'')?u:''};
+
+/* ---------- auth ---------- */
+async function boot(){
+  const{data:{session}}=await sb.auth.getSession();
+  $('#login').hidden=!!session;$('#app').hidden=!session;
+  if(!session)return;
+  const t=await sb.from('projects').select('thumb_blur,thumb_sm,thumb_lg,video_url,link_url,sort_order').limit(1);
+  HAS=!t.error;$('#upg').hidden=HAS;$('#v').disabled=!HAS;$('#l').disabled=!HAS;
+  loadProjects();loadBookings();loadSettings();
+}
+$('#lf').onsubmit=async e=>{e.preventDefault();$('#lgo').disabled=true;$('#lmsg').textContent='';
+  const{error}=await sb.auth.signInWithPassword({email:$('#em').value.trim(),password:$('#pw').value});
+  $('#lgo').disabled=false;if(error)return $('#lmsg').textContent=error.message;boot()};
+$('#out').onclick=async()=>{await sb.auth.signOut();location.reload()};
+$('#copysql').onclick=async()=>{try{const t=await (await fetch('supabase-upgrade.sql')).text();await navigator.clipboard.writeText(t);toast('SQL copied. Paste it in the Supabase SQL Editor.')}catch(e){toast('Open supabase-upgrade.sql in your repo and copy it.',true)}};
+
+/* ---------- tabs ---------- */
+function tab(t){$$('[data-p]').forEach(p=>p.hidden=p.dataset.p!==t);$$('.tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.t===t));scrollTo(0,0)}
+$$('.tabs button').forEach(b=>b.onclick=()=>tab(b.dataset.t));
+
+/* ---------- image pipeline: 3 WebP sizes + blur placeholder, all in the browser ---------- */
+async function optimize(file){
+  const bmp=await createImageBitmap(file);
+  const enc=async(w,q)=>{w=Math.min(w,bmp.width);const h=Math.round(bmp.height*w/bmp.width),c=document.createElement('canvas');c.width=w;c.height=h;
+    const x=c.getContext('2d');x.imageSmoothingQuality='high';x.drawImage(bmp,0,0,w,h);
+    let b=await new Promise(r=>c.toBlob(r,'image/webp',q));if(!b||b.type!=='image/webp')b=await new Promise(r=>c.toBlob(r,'image/jpeg',q));return b};
+  const sm=await enc(480,.78),md=await enc(960,.8),lg=await enc(1600,.82);
+  const c=document.createElement('canvas');c.width=24;c.height=Math.max(1,Math.round(24*bmp.height/bmp.width));c.getContext('2d').drawImage(bmp,0,0,c.width,c.height);
+  return{sm,md,lg,blur:c.toDataURL('image/jpeg',.5)};
+}
+async function setThumb(file){
+  if(!file||!file.type.startsWith('image/'))return toast('Please choose an image file.',true);
+  $('#pvt').textContent='Optimizing…';$('#pv').hidden=false;
+  try{thumbSet=await optimize(file);$('#pvi').src=URL.createObjectURL(thumbSet.md);
+    $('#pvt').textContent=fmtKB(file.size)+' → '+fmtKB(thumbSet.sm.size+thumbSet.md.size+thumbSet.lg.size)+' across 3 sizes'}
+  catch(e){thumbSet=null;$('#pv').hidden=true;toast('Could not read that image.',true)}
+}
+const dz=$('#dz'),fi=$('#f');
+dz.onclick=()=>fi.click();dz.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();fi.click()}};
+fi.onchange=()=>setThumb(fi.files[0]);
+['dragenter','dragover'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.add('over')}));
+['dragleave','drop'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.remove('over')}));
+dz.addEventListener('drop',e=>setThumb(e.dataTransfer.files[0]));
+
+/* ---------- storage upload with progress (cached for a year; file names are unique) ---------- */
+async function put(path,blob,onp){
+  const{data:{session}}=await sb.auth.getSession();
+  return new Promise((res,rej)=>{
+    const x=new XMLHttpRequest();x.open('POST',C.SUPABASE_URL+'/storage/v1/object/'+BUCKET+'/'+path);
+    x.setRequestHeader('apikey',C.SUPABASE_ANON_KEY);x.setRequestHeader('Authorization','Bearer '+session.access_token);
+    x.setRequestHeader('cache-control','max-age=31536000');x.setRequestHeader('x-upsert','false');
+    if(blob.type)x.setRequestHeader('content-type',blob.type);
+    x.upload.onprogress=e=>e.lengthComputable&&onp&&onp(e.loaded/e.total);
+    x.onload=()=>{if(x.status<300)return res(PUB+path);let m='';try{m=JSON.parse(x.responseText).message}catch(e){}
+      rej(new Error(x.status===413?'That file is larger than your Supabase plan allows. Upload it to YouTube and paste the link instead.':(m||'Upload failed ('+x.status+')')))};
+    x.onerror=()=>rej(new Error('Network problem while uploading. Try again.'));
+    x.send(blob)});
+}
+const rid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const removeUrls=async urls=>{const p=urls.filter(u=>u&&u.startsWith(PUB)).map(u=>decodeURIComponent(u.slice(PUB.length)));if(p.length)try{await sb.storage.from(BUCKET).remove(p)}catch(e){}};
+
+/* ---------- projects ---------- */
+async function loadProjects(){
+  let q=sb.from('projects').select('*');q=HAS?q.order('sort_order',{ascending:true}).order('created_at',{ascending:false}):q.order('created_at',{ascending:false});
+  const{data,error}=await q;if(error)return $('#list').innerHTML='<p class="empty">'+esc(error.message)+'</p>';
+  list=data||[];$('#lsub').textContent=list.length?list.length+(list.length>1?' projects':' project')+(HAS?'. Use the arrows to reorder.':''):'';
+  $('#list').innerHTML=list.length?list.map((p,i)=>{
+    const th=p.thumb_sm||p.thumb_url||(p.youtube_id?'https://i.ytimg.com/vi/'+p.youtube_id+'/mqdefault.jpg':'');
+    const kind=p.video_url?'Uploaded video':p.youtube_id?'YouTube':'Image';
+    return '<div class="row"><div class="th" style="'+(th?'background-image:url('+esc(th)+')':'')+'">'+(th?'':'No image')+'</div><div class="tx"><b>'+esc(p.title)+'</b><small>'+esc(p.category||'')+' · '+kind+'</small></div><div class="ac">'
+      +(HAS?'<button class="b g s" data-mv="'+i+'" data-d="-1" aria-label="Move up"'+(i?'':' disabled')+'>↑</button><button class="b g s" data-mv="'+i+'" data-d="1" aria-label="Move down"'+(i<list.length-1?'':' disabled')+'>↓</button>':'')
+      +'<button class="b g s" data-ed="'+i+'">Edit</button><button class="b d s" data-del="'+i+'">Delete</button></div></div>'}).join(''):'<p class="empty">No projects yet. Add your first one above.</p>';
+}
+$('#list').onclick=async e=>{
+  const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.ed!==undefined)return edit(list[+b.dataset.ed]);
+  if(b.dataset.del!==undefined){const p=list[+b.dataset.del];if(!confirm('Delete “'+p.title+'”? This cannot be undone.'))return;
+    const{error}=await sb.from('projects').delete().eq('id',p.id);if(error)return toast(error.message,true);
+    removeUrls([p.thumb_url,p.thumb_sm,p.thumb_lg,p.video_url]);toast('Deleted.');loadProjects();return}
+  if(b.dataset.mv!==undefined){const i=+b.dataset.mv,j=i+ +b.dataset.d;if(j<0||j>=list.length)return;
+    [list[i],list[j]]=[list[j],list[i]];b.disabled=true;
+    const r=await Promise.all(list.map((p,k)=>p.sort_order===k*10?null:sb.from('projects').update({sort_order:k*10}).eq('id',p.id)));
+    const bad=r.find(x=>x&&x.error);if(bad)toast(bad.error.message,true);loadProjects()}
+};
+function edit(p){
+  cur=p;thumbSet=null;fi.value='';$('#v').value='';
+  $('#t').value=p.title||'';$('#c').value=p.category||'Design';$('#d').value=p.description||'';
+  $('#y').value=p.youtube_id?'https://youtu.be/'+p.youtube_id:'';$('#l').value=p.link_url||'';
+  $('#rvw').hidden=!p.video_url;$('#rv').checked=false;
+  const th=p.thumb_url||(p.youtube_id?'https://i.ytimg.com/vi/'+p.youtube_id+'/mqdefault.jpg':'');
+  $('#pv').hidden=!th;if(th){$('#pvi').src=th;$('#pvt').textContent='Current thumbnail. Drop a new one to replace it.'}
+  $('#pft').textContent='Edit project';$('#save').textContent='Save changes';$('#cancel').hidden=false;
+  $('#pf').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function reset(){cur=null;thumbSet=null;$('#pf').reset();fi.value='';$('#pv').hidden=true;$('#rvw').hidden=true;$('#vbar').hidden=true;
+  $('#pft').textContent='Add a project';$('#save').textContent='Publish project';$('#cancel').hidden=true}
+$('#cancel').onclick=reset;
+$('#pf').onsubmit=async e=>{
+  e.preventDefault();
+  const title=$('#t').value.trim(),y=$('#y').value.trim(),yid=ytId(y),vf=$('#v').files[0];
+  if(!title)return toast('Add a title first.',true);
+  if(y&&!yid)return toast('That YouTube link does not look right.',true);
+  if(!yid&&!vf&&!thumbSet&&!(cur&&(cur.thumb_url||cur.video_url)))return toast('Add a thumbnail, a YouTube link or a video.',true);
+  const lk=$('#l').value.trim();if(lk&&!/^https?:\/\//i.test(lk))return toast('The project link must start with https://',true);
+  const btn=$('#save');btn.disabled=true;const old=btn.textContent;
+  try{
+    const rec={title,category:$('#c').value,description:$('#d').value.trim(),youtube_id:yid||null};
+    const dead=[];
+    if(thumbSet){
+      btn.textContent='Uploading thumbnail…';const id=rid(),ext=thumbSet.md.type==='image/webp'?'webp':'jpg';
+      const[sm,md,lg]=await Promise.all([put('t/'+id+'-480.'+ext,thumbSet.sm),put('t/'+id+'-960.'+ext,thumbSet.md),put('t/'+id+'-1600.'+ext,thumbSet.lg)]);
+      rec.thumb_url=md;if(HAS){rec.thumb_sm=sm;rec.thumb_lg=lg;rec.thumb_blur=thumbSet.blur}
+      if(cur)dead.push(cur.thumb_url,cur.thumb_sm,cur.thumb_lg);
+    }
+    if(HAS){
+      rec.link_url=lk||null;
+      if(vf){const bar=$('#vbar');bar.hidden=false;btn.textContent='Uploading video…';
+        rec.video_url=await put('v/'+rid()+'.'+(vf.name.split('.').pop()||'mp4').toLowerCase().replace(/[^a-z0-9]/g,''),vf,p=>{bar.firstElementChild.style.width=Math.round(p*100)+'%';btn.textContent='Uploading video… '+Math.round(p*100)+'%'});
+        if(cur&&cur.video_url)dead.push(cur.video_url)}
+      else if(cur&&cur.video_url&&$('#rv').checked){rec.video_url=null;dead.push(cur.video_url)}
+    }
+    btn.textContent='Saving…';
+    const{error}=cur?await sb.from('projects').update(rec).eq('id',cur.id):await sb.from('projects').insert(rec);
+    if(error)throw error;
+    removeUrls(dead);toast(cur?'Changes saved.':'Published. It is live on your site.');reset();loadProjects();
+  }catch(err){toast(err.message||'Could not save.',true);btn.textContent=old}
+  finally{btn.disabled=false;$('#vbar').hidden=true;$('#vbar').firstElementChild.style.width=0}
+};
+
+/* ---------- bookings ---------- */
+const TZ='Africa/Algiers',fmtDay=d=>d.toLocaleDateString('en',{weekday:'short',day:'numeric',month:'short',year:'numeric',timeZone:TZ}),fmtTime=d=>d.toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:TZ});
+async function loadBookings(){
+  const{data,error}=await sb.from('bookings').select('*').order('starts_at',{ascending:true});
+  const box=$('#blist');if(error)return box.innerHTML='<p class="empty">'+esc(error.message)+'</p>';
+  const all=data||[],now=Date.now(),up=all.filter(b=>new Date(b.starts_at)>=now-36e5),past=all.filter(b=>!up.includes(b)).reverse();
+  const one=b=>{const d=new Date(b.starts_at);
+    const body=encodeURIComponent('Hi '+b.name+',\n\nThanks for booking. I confirm our call on '+fmtDay(d)+' at '+fmtTime(d)+' (Algeria time, UTC+1).\n\nBoubaker'),
+      mail='mailto:'+encodeURIComponent(b.email).replace('%40','@')+'?subject='+encodeURIComponent('Our call on '+fmtDay(d))+'&body='+body;
+    return '<div class="row"><div class="tx"><b>'+fmtDay(d)+' · '+fmtTime(d)+' · '+esc(b.name)+'</b><small>'+esc(b.email)+(b.project?' · '+esc(b.project):'')+'</small></div><div class="ac">'
+      +'<select data-st="'+b.id+'" style="width:auto;margin:0;padding:7px 10px" aria-label="Status">'+['new','confirmed','done'].map(s=>'<option'+(s===b.status?' selected':'')+'>'+s+'</option>').join('')+'</select>'
+      +'<a class="b g s" href="'+mail+'">Email</a><button class="b d s" data-bdel="'+b.id+'">Delete</button></div></div>'};
+  box.innerHTML=all.length?(up.length?'<h2>Upcoming</h2>'+up.map(one).join(''):'')+(past.length?'<h2 style="margin-top:22px">Past</h2>'+past.map(one).join(''):''):'<p class="empty">No bookings yet.</p>';
+}
+$('#blist').onchange=async e=>{const s=e.target.dataset.st;if(!s)return;const{error}=await sb.from('bookings').update({status:e.target.value}).eq('id',s);toast(error?error.message:'Status updated.',!!error)};
+$('#blist').onclick=async e=>{const id=e.target.dataset.bdel;if(!id||!confirm('Delete this booking? The time slot becomes free again.'))return;
+  const{error}=await sb.from('bookings').delete().eq('id',id);toast(error?error.message:'Deleted. The slot is free again.',!!error);loadBookings()};
+
+/* ---------- settings (every save merges, so tabs never overwrite each other) ---------- */
+async function saveSettings(patch){
+  const{data,error:e1}=await sb.from('site_settings').select('value').eq('key','main').maybeSingle();if(e1)throw e1;
+  const{error}=await sb.from('site_settings').upsert({key:'main',value:Object.assign({},data&&data.value,patch)});if(error)throw error;
+}
+const DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+$('#adays').innerHTML=DAYS.map((d,i)=>'<label><input type="checkbox" value="'+i+'"> '+d+'</label>').join('');
+const SF=[
+ ['h','Hero'],['status','Badge text','t'],['h1','Headline (use | to separate words)','t'],['h1Prefix','Headline line 2, start','t'],['h1Accent','Headline line 2, blue italic part','t'],['lead','Hero description','a'],['btn1','Button 1 text','t'],['btn2','Button 2 text','t'],
+ ['h','Stats'],['s1n','Stat 1 number','t'],['s1l','Stat 1 label','t'],['s2n','Stat 2 number','t'],['s2l','Stat 2 label','t'],['s3n','Stat 3 number','t'],['s3l','Stat 3 label','t'],
+ ['h','About'],['aTitle','Title','t'],['aP1','Paragraph 1','a'],['aP2','Paragraph 2','a'],
+ ['h','Contact'],['cTitle','Title (the last word turns into the italic one)','t'],['cSub','Text','a'],['cBtn','Email button text','t'],['email','Email address','t'],
+ ['h','Social links (full https link, empty = hidden)'],['ig','Instagram','t'],['be','Behance','t'],['li','LinkedIn','t'],['wa','WhatsApp','t'],
+ ['h','Footer'],['footer','Footer text','t'],
+ ['h','Look'],['accent','Accent color (hex, e.g. #0a72ff)','t'],['veil','Background brightness: 0 = clear, 0.8 = white','r']];
+$('#sfields').innerHTML=SF.map(([k,l,t])=>t===undefined?'<h3 class="sh">'+l+'</h3>':t==='a'?'<label>'+l+'<textarea id="f_'+k+'" rows="3"></textarea></label>':t==='r'?'<label>'+l+' <b id="o_'+k+'"></b><input id="f_'+k+'" type="range" min="0" max=".8" step=".05"></label>':'<label>'+l+'<input id="f_'+k+'"></label>').join('');
+$('#f_veil').oninput=e=>$('#o_veil').textContent=e.target.value;
+const SDEF={status:'2 spots left for October',h1:'Video Editing | Motion | Design',h1Prefix:'for',h1Accent:'Brands & Creators',lead:'I edit videos and animate SaaS products so people understand them in seconds.',btn1:'See my work',btn2:'Book a call',s1n:'120+',s1l:'Videos delivered',s2n:'35',s2l:'SaaS products animated',s3n:'48h',s3l:'Typical first draft',aTitle:"Hi, I'm Boubaker.",aP1:"I'm a video editor and motion designer based in Algeria, working with SaaS teams and creators worldwide. I turn complex products into clear, watchable stories.",aP2:'Available for freelance and long-term collaborations.',cTitle:"Let's make something move.",cSub:"Tell me about your project and I'll reply within a day.",cBtn:'Email me',email:'',ig:'',be:'https://www.behance.net/boubakeboubake',li:'',wa:'',footer:'© 2026 Boubaker. All rights reserved.',accent:'#0a72ff',veil:.28,bookDays:'0,1,2,3,4',bookSlots:'10:00,12:00,14:00,16:00',bookOff:''};
+async function loadSettings(){
+  const{data,error}=await sb.from('site_settings').select('value').eq('key','main').maybeSingle();if(error)return toast(error.message,true);
+  const v=Object.assign({},SDEF,data&&data.value);
+  SF.filter(x=>x[2]).forEach(([k])=>{$('#f_'+k).value=v[k]??''});$('#o_veil').textContent=v.veil;
+  const on=String(v.bookDays).split(',').map(x=>x.trim());$$('#adays input').forEach(i=>i.checked=on.includes(i.value));
+  $('#aslots').value=String(v.bookSlots).split(',').map(x=>x.trim()).filter(Boolean).join(', ');$('#aoff').value=String(v.bookOff||'').split(/[\s,]+/).filter(Boolean).join(', ');
+}
+$('#sf').onsubmit=async e=>{e.preventDefault();const o={};SF.filter(x=>x[2]).forEach(([k,,t])=>{const el=$('#f_'+k);o[k]=t==='r'?parseFloat(el.value):el.value.trim()});
+  if(o.accent&&!/^#[0-9a-f]{6}$/i.test(o.accent))return toast('Accent color must look like #0a72ff',true);
+  try{await saveSettings(o);toast('Saved. Reload your site to see it.')}catch(err){toast(err.message,true)}};
+$('#af').onsubmit=async e=>{e.preventDefault();
+  const days=$$('#adays input:checked').map(i=>i.value).join(','),slots=$('#aslots').value.split(',').map(s=>s.trim()).filter(Boolean),off=$('#aoff').value.split(/[\s,]+/).filter(Boolean);
+  const badS=slots.find(s=>!/^([01]?\d|2[0-3]):[0-5]\d$/.test(s)),badD=off.find(d=>!/^\d{4}-\d{2}-\d{2}$/.test(d));
+  if(!days)return toast('Pick at least one day.',true);if(badS)return toast('“'+badS+'” is not a time. Use 10:00 or 14:30.',true);if(badD)return toast('“'+badD+'” is not a date. Use 2026-12-25.',true);
+  try{await saveSettings({bookDays:days,bookSlots:slots.join(','),bookOff:off.join(',')});toast('Availability saved.')}catch(err){toast(err.message,true)}};
+
+if(!C||!C.SUPABASE_URL){document.body.innerHTML='<p style="padding:40px">Missing config.js</p>'}else boot();
+</script>
+</body>
+</html>
